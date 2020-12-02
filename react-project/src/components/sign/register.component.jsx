@@ -73,6 +73,8 @@ export  default class Register extends Component {
     handleRegister = event => {
         event.preventDefault();
 
+        console.log("EEE PEDAL");
+
         this.setState({
             message: "",
             successful: false
@@ -164,6 +166,7 @@ export  default class Register extends Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Button
+                                        type="submit"
                                         className="btn-primary btn-block"
                                         disabled={this.state.loading}>
                                             Register

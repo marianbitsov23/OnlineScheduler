@@ -115,6 +115,7 @@ export default class Login extends Component {
                                 </FormGroup>
                                 <FormGroup>
                                     <Button
+                                        type="submit"
                                         className="btn-primary btn-block"
                                         disabled={this.state.loading}>
                                             {this.state.loading &&
