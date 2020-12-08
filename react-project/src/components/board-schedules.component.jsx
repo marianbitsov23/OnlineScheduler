@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
 import UserService from "../services/user.service";
-import { Container, Jumbotron } from "react-bootstrap";
+import { Container, Jumbotron, Row, Button } from "react-bootstrap";
 
-export default class BoardUser extends Component {
+export default class ScheduleBoard extends Component {
     constructor(props) {
         super(props);
 
@@ -34,11 +34,16 @@ export default class BoardUser extends Component {
 
     render() {
         return (
-            <Container>
-                <Jumbotron>
-                    <h3>{this.state.content}</h3>
-                </Jumbotron>
-            </Container>
+            <>
+                <Container>
+                    <Jumbotron>
+                        Schedules
+                    </Jumbotron>
+                    <Row className="justify-content-md-center">
+                        <Button variant="info">Create new schedule</Button>
+                    </Row>
+                </Container>
+            </>
         );
     }
 }

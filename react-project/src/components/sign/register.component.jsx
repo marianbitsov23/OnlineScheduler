@@ -167,7 +167,8 @@ export  default class Register extends Component {
                                 <FormGroup>
                                     <Button
                                         type="submit"
-                                        className="btn-primary btn-block"
+                                        variant="primary"
+                                        className="btn-block"
                                         disabled={this.state.loading}>
                                             Register
                                         </Button>

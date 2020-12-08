@@ -47,8 +47,8 @@ export default class Navigation extends Component {
 
                         {currentUser && (
                         <Nav.Item>
-                            <Link to={"/user"} className="nav-link white">
-                                User
+                            <Link to={"/schedules"} className="nav-link white">
+                                Schedules
                             </Link>
                         </Nav.Item>
                         )}

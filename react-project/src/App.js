@@ -9,7 +9,7 @@ import Login from "./components/sign/login.component";
 import Register from "./components/sign/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
-import BoardUser from "./components/board-user.component";
+import ScheduleBoard from "./components/board-schedules.component";
 import BoardAdmin from "./components/board-admin.component";
 import Navigation from "./components/shared/navbar.component";
 import { Container } from "react-bootstrap";
@@ -41,8 +41,6 @@ class App extends Component {
     }
 
     render() {
-        const { currentUser, showAdminBoard } = this.state;
-
         return (
             <>
               <Navigation />
@@ -52,7 +50,7 @@ class App extends Component {
                       <Route exact path="/login" component={Login} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
-                      <Route path="/user" component={BoardUser} />
+                      <Route path="/schedules" component={ScheduleBoard} />
                       <Route path="/admin" component={BoardAdmin} />
                   </Switch>
               </Container>

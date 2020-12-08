@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
-import { Jumbotron, Container, ListGroup, InputGroup, FormControl, Button } from "react-bootstrap";
+import { Container, InputGroup, FormControl, Button, Card, Row, Col } from "react-bootstrap";
 
 export default class Profile extends Component {
     constructor(props) {
@@ -58,16 +58,48 @@ export default class Profile extends Component {
         return (
             <>
                 <Container>
-                    <Jumbotron>
-                        <h3>Profile page</h3>
-                    </Jumbotron>
-
-                    {!this.state.edit &&
-                    <p>
-                        <strong>Name:</strong>{" "}
-                        {this.state.currentUser.username}
-                    </p>
-                    }
+                    <Row className="justify-content-md-center">
+                        <Card bg="secondary" text="white" style={{ width: '24rem' }}>
+                            <Card.Img
+                                variant="top" 
+                                src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png" 
+                                height="300"
+                            />
+                            {!this.state.edit &&
+                                <Card.Header>{this.state.currentUser.username}</Card.Header>
+                            }
+                            <Card.Body>
+                                <Card.Title>{this.state.currentUser.email}</Card.Title>
+                                <Card.Text>
+                                <Col>
+                                    {!this.state.edit &&
+                                    <Row>
+                                        <Button variant="success" className="btn-margin" 
+                                            onClick={() => {
+                                                this.setState({ edit: true });
+                                            }}
+                                        >
+                                            Edit profile
+                                        </Button>
+                                    </Row>
+                                    }
+                                    {this.state.edit &&
+                                    <Row>
+                                        <Button variant="success" onClick={this.saveInformation}>
+                                            Save
+                                        </Button>
+                                    </Row>
+                                    }
+                                    <Row>
+                                        <Button variant="danger" onClick={this.deleteProfile}>
+                                            Delete Profile
+                                        </Button>
+                                    </Row>
+                                </Col>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Row>
                     {this.state.edit &&
                     <InputGroup className="mb-3">
                         <FormControl
@@ -80,12 +112,6 @@ export default class Profile extends Component {
                     </InputGroup>
                     }
 
-                    {!this.state.edit &&
-                    <p>
-                        <strong>Email:</strong>{" "}
-                        {this.state.currentUser.email}
-                    </p>
-                    }
                     {this.state.edit &&
                     <InputGroup className="mb-3">
                         <FormControl
@@ -101,26 +127,6 @@ export default class Profile extends Component {
                         </InputGroup.Append>
                     </InputGroup>
                     }
-
-                    {!this.state.edit &&
-                    <p>
-                        <strong>Authorities:</strong>
-                        <ListGroup>
-                            {this.state.currentUser.roles &&
-                            this.state.currentUser.roles.map((role, index) => 
-                            <ListGroup.Item key={index}>{role}</ListGroup.Item>)}
-                        </ListGroup>
-                    </p>
-                    }
-
-                    {!this.state.edit &&<Button className="btn btn-secondary" onClick={() => {
-                        this.setState({ edit: true });
-                    }}>Edit profile</Button>}
-
-                    {this.state.edit &&
-                    <Button className="btn btn-success" onClick={this.saveInformation}>Save</Button>}
-
-                    <Button className="btn btn-danger" onClick={this.deleteProfile}>Delete Profile</Button>
                 </Container>
             </>
         );
