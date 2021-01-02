@@ -1,6 +1,6 @@
 package com.example.onlinescheduler.controller;
 
-import com.example.onlinescheduler.model.User;
+import com.example.onlinescheduler.model.user.User;
 import com.example.onlinescheduler.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

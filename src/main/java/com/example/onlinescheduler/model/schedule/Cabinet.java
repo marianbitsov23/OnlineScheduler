@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.model;
+package com.example.onlinescheduler.model.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

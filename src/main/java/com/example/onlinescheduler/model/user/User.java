@@ -1,6 +1,6 @@
-package com.example.onlinescheduler.model;
+package com.example.onlinescheduler.model.user;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import com.example.onlinescheduler.model.schedule.Schedule;
 
 import javax.persistence.*;
 
@@ -41,6 +41,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
     private Set<Role> roles = new HashSet<>();
+
+    @OneToOne(mappedBy = "users")
+    private Schedule schedule;
 
     public User() {}
 

@@ -1,6 +1,6 @@
 package com.example.onlinescheduler.security.services;
 
-import com.example.onlinescheduler.model.User;
+import com.example.onlinescheduler.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

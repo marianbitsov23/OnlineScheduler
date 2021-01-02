@@ -1,4 +1,6 @@
-package com.example.onlinescheduler.model;
+package com.example.onlinescheduler.model.user;
+
+import com.example.onlinescheduler.model.user.ERole;
 
 import javax.persistence.*;
 

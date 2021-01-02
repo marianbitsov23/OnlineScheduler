@@ -1,8 +1,8 @@
 package com.example.onlinescheduler.controller;
 
-import com.example.onlinescheduler.model.ERole;
-import com.example.onlinescheduler.model.Role;
-import com.example.onlinescheduler.model.User;
+import com.example.onlinescheduler.model.user.ERole;
+import com.example.onlinescheduler.model.user.Role;
+import com.example.onlinescheduler.model.user.User;
 import com.example.onlinescheduler.payload.JwtResponse;
 import com.example.onlinescheduler.payload.LoginRequest;
 import com.example.onlinescheduler.payload.MessageResponse;

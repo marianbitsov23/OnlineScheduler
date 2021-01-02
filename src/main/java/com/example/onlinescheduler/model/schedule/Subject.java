@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.model;
+package com.example.onlinescheduler.model.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -24,9 +24,8 @@ public class Subject {
 
     public Subject() {}
 
-    public Subject(@NotBlank @Size(max = 120) String subjectName, Set<Teacher> teachers) {
+    public Subject(@NotBlank @Size(max = 120) String subjectName) {
         this.subjectName = subjectName;
-        this.teachers = teachers;
     }
 
     public Long getId() {

@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.model;
+package com.example.onlinescheduler.model.user;
 
 public enum ERole {
     ROLE_USER,
