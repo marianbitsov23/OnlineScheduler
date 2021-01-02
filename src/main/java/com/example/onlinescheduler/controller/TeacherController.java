@@ -48,6 +48,14 @@ public class TeacherController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Teacher> getTeacherById(@PathVariable Long id) {
+        Optional<Teacher> teacher = teacherRepository.findById(id);
+
+        return teacher.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Teacher> updateTeacherInformation(@PathVariable Long id, @RequestBody Teacher teacher) {
         Optional<Teacher> foundTeacher = teacherRepository.findById(id);

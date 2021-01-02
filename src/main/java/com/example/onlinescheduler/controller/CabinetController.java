@@ -38,6 +38,14 @@ public class CabinetController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Cabinet> getCabinetById(@PathVariable Long id) {
+        Optional<Cabinet> cabinet = cabinetRepository.findById(id);
+
+        return cabinet.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Cabinet> updateCabinetInformation(@PathVariable Long id, @RequestBody Cabinet cabinet) {
         Optional<Cabinet> foundCabinet = cabinetRepository.findById(id);

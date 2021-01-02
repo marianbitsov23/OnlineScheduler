@@ -2,6 +2,7 @@ package com.example.onlinescheduler.controller;
 
 import com.example.onlinescheduler.model.schedule.Cabinet;
 import com.example.onlinescheduler.model.schedule.Subject;
+import com.example.onlinescheduler.model.schedule.Teacher;
 import com.example.onlinescheduler.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,14 @@ public class SubjectController {
         } else {
             return new ResponseEntity<>(subjects, HttpStatus.FOUND);
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
+        Optional<Subject> subject = subjectRepository.findById(id);
+
+        return subject.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{id}")
