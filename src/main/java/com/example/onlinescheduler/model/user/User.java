@@ -42,8 +42,8 @@ public class User {
 
     private Set<Role> roles = new HashSet<>();
 
-    @OneToOne(mappedBy = "users")
-    private Schedule schedule;
+    @OneToMany(mappedBy = "users")
+    private Set<Schedule> schedules;
 
     public User() {}
 
@@ -52,6 +52,10 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public Set<Schedule> getSchedules() { return schedules; }
+
+    public void setSchedules(Set<Schedule> schedules) { this.schedules = schedules; }
 
     public Long getId() {
         return id;

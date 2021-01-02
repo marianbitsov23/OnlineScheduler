@@ -24,31 +24,17 @@ public class Subject {
 
     public Subject() {}
 
-    public Subject(@NotBlank @Size(max = 120) String subjectName) {
-        this.subjectName = subjectName;
-    }
+    public Subject(@NotBlank @Size(max = 120) String subjectName) { this.subjectName = subjectName; }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public String getSubjectName() {
-        return subjectName;
-    }
+    public String getSubjectName() { return subjectName; }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
 
-    public Set<Teacher> getTeachers() {
-        return teachers;
-    }
+    public Set<Teacher> getTeachers() { return teachers; }
 
-    public void setTeachers(Set<Teacher> teachers) {
-        this.teachers = teachers;
-    }
+    public void setTeachers(Set<Teacher> teachers) { this.teachers = teachers; }
 }

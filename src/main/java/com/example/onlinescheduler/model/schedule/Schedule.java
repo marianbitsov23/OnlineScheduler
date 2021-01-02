@@ -24,41 +24,25 @@ public class Schedule {
     private Integer session;
 
     @NotBlank
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "creatorId", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "creatorId", nullable = false)
     private User creator;
 
     public Schedule() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public String getScheduleName() {
-        return scheduleName;
-    }
+    public String getScheduleName() { return scheduleName; }
 
-    public void setScheduleName(String scheduleName) {
-        this.scheduleName = scheduleName;
-    }
+    public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
 
-    public Integer getSession() {
-        return session;
-    }
+    public Integer getSession() { return session; }
 
-    public void setSession(Integer session) {
-        this.session = session;
-    }
+    public void setSession(Integer session) { this.session = session; }
 
-    public User getCreator() {
-        return creator;
-    }
+    public User getCreator() { return creator; }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
-    }
+    public void setCreator(User creator) { this.creator = creator; }
 }
