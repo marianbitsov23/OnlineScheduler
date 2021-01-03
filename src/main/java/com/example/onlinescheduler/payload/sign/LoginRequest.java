@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.payload;
+package com.example.onlinescheduler.payload.sign;
 
 import javax.validation.constraints.NotBlank;
 

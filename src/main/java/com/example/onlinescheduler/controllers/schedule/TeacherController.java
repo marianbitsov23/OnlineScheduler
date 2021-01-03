@@ -2,6 +2,7 @@ package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.models.schedule.Teacher;
+import com.example.onlinescheduler.payload.schedule.TeacherRequest;
 import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
 import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,13 @@ public class TeacherController {
     TeacherRepository teacherRepository;
 
     @PostMapping
-    public ResponseEntity<Teacher> createTeacher(String teacherName, Set<Subject> subjects) {
-        for(Subject subject : subjects) {
+    public ResponseEntity<Teacher> createTeacher(TeacherRequest teacherRequest) {
+        for(Subject subject : teacherRequest.getSubjects()) {
             if(subjectRepository.findById(subject.getId()).isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        Teacher teacher = new Teacher(teacherName, subjects);
+        Teacher teacher = new Teacher(teacherRequest.getTeacherName(), teacherRequest.getSubjects());
         teacherRepository.save(teacher);
 
         return new ResponseEntity<>(teacher, HttpStatus.CREATED);

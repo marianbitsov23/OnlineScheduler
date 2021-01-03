@@ -1,6 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Cabinet;
+import com.example.onlinescheduler.payload.schedule.CabinetRequest;
 import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ public class CabinetController {
     CabinetRepository cabinetRepository;
 
     @PostMapping
-    public ResponseEntity<Cabinet> createCabinet(String cabinetName, Boolean specialCabinet) {
-        Cabinet cabinet = new Cabinet(cabinetName, specialCabinet);
+    public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
+        Cabinet cabinet = new Cabinet(cabinetRequest.getCabinetName(), cabinetRequest.getSpecialCabinet());
         cabinetRepository.save(cabinet);
 
         return new ResponseEntity<>(cabinet, HttpStatus.CREATED);

@@ -1,15 +1,13 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Hours;
-import com.example.onlinescheduler.models.schedule.Subject;
-import com.example.onlinescheduler.payload.HourRequest;
+import com.example.onlinescheduler.payload.schedule.HourRequest;
 import com.example.onlinescheduler.repositories.schedule.HoursRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 

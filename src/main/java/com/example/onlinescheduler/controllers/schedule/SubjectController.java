@@ -1,6 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Subject;
+import com.example.onlinescheduler.payload.schedule.SubjectRequest;
 import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class SubjectController {
     SubjectRepository subjectRepository;
 
     @PostMapping
-    public ResponseEntity<Subject> createSubject(String subjectName) {
-        Subject subject = new Subject(subjectName);
+    public ResponseEntity<Subject> createSubject(@RequestBody SubjectRequest subjectRequest) {
+        Subject subject = new Subject(subjectRequest.getSubjectName());
         subjectRepository.save(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
