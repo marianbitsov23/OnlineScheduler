@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.controllers;
+package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
 import com.example.onlinescheduler.repositories.schedule.ScheduleRepository;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/auth/schedule")
+@RequestMapping("/api/schedule")
 public class ScheduleController {
 
     @Autowired

@@ -43,6 +43,5 @@ public class Hours {
     public void setCabinet(Cabinet cabinet) { this.cabinet = cabinet; }
 
     public Integer getAmount() { return amount; }
-
     public void setAmount(Integer amount) { this.amount = amount; }
 }

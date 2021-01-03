@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.controllers;
+package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Cabinet;
 import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/auth/cabinet")
+@RequestMapping("/api/cabinet")
 public class CabinetController {
 
     @Autowired

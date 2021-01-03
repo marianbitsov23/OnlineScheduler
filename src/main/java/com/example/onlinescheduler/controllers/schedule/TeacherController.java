@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.controllers;
+package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.models.schedule.Teacher;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/auth/teacher")
+@RequestMapping("/api/teacher")
 public class TeacherController {
     @Autowired
     SubjectRepository subjectRepository;
