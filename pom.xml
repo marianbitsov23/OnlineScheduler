@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.3.4.RELEASE</version>
-        <relativePath/> <!-- lookup parent from com.example.onlinescheduler.repository -->
+        <relativePath/> <!-- lookup parent from com.example.onlinescheduler.repositories -->
     </parent>
     <groupId>com.example</groupId>
     <artifactId>onlinescheduler</artifactId>

@@ -1,7 +1,7 @@
-package com.example.onlinescheduler.repository;
+package com.example.onlinescheduler.repositories.user;
 
-import com.example.onlinescheduler.model.user.ERole;
-import com.example.onlinescheduler.model.user.Role;
+import com.example.onlinescheduler.models.user.ERole;
+import com.example.onlinescheduler.models.user.Role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

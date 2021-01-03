@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.model.schedule;
+package com.example.onlinescheduler.models.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +17,9 @@ public class Cabinet {
 
     @NotBlank
     private Boolean specialCabinet;
+
+    @OneToOne(mappedBy = "hours")
+    private Hours hours;
 
     public Cabinet() {}
 

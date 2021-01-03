@@ -1,14 +1,14 @@
-package com.example.onlinescheduler.controller;
+package com.example.onlinescheduler.controllers;
 
-import com.example.onlinescheduler.model.user.ERole;
-import com.example.onlinescheduler.model.user.Role;
-import com.example.onlinescheduler.model.user.User;
+import com.example.onlinescheduler.models.user.ERole;
+import com.example.onlinescheduler.models.user.Role;
+import com.example.onlinescheduler.models.user.User;
 import com.example.onlinescheduler.payload.JwtResponse;
 import com.example.onlinescheduler.payload.LoginRequest;
 import com.example.onlinescheduler.payload.MessageResponse;
 import com.example.onlinescheduler.payload.SignupRequest;
-import com.example.onlinescheduler.repository.RoleRepository;
-import com.example.onlinescheduler.repository.UserRepository;
+import com.example.onlinescheduler.repositories.user.RoleRepository;
+import com.example.onlinescheduler.repositories.user.UserRepository;
 import com.example.onlinescheduler.security.jwt.JwtUtils;
 import com.example.onlinescheduler.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;

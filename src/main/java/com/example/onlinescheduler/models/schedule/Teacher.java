@@ -1,6 +1,4 @@
-package com.example.onlinescheduler.model.schedule;
-
-import com.example.onlinescheduler.model.schedule.Subject;
+package com.example.onlinescheduler.models.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

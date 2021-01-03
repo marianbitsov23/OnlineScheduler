@@ -1,7 +1,7 @@
 package com.example.onlinescheduler.security.services;
 
-import com.example.onlinescheduler.model.user.User;
-import com.example.onlinescheduler.repository.UserRepository;
+import com.example.onlinescheduler.models.user.User;
+import com.example.onlinescheduler.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,10 +1,9 @@
-package com.example.onlinescheduler.controller;
+package com.example.onlinescheduler.controllers;
 
-import com.example.onlinescheduler.model.schedule.Cabinet;
-import com.example.onlinescheduler.model.schedule.Subject;
-import com.example.onlinescheduler.model.schedule.Teacher;
-import com.example.onlinescheduler.repository.SubjectRepository;
-import com.example.onlinescheduler.repository.TeacherRepository;
+import com.example.onlinescheduler.models.schedule.Subject;
+import com.example.onlinescheduler.models.schedule.Teacher;
+import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
+import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

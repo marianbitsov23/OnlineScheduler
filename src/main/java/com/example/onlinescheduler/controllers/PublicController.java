@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.controller;
+package com.example.onlinescheduler.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;

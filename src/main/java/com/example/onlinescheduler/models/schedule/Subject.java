@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.model.schedule;
+package com.example.onlinescheduler.models.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -21,6 +21,9 @@ public class Subject {
 
     @ManyToMany(mappedBy = "subjects")
     Set<Teacher> teachers;
+
+    @OneToOne(mappedBy = "hours")
+    private Hours hours;
 
     public Subject() {}
 
