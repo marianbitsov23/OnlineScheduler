@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from "./auth-header";
 import React from 'react';
 
-const API_URL = "http://localhost:8080/api/cabinet/";
+const API_URL = "http://localhost:8080/api/public/cabinet/";
 
 class CabinetService {
     getAllCabients() {
@@ -14,7 +14,10 @@ class CabinetService {
     }
 
     createCabinet(cabinetName, specialCabinet) {
-        return axios.post(API_URL, { cabinetName, specialCabinet} );
+        return axios.post(API_URL, 
+            { cabinetName, specialCabinet},
+            { headers: authHeader() } 
+            );
     }
 
     updateCabinetInformation(id, cabinetName, specialCabinet) {

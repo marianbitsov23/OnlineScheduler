@@ -48,6 +48,7 @@ public class ScheduleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> getScheduleById(@PathVariable Long id) {
         Optional<Schedule> foundSchedule = scheduleRepository.findById(id);
 
@@ -56,6 +57,7 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> updateScheduleInformation(@PathVariable Long id, @RequestBody Schedule schedule ) {
         Optional<Schedule> foundSchedule = scheduleRepository.findById(id);
 
@@ -73,6 +75,7 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> deleteSchedule(@PathVariable Long id) {
         Optional<Schedule> foundSchedule = scheduleRepository.findById(id);
 

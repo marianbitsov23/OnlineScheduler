@@ -39,12 +39,14 @@ export default class Profile extends Component {
             username: this.state.username, 
             email: this.state.email,
             password: this.state.currentUser.password,
-            roles: this.state.currentUser.roles,
-            schedules: this.state.currentUser.schedules
+            schedules: this.state.currentUser.schedules,
+            accessToken: this.state.currentUser.accessToken,
+            tokenType: this.state.currentUser.tokenType
         }
 
         AuthService.udpateUserInformation(newUser)
         .then(() => {
+            newUser.roles = this.state.currentUser.roles;
             localStorage.setItem("user", JSON.stringify(newUser));
         })
         .then(() => {

@@ -14,6 +14,7 @@ import BoardAdmin from "./components/board-admin.component";
 import Navigation from "./components/shared/navbar.component";
 import { Container } from "react-bootstrap";
 import CreateSchedule from "./components/schedule/create-schedule.component";
+import CreateCabinet from "./components/schedule/cabinet-create.component";
 
 class App extends Component {
     constructor(props) {
@@ -50,6 +51,7 @@ class App extends Component {
                       <Route exact path={["/", "/home"]} component={Home} />
                       <Route exact path="/login" component={Login} />
                       <Route exact path = "/create-schedule" component={CreateSchedule} />
+                      <Route exact path = "/create-cabinet" component={CreateCabinet} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />

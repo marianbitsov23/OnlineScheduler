@@ -6,6 +6,7 @@ import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,13 +14,14 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/cabinet")
+@RequestMapping("/api/public/cabinet")
 public class CabinetController {
 
     @Autowired
     CabinetRepository cabinetRepository;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
         Cabinet cabinet = new Cabinet(cabinetRequest.getCabinetName(), cabinetRequest.getSpecialCabinet());
         cabinetRepository.save(cabinet);
@@ -28,6 +30,7 @@ public class CabinetController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Cabinet>> getAllCabinets() {
         List<Cabinet> cabinets = cabinetRepository.findAll();
 
@@ -39,6 +42,7 @@ public class CabinetController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> getCabinetById(@PathVariable Long id) {
         Optional<Cabinet> cabinet = cabinetRepository.findById(id);
 
@@ -47,6 +51,7 @@ public class CabinetController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> updateCabinetInformation(@PathVariable Long id, @RequestBody Cabinet cabinet) {
         Optional<Cabinet> foundCabinet = cabinetRepository.findById(id);
 
@@ -61,6 +66,7 @@ public class CabinetController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> deleteCabinet(@PathVariable Long id) {
         Optional<Cabinet> cabinet = cabinetRepository.findById(id);
         if (cabinet.isPresent()) {

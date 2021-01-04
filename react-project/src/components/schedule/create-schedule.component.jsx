@@ -6,16 +6,6 @@ import FormBootstrap from 'react-bootstrap/Form';
 import scheduleService from "../../services/schedule.service";
 import authService from '../../services/auth.service';
 
-// TODO: export it outside from here because it has multiple uses
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
 
 export default class CreateSchedule extends Component {
     constructor(props) {
@@ -50,7 +40,9 @@ export default class CreateSchedule extends Component {
             username: creator.username,
             email: creator.email,
             password: creator.password,
-            schedules: []
+            schedules: [],
+            accessToken: creator.accessToken,
+            tokenType: creator.tokenType
         };
 
 
@@ -89,6 +81,8 @@ export default class CreateSchedule extends Component {
 
     render() {
 
+        const isInvalid = this.state.scheduleName === "";
+
         return(
             <>
                 <Container>
@@ -114,7 +108,6 @@ export default class CreateSchedule extends Component {
                                 name="scheduleName"
                                 value={this.state.scheduleName}
                                 onChange={this.onChange}
-                                validattions={[required]}
                             />
                         </FormGroup>
 
@@ -131,7 +124,7 @@ export default class CreateSchedule extends Component {
                                 type="submit"
                                 variant="primary"
                                 className="btn-block"
-                                disabled={this.state.loading}>
+                                disabled={isInvalid}>
                                     {this.state.loading &&
                                         <span className="spinner-border spinner-border-sm"></span>
                                     }
