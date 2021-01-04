@@ -37,7 +37,7 @@ public class CabinetController {
         if(cabinets.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(cabinets, HttpStatus.FOUND);
+            return new ResponseEntity<>(cabinets, HttpStatus.OK);
         }
     }
 

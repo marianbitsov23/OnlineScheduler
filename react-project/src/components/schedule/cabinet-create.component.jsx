@@ -19,6 +19,18 @@ export default class CreateCabinet extends Component {
         this.saveCabinet.bind(this);
     }
 
+    componentDidMount() {
+        cabinetService.getAllCabinets()
+        .then(result => {
+            this.state.cabinets = result.data;
+            this.setState({});
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    }
+    
+
     saveCabinet = event => {
         event.preventDefault();
 
@@ -26,9 +38,12 @@ export default class CreateCabinet extends Component {
 
         const { cabinetName, specialCabinet } = this.state;
 
+        //TODO: fix saving duplicate cabinets
+
         cabinetService.createCabinet(cabinetName, specialCabinet)
         .then(result => {
-            this.state.cabinets.push(result);
+            this.state.cabinets.push(result.data);
+            this.setState({ cabinetName: "", loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -43,10 +58,22 @@ export default class CreateCabinet extends Component {
 
     render() {
 
-        const isInvalid = this.state.cabinetName === "";
+        const { cabinetName, cabinets} = this.state;
+
+        const isInvalid = cabinetName === "";
 
         return(
             <>
+                <Container>
+                    <h2> Cabinets : </h2>
+                    {cabinets.map(cabinet => (
+                        <>
+                            <p> {cabinet.cabinetName} </p>
+                            <p>  {cabinet.specialCabinet} </p>
+                        </>
+                    ))}
+                </Container>
+
                 <Container>
                     <Card>
                         <Card.Header>Add cabinets</Card.Header>

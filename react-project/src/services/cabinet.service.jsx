@@ -5,8 +5,8 @@ import React from 'react';
 const API_URL = "http://localhost:8080/api/public/cabinet/";
 
 class CabinetService {
-    getAllCabients() {
-        return axios.get(API_URL);
+    getAllCabinets() {
+        return axios.get(API_URL, { headers: authHeader() } );
     }
 
     getCabinetById(id) {
@@ -15,8 +15,8 @@ class CabinetService {
 
     createCabinet(cabinetName, specialCabinet) {
         return axios.post(API_URL, 
-            { cabinetName, specialCabinet},
-            { headers: authHeader() } 
+            {cabinetName, specialCabinet},
+            {headers: authHeader()} 
             );
     }
 
