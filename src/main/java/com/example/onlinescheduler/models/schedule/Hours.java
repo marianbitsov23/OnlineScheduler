@@ -10,19 +10,22 @@ public class Hours {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "cabinet_id", referencedColumnName = "id")
     private Cabinet cabinet;
 
     @NotBlank
     private Integer amount;
 
-    public Hours() {}
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", nullable = false)
+    private Schedule schedule;
 
+    public Hours() {}
 
     public Hours(Subject subject, Cabinet cabinet, @NotBlank Integer amount) {
         this.subject = subject;
@@ -43,5 +46,10 @@ public class Hours {
     public void setCabinet(Cabinet cabinet) { this.cabinet = cabinet; }
 
     public Integer getAmount() { return amount; }
+
     public void setAmount(Integer amount) { this.amount = amount; }
+
+    public Schedule getSchedule() { return schedule; }
+
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 }

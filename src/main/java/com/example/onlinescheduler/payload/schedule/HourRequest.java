@@ -16,12 +16,12 @@ public class HourRequest {
     @NotBlank
     private Integer amount;
 
-
     public HourRequest(@NotBlank Subject subject, @NotBlank Cabinet cabinet, @NotBlank Integer amount) {
         this.subject = subject;
         this.cabinet = cabinet;
         this.amount = amount;
     }
+
 
     public Subject getSubject() {
         return subject;

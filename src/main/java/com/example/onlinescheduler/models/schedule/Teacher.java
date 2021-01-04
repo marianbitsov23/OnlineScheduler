@@ -3,6 +3,7 @@ package com.example.onlinescheduler.models.schedule;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,9 +23,9 @@ public class Teacher {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "teacher_subjects",
-            joinColumns = @JoinColumn(name = "teacherId"),
-            inverseJoinColumns = @JoinColumn(name = "subjectId"))
-    Set<Subject> subjects;
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    Set<Subject> subjects = new HashSet<>();
 
     public Teacher() {}
 

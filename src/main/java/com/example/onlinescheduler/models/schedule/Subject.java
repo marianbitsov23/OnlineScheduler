@@ -22,8 +22,8 @@ public class Subject {
     @ManyToMany(mappedBy = "subjects")
     Set<Teacher> teachers;
 
-    @OneToOne(mappedBy = "hours")
-    private Hours hours;
+    @OneToMany(mappedBy = "subject")
+    private Set<Hours> hours;
 
     public Subject() {}
 

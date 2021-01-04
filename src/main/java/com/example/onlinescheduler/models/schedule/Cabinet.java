@@ -3,6 +3,7 @@ package com.example.onlinescheduler.models.schedule;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Entity
 @Table(name = "cabinets")
@@ -18,8 +19,8 @@ public class Cabinet {
     @NotBlank
     private Boolean specialCabinet;
 
-    @OneToOne(mappedBy = "hours")
-    private Hours hours;
+    @OneToMany(mappedBy = "cabinet")
+    private Set<Hours> hours;
 
     public Cabinet() {}
 

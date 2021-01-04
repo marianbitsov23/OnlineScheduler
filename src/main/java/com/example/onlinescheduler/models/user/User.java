@@ -42,7 +42,7 @@ public class User {
 
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "creator")
     private Set<Schedule> schedules;
 
     public User() {}

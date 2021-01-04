@@ -16,6 +16,7 @@ public class CabinetRequest {
         this.specialCabinet = specialCabinet;
     }
 
+
     public String getCabinetName() { return cabinetName; }
 
     public void setCabinetName(String cabinetName) { this.cabinetName = cabinetName; }
