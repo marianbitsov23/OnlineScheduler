@@ -35,21 +35,23 @@ export default class Profile extends Component {
         event.preventDefault();
 
         const newUser = {
+            id: this.state.currentUser.id,
             username: this.state.username, 
+            email: this.state.email,
             password: this.state.currentUser.password,
             roles: this.state.currentUser.roles,
-            email: this.state.email,
-            id: this.state.currentUser.id
+            schedules: this.state.currentUser.schedules
         }
 
-        AuthService.udpateUser(
-            this.state.username, 
-            this.state.currentUser.password,
-            this.state.currentUser.roles,
-            this.state.email,
-            this.state.currentUser.id)
+        AuthService.udpateUserInformation(newUser)
+        .then(() => {
+            localStorage.setItem("user", JSON.stringify(newUser));
+        })
         .then(() => {
           this.setState({ edit: false });
+        })
+        .catch(error => {
+            console.error(error);
         });
     }
 

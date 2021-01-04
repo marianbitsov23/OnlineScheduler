@@ -34,14 +34,9 @@ class AuthService {
         return JSON.parse(localStorage.getItem("user"));
     }
 
-    udpateUser(username, password, email, id) {
+    udpateUserInformation(user) {
         return axios
-            .put(API_URL + 'user/' + id, { 
-                id,
-                username,
-                email,
-                password
-             });
+            .put(API_URL + 'user/' + user.id, user);
     }
 
     deleteUser(id) {

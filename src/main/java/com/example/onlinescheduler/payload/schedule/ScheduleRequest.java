@@ -16,16 +16,12 @@ public class ScheduleRequest {
     @NotBlank
     private User creator;
 
-    @NotBlank
-    private Set<Hours> hours;
-
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank Integer session, @NotBlank User creator, @NotBlank Set<Hours> hours) {
+    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank Integer session, @NotBlank User creator) {
         this.scheduleName = scheduleName;
         this.session = session;
         this.creator = creator;
-        this.hours = hours;
     }
 
 
@@ -41,7 +37,4 @@ public class ScheduleRequest {
 
     public void setCreator(User creator) { this.creator = creator; }
 
-    public Set<Hours> getHours() { return hours; }
-
-    public void setHours(Set<Hours> hours) { this.hours = hours; }
 }

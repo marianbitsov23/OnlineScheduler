@@ -35,8 +35,7 @@ public class ScheduleController {
         Schedule schedule = new Schedule(
                 scheduleRequest.getScheduleName(),
                 scheduleRequest.getSession(),
-                scheduleRequest.getCreator(),
-                scheduleRequest.getHours()
+                scheduleRequest.getCreator()
         );
 
         scheduleRepository.save(schedule);

@@ -14,7 +14,7 @@ class TeacherService {
     }
 
     createTeacher(teacherName, subjects) {
-        return axios.post(API_URL, teacherName, subjects);
+        return axios.post(API_URL, { teacherName, subjects });
     }
 
     updateTeacherInformation(id, teacherName, subjects) {

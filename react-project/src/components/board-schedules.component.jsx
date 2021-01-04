@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 import UserService from "../services/user.service";
 import { Container, Jumbotron, Row, Button } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 
 export default class ScheduleBoard extends Component {
     constructor(props) {
@@ -40,7 +41,9 @@ export default class ScheduleBoard extends Component {
                         Schedules
                     </Jumbotron>
                     <Row className="justify-content-md-center">
-                        <Button variant="info">Create new schedule</Button>
+                        <Link to={"/create-schedule"}>
+                            <Button variant="info">Create new schedule</Button>
+                        </Link>
                     </Row>
                 </Container>
             </>

@@ -14,7 +14,7 @@ class CabinetService {
     }
 
     createCabinet(cabinetName, specialCabinet) {
-        return axios.post(API_URL, cabinetName, specialCabinet);
+        return axios.post(API_URL, { cabinetName, specialCabinet} );
     }
 
     updateCabinetInformation(id, cabinetName, specialCabinet) {

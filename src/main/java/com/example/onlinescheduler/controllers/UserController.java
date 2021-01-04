@@ -33,6 +33,7 @@ public class UserController {
             User newUser = foundUser.get();
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
+            newUser.setSchedules(user.getSchedules());
             return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
