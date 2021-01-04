@@ -23,7 +23,7 @@ export default class CreateSchedule extends Component {
 
         this.state = {
             scheduleName: "",
-            session: 0,
+            session: 1,
             creator: authService.getCurrentUser(),
             message: "",
             loading: false
@@ -50,13 +50,11 @@ export default class CreateSchedule extends Component {
             username: creator.username,
             email: creator.email,
             password: creator.password,
-            roles: creator.roles,
             schedules: []
         };
 
-        creator.roles = [];
 
-        scheduleService.createSchedule(scheduleName, parseInt(session), creator)
+        scheduleService.createSchedule(scheduleName, parseInt(session), updatedUser)
         .then(result => {
             //add schedule to the current user
 
@@ -64,6 +62,7 @@ export default class CreateSchedule extends Component {
 
             authService.udpateUserInformation(updatedUser)
             .then(() => {
+                updatedUser.roles = creator.roles;
                 localStorage.setItem("user", JSON.stringify(updatedUser));
             })
             .catch(error => {
@@ -89,7 +88,6 @@ export default class CreateSchedule extends Component {
     }
 
     render() {
-
 
         return(
             <>
