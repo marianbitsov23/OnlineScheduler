@@ -3,46 +3,56 @@ import { Container, Card, FormGroup, Button } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import cabinetService from '../../services/cabinet.service';
+import teacherService from '../../services/teacher.service';
+import subjectService from '../../services/subject.service';
 
-export default class CreateCabinet extends Component {
+export default class CreateTeacher extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            cabinetName: "",
-            specialCabinet: false,
+            teacherName: "",
+            subjects: [],
             loading: false,
-            cabinets: []
+            teachers: []
         };
 
-        this.saveCabinet.bind(this);
+        this.saveTeacher.bind(this);
     }
 
     componentDidMount() {
-        cabinetService.getAllCabinets()
+        teacherService.getAllTeachers()
         .then(result => {
-            this.setState({ cabinets: result.data });
+            this.setState({ teachers: result.data });
+        })
+        .then(() => {
+            subjectService.getAllSubjects()
+            .then(result => {
+                this.setState({ subjects: result.data });
+            })
+            .catch(error => {
+                console.error(error);
+            });
         })
         .catch(error => {
             console.error(error);
-        })
+        });
     }
     
 
-    saveCabinet = event => {
+    saveTeacher = event => {
         event.preventDefault();
 
         this.setState({ loading: true });
 
-        const { cabinetName, specialCabinet } = this.state;
+        const { teacherName, subjects } = this.state;
 
-        //TODO: fix saving duplicate cabinets
+        //TODO: fix saving duplicate teachers
 
-        cabinetService.createCabinet(cabinetName, specialCabinet)
+        teacherService.createTeacher(teacherName, subjects)
         .then(result => {
-            this.state.cabinets.push(result.data);
-            this.setState({ cabinetName: "", loading: false });
+            this.state.teachers.push(result.data);
+            this.setState({ teacherName: "", loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -57,49 +67,53 @@ export default class CreateCabinet extends Component {
 
     render() {
 
-        const { cabinetName, cabinets} = this.state;
+        const { teacherName, teachers, subjects } = this.state;
 
-        const isInvalid = cabinetName === "";
+        const isInvalid = teacherName === "";
 
         return(
             <>
                 <Container>
-                    <h2> Cabinets : </h2>
-                    {cabinets.map(cabinet => (
-                        <li key={cabinet.id}> {cabinet.cabinetName} </li>
+                    <h2> Teachers : </h2>
+                    {teachers.map(teacher => (
+                        <li key={teacher.id}> {teacher.teacherName} : {teacher.subjects} </li>
                     ))}
                 </Container>
 
                 <Container>
                     <Card>
-                        <Card.Header>Add cabinets</Card.Header>
+                        <Card.Header>Add Teacher</Card.Header>
                         <Card.Body>
                             <Form
-                                onSubmit={this.saveCabinet}
+                                onSubmit={this.saveTeacher}
                                 ref={c => {
                                     this.form = c;
                                 }}
                             >
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="cabinetName">Cabinet number</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="teacherName">Teacher name</FormBootstrap.Label>
                                     <Input
-                                        type="number"
+                                        type="texasfast"
                                         className="form-control"
-                                        name="cabinetName"
-                                        value={this.state.cabinetName}
+                                        name="teacherName"
+                                        value={this.state.teacherName}
                                         onChange={this.onChange}
                                     />
                                 </FormGroup>
-                                
+
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="session">
-                                        Is this a special cabinet
+                                    <FormBootstrap.Label htmlFor="subjects">
+                                        Which subject he teaches?
                                     </FormBootstrap.Label>
-                                    <select name="specialCabinet" 
-                                    value={this.state.specialCabinet} 
-                                    onChange={this.onChange}>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
+                                    <select 
+                                        //multiple={true}
+                                        name="subjects" 
+                                        value={subjects[0]}
+                                        onChange={this.onChange}>
+                                        {(subjects.map(subject => (
+                                            <option key={subject.id} value={subject}>{subject.subjectName}</option>
+                                        )))}
+                                        
                                     </select>
                                 </FormGroup>
 
@@ -112,7 +126,7 @@ export default class CreateCabinet extends Component {
                                             {this.state.loading &&
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             }
-                                            <span>Save Cabinet</span>
+                                            <span>Save Subject</span>
                                         </Button>
                                 </FormGroup>
 

@@ -8,6 +8,7 @@ import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/teacher")
+@RequestMapping("/api/public/teacher")
 public class TeacherController {
     @Autowired
     SubjectRepository subjectRepository;
@@ -24,12 +25,17 @@ public class TeacherController {
     TeacherRepository teacherRepository;
 
     @PostMapping
-    public ResponseEntity<Teacher> createTeacher(TeacherRequest teacherRequest) {
-        for(Subject subject : teacherRequest.getSubjects()) {
-            if(subjectRepository.findById(subject.getId()).isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherRequest teacherRequest) {
+        /*
+        if(teacherRequest.getSubjects()) {
+            for(Subject subject : teacherRequest.getSubjects()) {
+                if(subjectRepository.findById(subject.getId()).isEmpty()) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
             }
         }
+        */
         Teacher teacher = new Teacher(teacherRequest.getTeacherName(), teacherRequest.getSubjects());
         teacherRepository.save(teacher);
 
@@ -37,17 +43,19 @@ public class TeacherController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Teacher>> getAllTeachers() {
         List<Teacher> teachers = teacherRepository.findAll();
 
         if(teachers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(teachers, HttpStatus.FOUND);
+            return new ResponseEntity<>(teachers, HttpStatus.OK);
         }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> getTeacherById(@PathVariable Long id) {
         Optional<Teacher> teacher = teacherRepository.findById(id);
 
@@ -70,6 +78,7 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> deleteTeacher(@PathVariable Long id) {
         Optional<Teacher> teacher = teacherRepository.findById(id);
         if (teacher.isPresent()) {

@@ -21,8 +21,7 @@ export default class CreateSubject extends Component {
     componentDidMount() {
         subjectService.getAllSubjects()
         .then(result => {
-            this.state.subjects = result.data;
-            this.setState({});
+            this.setState({ subjects: result.data });
         })
         .catch(error => {
             console.error(error);
@@ -83,7 +82,6 @@ export default class CreateSubject extends Component {
                                 <FormGroup>
                                     <FormBootstrap.Label htmlFor="subjectName">Subject name</FormBootstrap.Label>
                                     <Input
-                                        type="texasfast"
                                         className="form-control"
                                         name="subjectName"
                                         value={this.state.subjectName}

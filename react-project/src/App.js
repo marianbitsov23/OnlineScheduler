@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
@@ -13,9 +13,10 @@ import ScheduleBoard from "./components/board-schedules.component";
 import BoardAdmin from "./components/board-admin.component";
 import Navigation from "./components/shared/navbar.component";
 import { Container } from "react-bootstrap";
-import CreateSchedule from "./components/schedule/create-schedule.component";
+import CreateSchedule from "./components/schedule/schedule-create.component";
 import CreateCabinet from "./components/schedule/cabinet-create.component";
 import CreateSubject from "./components/schedule/subject-create.compnent";
+import CreateTeacher from "./components/schedule/teacher-create.component";
 
 class App extends Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class App extends Component {
                       <Route exact path = "/create-schedule" component={CreateSchedule} />
                       <Route exact path = "/create-cabinet" component={CreateCabinet} />
                       <Route exact path = "/create-subject" component={CreateSubject} />
+                      <Route exact path = "/create-teacher" component={CreateTeacher} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />

@@ -14,7 +14,8 @@ class SubjectService {
     }
 
     createSubject(subjectName) {
-        return axios.post(API_URL, subjectName, { headers: authHeader() });
+        console.log(typeof subjectName);
+        return axios.post(API_URL, {subjectName}, { headers: authHeader() });
     }
 
     updateSubjectInformation(id, subjectName, teachers) {
