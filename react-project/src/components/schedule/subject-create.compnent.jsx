@@ -3,26 +3,25 @@ import { Container, Card, FormGroup, Button } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import cabinetService from '../../services/cabinet.service';
+import subjectService from '../../services/subject.service';
 
-export default class CreateCabinet extends Component {
+export default class CreateSubject extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            cabinetName: "",
-            specialCabinet: false,
+            subjectName: "",
             loading: false,
-            cabinets: []
+            subjects: []
         };
 
-        this.saveCabinet.bind(this);
+        this.saveSubject.bind(this);
     }
 
     componentDidMount() {
-        cabinetService.getAllCabinets()
+        subjectService.getAllSubjects()
         .then(result => {
-            this.state.cabinets = result.data;
+            this.state.subjects = result.data;
             this.setState({});
         })
         .catch(error => {
@@ -31,19 +30,19 @@ export default class CreateCabinet extends Component {
     }
     
 
-    saveCabinet = event => {
+    saveSubject = event => {
         event.preventDefault();
 
         this.setState({ loading: true });
 
-        const { cabinetName, specialCabinet } = this.state;
+        const { subjectName } = this.state;
 
-        //TODO: fix saving duplicate cabinets
+        //TODO: fix saving duplicate subjects
 
-        cabinetService.createCabinet(cabinetName, specialCabinet)
+        subjectService.createSubject(subjectName)
         .then(result => {
-            this.state.cabinets.push(result.data);
-            this.setState({ cabinetName: "", loading: false });
+            this.state.subjects.push(result.data);
+            this.setState({ subjectName: "", loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -58,50 +57,38 @@ export default class CreateCabinet extends Component {
 
     render() {
 
-        const { cabinetName, cabinets} = this.state;
+        const { subjectName, subjects} = this.state;
 
-        const isInvalid = cabinetName === "";
+        const isInvalid = subjectName === "";
 
         return(
             <>
                 <Container>
-                    <h2> Cabinets : </h2>
-                    {cabinets.map(cabinet => (
-                        <li key={cabinet.id}> {cabinet.cabinetName} </li>
+                    <h2> Subjects : </h2>
+                    {subjects.map(subject => (
+                        <p key={subject.id}> {subject.subjectName} </p>
                     ))}
                 </Container>
 
                 <Container>
                     <Card>
-                        <Card.Header>Add cabinets</Card.Header>
+                        <Card.Header>Add Subject</Card.Header>
                         <Card.Body>
                             <Form
-                                onSubmit={this.saveCabinet}
+                                onSubmit={this.saveSubject}
                                 ref={c => {
                                     this.form = c;
                                 }}
                             >
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="cabinetName">Cabinet number</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="subjectName">Subject name</FormBootstrap.Label>
                                     <Input
-                                        type="number"
+                                        type="texasfast"
                                         className="form-control"
-                                        name="cabinetName"
-                                        value={this.state.cabinetName}
+                                        name="subjectName"
+                                        value={this.state.subjectName}
                                         onChange={this.onChange}
                                     />
-                                </FormGroup>
-                                
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="session">
-                                        Is this a special cabinet
-                                    </FormBootstrap.Label>
-                                    <select name="specialCabinet" 
-                                    value={this.state.specialCabinet} 
-                                    onChange={this.onChange}>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
-                                    </select>
                                 </FormGroup>
 
                                 <FormGroup>
@@ -113,7 +100,7 @@ export default class CreateCabinet extends Component {
                                             {this.state.loading &&
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             }
-                                            <span>Save Cabinet</span>
+                                            <span>Save Subject</span>
                                         </Button>
                                 </FormGroup>
 

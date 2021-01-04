@@ -6,6 +6,7 @@ import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,30 +14,33 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/subject")
+@RequestMapping("/api/public/subject")
 public class SubjectController {
     @Autowired
     SubjectRepository subjectRepository;
 
     @PostMapping
-    public ResponseEntity<Subject> createSubject(@RequestBody SubjectRequest subjectRequest) {
-        Subject subject = new Subject(subjectRequest.getSubjectName());
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Subject> createSubject(@RequestBody String subjectRequest) {
+        Subject subject = new Subject(subjectRequest);
         subjectRepository.save(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Subject>> getAllSubjects() {
         List<Subject> subjects = subjectRepository.findAll();
 
         if(subjects.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(subjects, HttpStatus.FOUND);
+            return new ResponseEntity<>(subjects, HttpStatus.OK);
         }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
         Optional<Subject> subject = subjectRepository.findById(id);
 
@@ -45,6 +49,7 @@ public class SubjectController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Subject> updateSubjectInformation(@PathVariable Long id, @RequestBody Subject subject) {
         Optional<Subject> foundSubject = subjectRepository.findById(id);
 
@@ -59,6 +64,7 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Subject> deleteSubject(@PathVariable Long id) {
         Optional<Subject> subject = subjectRepository.findById(id);
         if (subject.isPresent()) {

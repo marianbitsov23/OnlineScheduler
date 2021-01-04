@@ -64,7 +64,7 @@ export default class CreateSchedule extends Component {
         })
         .then(() => {
             // redirect to subject input
-            this.props.history.push('/home');
+            this.props.history.push('/create-cabinet');
         })
         .catch(error => {
             console.error(error);

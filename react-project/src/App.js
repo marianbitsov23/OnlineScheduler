@@ -15,6 +15,7 @@ import Navigation from "./components/shared/navbar.component";
 import { Container } from "react-bootstrap";
 import CreateSchedule from "./components/schedule/create-schedule.component";
 import CreateCabinet from "./components/schedule/cabinet-create.component";
+import CreateSubject from "./components/schedule/subject-create.compnent";
 
 class App extends Component {
     constructor(props) {
@@ -52,6 +53,7 @@ class App extends Component {
                       <Route exact path="/login" component={Login} />
                       <Route exact path = "/create-schedule" component={CreateSchedule} />
                       <Route exact path = "/create-cabinet" component={CreateCabinet} />
+                      <Route exact path = "/create-subject" component={CreateSubject} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />
