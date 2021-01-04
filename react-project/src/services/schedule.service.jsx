@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import authHeader from "./auth-header";
 
-const API_URL = "http://localhost:8080/api/schedule/";
+const API_URL = "http://localhost:8080/api/public/schedule/";
 
 class ScheduleService {
     getScheduleById(id) {
@@ -10,7 +10,9 @@ class ScheduleService {
     }
 
     createSchedule(scheduleName, session, creator) {
-        return axios.post(API_URL, { scheduleName, session, creator });
+        return axios.post(API_URL,
+            { scheduleName, session, creator } , { headers: authHeader() }
+            );
     }
 
     updateScheduleInformation(id, scheduleName, session, creator, hours) {

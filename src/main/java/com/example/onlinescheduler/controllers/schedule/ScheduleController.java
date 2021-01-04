@@ -9,13 +9,14 @@ import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/schedule")
+@RequestMapping("/api/public/schedule")
 public class ScheduleController {
 
     @Autowired
@@ -31,6 +32,7 @@ public class ScheduleController {
     CabinetRepository cabinetRepository;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Schedule schedule = new Schedule(
                 scheduleRequest.getScheduleName(),

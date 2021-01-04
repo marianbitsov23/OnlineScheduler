@@ -54,7 +54,9 @@ export default class CreateSchedule extends Component {
             schedules: []
         };
 
-        scheduleService.createSchedule(scheduleName, session, creator)
+        creator.roles = [];
+
+        scheduleService.createSchedule(scheduleName, parseInt(session), creator)
         .then(result => {
             //add schedule to the current user
 
@@ -71,10 +73,9 @@ export default class CreateSchedule extends Component {
         })
         .then(() => {
             // redirect to subject input
-            //this.props.history.push();
+            this.props.history.push('/home');
         })
         .catch(error => {
-            this.setState({ message: error });
             console.error(error);
         });
 
