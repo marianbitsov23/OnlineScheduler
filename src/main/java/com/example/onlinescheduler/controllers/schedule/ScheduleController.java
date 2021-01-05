@@ -61,7 +61,7 @@ public class ScheduleController {
     public ResponseEntity<Schedule> getScheduleById(@PathVariable Long id) {
         Optional<Schedule> foundSchedule = scheduleRepository.findById(id);
 
-        return foundSchedule.map(schedule -> new ResponseEntity<>(schedule, HttpStatus.FOUND))
+        return foundSchedule.map(schedule -> new ResponseEntity<>(schedule, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

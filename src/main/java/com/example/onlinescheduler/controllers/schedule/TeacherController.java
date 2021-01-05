@@ -1,6 +1,5 @@
 package com.example.onlinescheduler.controllers.schedule;
 
-import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.models.schedule.Teacher;
 import com.example.onlinescheduler.payload.schedule.TeacherRequest;
 import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
@@ -27,15 +26,6 @@ public class TeacherController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherRequest teacherRequest) {
-        /*
-        if(teacherRequest.getSubjects()) {
-            for(Subject subject : teacherRequest.getSubjects()) {
-                if(subjectRepository.findById(subject.getId()).isEmpty()) {
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-            }
-        }
-        */
         Teacher teacher = new Teacher(teacherRequest.getTeacherName(), teacherRequest.getSubjects());
         teacherRepository.save(teacher);
 
@@ -59,7 +49,7 @@ public class TeacherController {
     public ResponseEntity<Teacher> getTeacherById(@PathVariable Long id) {
         Optional<Teacher> teacher = teacherRepository.findById(id);
 
-        return teacher.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return teacher.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -81,7 +71,7 @@ public class TeacherController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> deleteTeacher(@PathVariable Long id) {
         Optional<Teacher> teacher = teacherRepository.findById(id);
-        if (teacher.isPresent()) {
+        if(teacher.isPresent()) {
             teacherRepository.delete(teacher.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

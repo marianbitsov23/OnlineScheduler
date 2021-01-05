@@ -1,6 +1,5 @@
 package com.example.onlinescheduler.controllers;
 
-import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.user.User;
 import com.example.onlinescheduler.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
@@ -31,7 +29,7 @@ public class UserController {
     public ResponseEntity<User> updateUserInformation(@PathVariable Long id, @RequestBody User user) {
         Optional<User> foundUser = userRepository.findById(id);
 
-        if (foundUser.isPresent()) {
+        if(foundUser.isPresent()) {
             User newUser = foundUser.get();
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
@@ -44,7 +42,7 @@ public class UserController {
     @DeleteMapping("/user/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
+        if(user.isPresent()) {
             userRepository.delete(user.get());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

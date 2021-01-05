@@ -45,7 +45,7 @@ public class SubjectController {
     public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
         Optional<Subject> subject = subjectRepository.findById(id);
 
-        return subject.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return subject.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

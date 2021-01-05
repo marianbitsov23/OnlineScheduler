@@ -46,7 +46,7 @@ public class CabinetController {
     public ResponseEntity<Cabinet> getCabinetById(@PathVariable Long id) {
         Optional<Cabinet> cabinet = cabinetRepository.findById(id);
 
-        return cabinet.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return cabinet.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 

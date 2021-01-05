@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
-@RequestMapping("/api/hours")
+@RequestMapping("/api/public/hours")
 public class HoursController {
 
     @Autowired
@@ -26,7 +26,7 @@ public class HoursController {
         if(allHours.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(allHours, HttpStatus.FOUND);
+            return new ResponseEntity<>(allHours, HttpStatus.OK);
         }
     }
 
@@ -34,7 +34,7 @@ public class HoursController {
     public ResponseEntity<Hours> getHourById(@PathVariable Long id) {
        Optional<Hours> foundHour = hoursRepository.findById(id);
 
-        return foundHour.map(hours -> new ResponseEntity<>(hours, HttpStatus.FOUND))
+        return foundHour.map(hours -> new ResponseEntity<>(hours, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
