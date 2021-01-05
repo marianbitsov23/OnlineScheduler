@@ -14,9 +14,12 @@ public class Hours {
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
 
+    /*
     @ManyToOne
     @JoinColumn(name = "group_id", referencedColumnName = "id")
     private Group group;
+
+     */
 
     @ManyToOne
     @JoinColumn(name = "cabinet_id", referencedColumnName = "id")
@@ -56,4 +59,11 @@ public class Hours {
     public Schedule getSchedule() { return schedule; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
+
+    /*
+    public Group getGroup() { return group; }
+
+    public void setGroup(Group group) { this.group = group; }
+
+     */
 }
