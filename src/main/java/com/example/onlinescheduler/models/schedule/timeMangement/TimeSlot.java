@@ -1,6 +1,4 @@
-package com.example.onlinescheduler.models.schedule.TimeManegment;
-
-import com.example.onlinescheduler.models.user.ERole;
+package com.example.onlinescheduler.models.schedule.timeMangement;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

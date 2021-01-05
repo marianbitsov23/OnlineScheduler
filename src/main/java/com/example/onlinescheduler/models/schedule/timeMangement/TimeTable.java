@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.models.schedule.TimeManegment;
+package com.example.onlinescheduler.models.schedule.timeMangement;
 
 import com.example.onlinescheduler.models.schedule.Schedule;
 

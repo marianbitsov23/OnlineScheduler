@@ -3,7 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import AuthService from "./services/auth.service";
+import AuthService from "./services/user-auth/auth.service";
 
 import Login from "./components/sign/login.component";
 import Register from "./components/sign/register.component";

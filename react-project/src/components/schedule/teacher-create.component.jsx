@@ -3,8 +3,8 @@ import { Container, Card, FormGroup, Button } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import teacherService from '../../services/teacher.service';
-import subjectService from '../../services/subject.service';
+import teacherService from '../../services/schedule/teacher.service';
+import subjectService from '../../services/schedule/subject.service';
 
 export default class CreateTeacher extends Component {
     constructor(props) {

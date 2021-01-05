@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import UserService from "../services/user.service";
+import UserService from "../services/user-auth/user.service";
 import { Container, Jumbotron, Row, Button } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 

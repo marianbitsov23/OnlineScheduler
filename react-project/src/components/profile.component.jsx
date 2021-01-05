@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import AuthService from "../services/auth.service";
+import AuthService from "../services/user-auth/auth.service";
 import { Container, InputGroup, FormControl, Button, Card, Row, Col } from "react-bootstrap";
-import scheduleService from "../services/schedule.service";
+import scheduleService from "../services/schedule/schedule.service";
 
 export default class Profile extends Component {
     constructor(props) {

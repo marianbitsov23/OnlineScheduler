@@ -5,7 +5,7 @@ import CheckButton from "react-validation/build/button";
 import FormBootstrap from 'react-bootstrap/Form';
 
 import { Component } from "react";
-import authService from "../../services/auth.service";
+import authService from "../../services/user-auth/auth.service";
 import { Col, Card, FormGroup, Button, Alert, Row } from 'react-bootstrap';
 
 const required = value => {

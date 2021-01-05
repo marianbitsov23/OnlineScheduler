@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import authHeader from "./auth-header";
+import authHeader from '../user-auth/auth-header';
 
 const API_URL = "http://localhost:8080/api/public/group/";
 
@@ -15,14 +15,14 @@ class GroupService {
 
     createGroup(group) {
         return axios.post(API_URL, 
-            group,
+            //{group info},
             {headers: authHeader()} );
     }
 
     updateGroupInformation(group) {
         return axios.put(API_URL + '/' + group.id, 
-            group,
-            { headers: authHeader() });
+            //{group info},
+            {headers: authHeader()});
     }
 
     deleteGroup(id) {

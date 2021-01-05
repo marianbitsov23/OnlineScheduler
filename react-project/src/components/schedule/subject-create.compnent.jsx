@@ -3,7 +3,7 @@ import { Container, Card, FormGroup, Button } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import subjectService from '../../services/subject.service';
+import subjectService from '../../services/schedule/subject.service';
 
 export default class CreateSubject extends Component {
     constructor(props) {

@@ -3,8 +3,8 @@ import { Container, Jumbotron, FormGroup, Button, Alert } from 'react-bootstrap'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import FormBootstrap from 'react-bootstrap/Form';
-import scheduleService from "../../services/schedule.service";
-import authService from '../../services/auth.service';
+import scheduleService from "../../services/schedule/schedule.service";
+import authService from '../../services/user-auth/auth.service';
 
 
 export default class CreateSchedule extends Component {

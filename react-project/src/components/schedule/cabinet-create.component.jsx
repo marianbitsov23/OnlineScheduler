@@ -3,7 +3,7 @@ import { Container, Card, FormGroup, Button } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import cabinetService from '../../services/cabinet.service';
+import cabinetService from '../../services/schedule/cabinet.service';
 
 export default class CreateCabinet extends Component {
     constructor(props) {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import authService from '../../services/auth.service';
+import authService from '../../services/user-auth/auth.service';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 

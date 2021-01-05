@@ -1,5 +1,5 @@
 import axios from 'axios';
-import authHeader from "./auth-header";
+import authHeader from '../user-auth/auth-header';
 import React from 'react';
 
 const API_URL = "http://localhost:8080/api/public/cabinet/";
@@ -20,10 +20,9 @@ class CabinetService {
     }
 
     updateCabinetInformation(id, cabinetName, specialCabinet) {
-        return axios.put(API_URL + '/' + id, {
-            cabinetName,
-            specialCabinet
-        }, { headers: authHeader() });
+        return axios.put(API_URL + '/' + id, 
+            {cabinetName, specialCabinet},
+            {headers: authHeader()});
     }
 
     deleteCabinet(id) {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import authHeader from "./auth-header";
+import authHeader from '../user-auth/auth-header';
 import React from 'react';
 
 const API_URL = "http://localhost:8080/api/public/subject/";
@@ -19,10 +19,9 @@ class SubjectService {
     }
 
     updateSubjectInformation(id, subjectName, teachers) {
-        return axios.put(API_URL + '/' + id, {
-            subjectName,
-            teachers
-        }, { headers: authHeader() });
+        return axios.put(API_URL + '/' + id, 
+            {subjectName, teachers},
+            {headers: authHeader()});
     }
 
     deleteSubject(id) {
