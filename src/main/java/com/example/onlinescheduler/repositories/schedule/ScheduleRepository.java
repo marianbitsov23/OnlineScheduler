@@ -1,7 +1,6 @@
 package com.example.onlinescheduler.repositories.schedule;
 
 import com.example.onlinescheduler.models.schedule.Schedule;
-import com.example.onlinescheduler.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

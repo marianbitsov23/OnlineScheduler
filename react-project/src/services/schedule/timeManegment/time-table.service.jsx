@@ -2,22 +2,18 @@ import axios from 'axios';
 import authHeader from '../../user-auth/auth-header';
 import React from 'react';
 
-const API_URL = "http://localhost:8080/api/public/time-slot/";
+const API_URL = "http://localhost:8080/api/public/time-table/";
 
-class TimeSlotService {
-    getAllTimeSlots() {
+class TimeTableService {
+    getAllTimeTables() {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
-    getTimeSlotById(id) {
+    getTimeTableById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    getTimeSlotByTimeTableId(timeTableId) {
-        return axios.get(API_URL + '/' + timeTableId, { headers: authHeader() });
-    }
-
-    createTimeSlot(weekDay, timeStart, timeEnd, timeTable) {
+    createTimeTable(weekDay, timeStart, timeEnd, timeTable) {
         return axios.post(API_URL, 
             {
                 weekDay,
@@ -28,7 +24,7 @@ class TimeSlotService {
             {headers: authHeader()});
     }
 
-    updateTimeSlotInformation(slot) {
+    updateTimeTableInformation(slot) {
         return axios.put(API_URL + '/' + id,
             {
                 weekDay,
@@ -39,7 +35,7 @@ class TimeSlotService {
             {headers: authHeader()});
     }
 
-    deleteTimeSlot(id) {
+    deleteTimeTable(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }

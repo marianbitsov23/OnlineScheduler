@@ -1,5 +1,7 @@
 package com.example.onlinescheduler.models.schedule.timeMangement;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
