@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
@@ -42,9 +43,18 @@ public class ScheduleController {
 
         scheduleRepository.save(schedule);
 
-        //TODO: Save the schedule in the user
-
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
+    }
+
+    //TODO: Check if this is more suitable then GET from the user directly
+
+    @GetMapping("/user/{creatorId}/schedules")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Schedule>> getSchedulesByCreator(@PathVariable Long creatorId) {
+        Optional<List<Schedule>> schedules = scheduleRepository.findAllByCreator_Id(creatorId);
+
+        return schedules.map(scheduleList -> new ResponseEntity<>(scheduleList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{id}")

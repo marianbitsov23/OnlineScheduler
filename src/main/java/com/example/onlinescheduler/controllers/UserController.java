@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.controllers;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.user.User;
 import com.example.onlinescheduler.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
@@ -33,7 +35,6 @@ public class UserController {
             User newUser = foundUser.get();
             newUser.setUsername(user.getUsername());
             newUser.setEmail(user.getEmail());
-            newUser.setSchedules(user.getSchedules());
             return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

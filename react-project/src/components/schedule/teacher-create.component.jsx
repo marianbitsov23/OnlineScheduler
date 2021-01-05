@@ -126,7 +126,7 @@ export default class CreateTeacher extends Component {
                                             {this.state.loading &&
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             }
-                                            <span>Save Subject</span>
+                                            <span>Save Teacher</span>
                                         </Button>
                                 </FormGroup>
 

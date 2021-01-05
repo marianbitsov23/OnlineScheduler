@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import AuthService from "../services/auth.service";
 import { Container, InputGroup, FormControl, Button, Card, Row, Col } from "react-bootstrap";
+import scheduleService from "../services/schedule.service";
 
 export default class Profile extends Component {
     constructor(props) {
@@ -13,8 +14,19 @@ export default class Profile extends Component {
             currentUser: AuthService.getCurrentUser(),
             username: AuthService.getCurrentUser().username,
             email: AuthService.getCurrentUser().email,
-            edit: false
+            edit: false,
+            schedules: []
         };
+    }
+
+    componentDidMount() {
+        scheduleService.getSchedulesByCreatorId(this.state.currentUser.id)
+        .then(result => {
+            this.setState({ schedules: result.data });
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     onChange = event => {
@@ -39,7 +51,6 @@ export default class Profile extends Component {
             username: this.state.username, 
             email: this.state.email,
             password: this.state.currentUser.password,
-            schedules: this.state.currentUser.schedules,
             accessToken: this.state.currentUser.accessToken,
             tokenType: this.state.currentUser.tokenType
         }
@@ -47,6 +58,7 @@ export default class Profile extends Component {
         AuthService.udpateUserInformation(newUser)
         .then(() => {
             newUser.roles = this.state.currentUser.roles;
+            newUser.schedules = this.state.currentUser.schedules;
             localStorage.setItem("user", JSON.stringify(newUser));
         })
         .then(() => {
@@ -59,8 +71,17 @@ export default class Profile extends Component {
 
     render() {
 
+        const schedules = this.state.schedules;
+
         return (
             <>
+                <Container>
+                    <h2>Your schedules</h2>
+                    {(schedules.map(schedule => (
+                        <li key={schedule.id}>Name {schedule.scheduleName} : session {schedule.session} </li>
+                    )))}
+                </Container>
+
                 <Container>
                     <Row className="justify-content-md-center">
                         <Card bg="secondary" text="white" style={{ width: '24rem' }}>

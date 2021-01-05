@@ -40,7 +40,6 @@ export default class CreateSchedule extends Component {
             username: creator.username,
             email: creator.email,
             password: creator.password,
-            schedules: [],
             accessToken: creator.accessToken,
             tokenType: creator.tokenType
         };
@@ -50,21 +49,17 @@ export default class CreateSchedule extends Component {
         .then(result => {
             //add schedule to the current user
 
-            updatedUser.schedules.push(result);
+            let schedules = [];
 
-            authService.udpateUserInformation(updatedUser)
-            .then(() => {
-                updatedUser.roles = creator.roles;
-                localStorage.setItem("user", JSON.stringify(updatedUser));
-            })
-            .catch(error => {
-                this.setState({ message: error });
-                console.error(error);
-            });
+            schedules.push(result);
+
+            updatedUser.roles = creator.roles;
+            updatedUser.schedules = schedules;
+            localStorage.setItem("user", JSON.stringify(updatedUser));
         })
         .then(() => {
             // redirect to subject input
-            this.props.history.push('/create-cabinet');
+            this.props.history.push('/create-subject');
         })
         .catch(error => {
             console.error(error);

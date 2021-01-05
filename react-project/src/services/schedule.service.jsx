@@ -6,13 +6,18 @@ const API_URL = "http://localhost:8080/api/public/schedule/";
 
 class ScheduleService {
     getScheduleById(id) {
-        return axios.get(API_URL + '/' + id);
+        return axios.get(API_URL + '/' + id, { headers: authHeader() });
+    }
+
+    getSchedulesByCreatorId(creatorId) {
+        return axios.get(API_URL + 'user/' + creatorId + '/schedules', 
+        { headers: authHeader() });
     }
 
     createSchedule(scheduleName, session, creator) {
         return axios.post(API_URL,
-            { scheduleName, session, creator } , { headers: authHeader() }
-            );
+            { scheduleName, session, creator } , 
+            { headers: authHeader() });
     }
 
     updateScheduleInformation(id, scheduleName, session, creator, hours) {
@@ -22,7 +27,7 @@ class ScheduleService {
             session,
             creator,
             hours   
-        });
+        }, { headers: authHeader() });
     }
 }
 
