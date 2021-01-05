@@ -57,7 +57,6 @@ public class SubjectController {
         if(foundSubject.isPresent()) {
             Subject newSubject = foundSubject.get();
             newSubject.setSubjectName(subject.getSubjectName());
-            newSubject.setTeachers(subject.getTeachers());
             return new ResponseEntity<>(subjectRepository.save(newSubject), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -19,9 +19,6 @@ public class Subject {
     @Size(max = 120)
     private String subjectName;
 
-    @ManyToMany(mappedBy = "subjects")
-    Set<Teacher> teachers;
-
     @OneToMany(mappedBy = "subject")
     private Set<Hours> hours;
 
@@ -37,7 +34,4 @@ public class Subject {
 
     public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
 
-    public Set<Teacher> getTeachers() { return teachers; }
-
-    public void setTeachers(Set<Teacher> teachers) { this.teachers = teachers; }
 }

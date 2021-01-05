@@ -36,7 +36,7 @@ export default class Navigation extends Component {
             <>
                 <Navbar bg="dark" variant="dark">
                     <Link to={"/"}>
-                        <Navbar.Brand>Online Scheduler</Navbar.Brand>
+                        <Navbar.Brand>OnlineScheduler</Navbar.Brand>
                     </Link>
                     <Nav className="mr-auto">
                         <Nav.Item>

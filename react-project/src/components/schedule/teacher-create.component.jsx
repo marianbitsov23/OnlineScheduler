@@ -11,24 +11,28 @@ export default class CreateTeacher extends Component {
         super(props);
 
         this.state = {
-            teacherName: "",
-            subjects: [],
+            firstName: "",
+            lastName: "",
+            teacherSubjects: [],
+            allSubjects: [],
             loading: false,
             teachers: []
         };
 
         this.saveTeacher.bind(this);
+        this.onChange.bind(this);
     }
 
     componentDidMount() {
         teacherService.getAllTeachers()
         .then(result => {
-            this.setState({ teachers: result.data });
+            const resultTeachers = result.data;
+            this.setState({ teachers: resultTeachers });
         })
         .then(() => {
             subjectService.getAllSubjects()
             .then(result => {
-                this.setState({ subjects: result.data });
+                this.setState({allSubjects: result.data });
             })
             .catch(error => {
                 console.error(error);
@@ -45,14 +49,14 @@ export default class CreateTeacher extends Component {
 
         this.setState({ loading: true });
 
-        const { teacherName, subjects } = this.state;
+        const { firstName, lastName, teacherSubjects } = this.state;
 
         //TODO: fix saving duplicate teachers
 
-        teacherService.createTeacher(teacherName, subjects)
+        teacherService.createTeacher(firstName + ' ' + lastName, teacherSubjects)
         .then(result => {
             this.state.teachers.push(result.data);
-            this.setState({ teacherName: "", loading: false });
+            this.setState({ firstName: "", lastName: "", loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -67,16 +71,21 @@ export default class CreateTeacher extends Component {
 
     render() {
 
-        const { teacherName, teachers, subjects } = this.state;
+        const { firstName, lastName, teachers,
+            allSubjects, teacherSubjects } = this.state;
 
-        const isInvalid = teacherName === "";
+        const isInvalid = 
+            firstName === ""||
+            lastName === "";
 
         return(
             <>
                 <Container>
                     <h2> Teachers : </h2>
-                    {teachers.map(teacher => (
-                        <li key={teacher.id}> {teacher.teacherName} : {teacher.subjects} </li>
+                    {teachers && teachers.map(teacher => (
+                        <li key={teacher.id}> 
+                        {teacher.teacherName}
+                        </li>
                     ))}
                 </Container>
 
@@ -91,12 +100,23 @@ export default class CreateTeacher extends Component {
                                 }}
                             >
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="teacherName">Teacher name</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="teacherName">First name</FormBootstrap.Label>
                                     <Input
                                         type="texasfast"
                                         className="form-control"
-                                        name="teacherName"
-                                        value={this.state.teacherName}
+                                        name="firstName"
+                                        value={this.state.firstName}
+                                        onChange={this.onChange}
+                                    />
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <FormBootstrap.Label htmlFor="teacherName">Last name</FormBootstrap.Label>
+                                    <Input
+                                        type="texasfast"
+                                        className="form-control"
+                                        name="lastName"
+                                        value={this.state.lastName}
                                         onChange={this.onChange}
                                     />
                                 </FormGroup>
@@ -105,16 +125,47 @@ export default class CreateTeacher extends Component {
                                     <FormBootstrap.Label htmlFor="subjects">
                                         Which subject he teaches?
                                     </FormBootstrap.Label>
-                                    <select 
-                                        //multiple={true}
-                                        name="subjects" 
-                                        value={subjects[0]}
-                                        onChange={this.onChange}>
-                                        {(subjects.map(subject => (
-                                            <option key={subject.id} value={subject}>{subject.subjectName}</option>
-                                        )))}
-                                        
-                                    </select>
+                                    {(allSubjects.map(subject => {
+                                        if(teacherSubjects.includes(subject)) {
+                                            return (
+                                                <>
+                                                    <p key={subject.subjectName}>
+                                                        {subject.subjectName}
+                                                    </p>
+                                                    <Button
+                                                        key={subject.id}
+                                                        variant="outline-danger"
+                                                        //TODO: Find a way to extract it
+                                                        onClick={() => {
+                                                            let newTeacherSubjects = teacherSubjects;
+                                                            newTeacherSubjects.splice(newTeacherSubjects.indexOf(subject), 1);
+
+                                                            this.setState({ teacherSubjects: newTeacherSubjects });
+                                                        }}
+                                                    >Remove</Button>
+                                                </>
+                                            )
+                                        } else {
+                                            return(
+                                                <>
+                                                    <p key={subject.subjectName}>
+                                                        {subject.subjectName}
+                                                    </p>
+                                                    <Button
+                                                        key={subject.id / 2}
+                                                        variant="outline-info"
+                                                        //TODO: Find a way to extract it
+                                                        onClick={() => {
+                                                            let newTeacherSubjects = teacherSubjects;
+                                                            newTeacherSubjects.push(subject);
+
+                                                            this.setState({ teacherSubjects: newTeacherSubjects });
+                                                        }}
+                                                    >Add</Button>
+                                                </>
+                                            )
+                                        }
+                                }))}
                                 </FormGroup>
 
                                 <FormGroup>

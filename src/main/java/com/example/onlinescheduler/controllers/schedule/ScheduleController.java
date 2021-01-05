@@ -46,7 +46,6 @@ public class ScheduleController {
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
     }
 
-    //TODO: Check if this is more suitable then GET from the user directly
 
     @GetMapping("/user/{creatorId}/schedules")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

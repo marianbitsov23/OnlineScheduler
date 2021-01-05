@@ -15,6 +15,10 @@ public class Hours {
     private Subject subject;
 
     @ManyToOne
+    @JoinColumn(name = "group_id", referencedColumnName = "id")
+    private Group group;
+
+    @ManyToOne
     @JoinColumn(name = "cabinet_id", referencedColumnName = "id")
     private Cabinet cabinet;
 
