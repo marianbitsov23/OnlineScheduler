@@ -10,25 +10,24 @@ class CabinetService {
     }
 
     getCabinetById(id) {
-        return axios.get(API_URL + '/' + id);
+        return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
     createCabinet(cabinetName, specialCabinet) {
         return axios.post(API_URL, 
             {cabinetName, specialCabinet},
-            {headers: authHeader()} 
-            );
+            {headers: authHeader()} );
     }
 
     updateCabinetInformation(id, cabinetName, specialCabinet) {
         return axios.put(API_URL + '/' + id, {
             cabinetName,
             specialCabinet
-        });
+        }, { headers: authHeader() });
     }
 
     deleteCabinet(id) {
-        return axios.delete(API_URL + '/' + id);
+        return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }
 

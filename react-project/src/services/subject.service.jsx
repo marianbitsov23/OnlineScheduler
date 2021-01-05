@@ -22,11 +22,11 @@ class SubjectService {
         return axios.put(API_URL + '/' + id, {
             subjectName,
             teachers
-        });
+        }, { headers: authHeader() });
     }
 
     deleteSubject(id) {
-        return axios.delete(API_URL + '/' + id);
+        return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }
 
