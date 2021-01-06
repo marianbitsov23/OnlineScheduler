@@ -63,13 +63,10 @@ export default class CreateTimeTable extends Component {
         weekDaysTemplate.push('Thursday');
         weekDaysTemplate.push('Friday');
 
-
-        weekDays.set('Monday', []);
-        weekDays.set('Tuesday', []);
-        weekDays.set('Wednesday', []);
-        weekDays.set('Thursday', []);
-        weekDays.set('Friday', []);
-
+        for(let i = 0; i < 5; i ++) {
+            weekDays.set(weekDaysTemplate[i], []);
+        }
+        
         this.setState({ 
             weekDays : weekDays,
             weekDaysTemplate : weekDaysTemplate,
@@ -103,32 +100,30 @@ export default class CreateTimeTable extends Component {
         this.setState({ weekDays : weekDays });
     }
 
-    saveAllFinalSlots = weekDays => {
-        const mondaySlots = weekDays.get('Monday');
-        const tuesdaySlots = weekDays.get('Tuesday');
-        const wednesdaySlots = weekDays.get('Wednesday');
-        const thursdaySlots = weekDays.get('Thursday');
-        const fridaySlots = weekDays.get('Friday');
-        
-        mondaySlots.map(mondaySlot => {
-            timeSlotService.createTimeSlot('MONDAY', mondaySlot[0], mondaySlot[1]);
-        });
+    createAllSlotsForDay(dayName) {
+        const { weekDays } = this.state;
 
-        tuesdaySlots.map(tuesdaySlot => {
-            timeSlotService.createTimeSlot('TUESDAY', tuesdaySlot[0], tuesdaySlot[1]);
-        });
+        let daySlots = weekDays.get(dayName)
 
-        wednesdaySlots.map(wednesdaySlot => {
-            timeSlotService.createTimeSlot('WEDNESDAY', wednesdaySlot[0], wednesdaySlot[1]);
-        });
+        let allSlots = [];
 
-        thursdaySlots.map(thursdaySlot => {
-            timeSlotService.createTimeSlot('THURSDAY', thursdaySlot[0], thursdaySlot[1]);
-        });
+        daySlots.map(slot => {
+            timeSlotService.createTimeSlot(dayName.toUpperCase(), slot[0], slot[1])
+            .then(result => {
+                allSlots.push(result.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        })
+    }
 
-        fridaySlots.map(fridaySlot => {
-            timeSlotService.createTimeSlot('FRIDAY', fridaySlot[0], fridaySlot[1]);
-        });
+    saveAllFinalSlots () {
+        let days = this.state.weekDaysTemplate;
+
+        for(let i = 0; i < 5; i++) {
+            this.createAllSlotsForDay(days[i]);
+        }
     }
 
     saveSlot = event => {

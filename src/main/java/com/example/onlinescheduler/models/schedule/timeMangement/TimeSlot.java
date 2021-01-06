@@ -1,9 +1,8 @@
 package com.example.onlinescheduler.models.schedule.timeMangement;
 
-import com.example.onlinescheduler.models.schedule.Schedule;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -18,13 +17,11 @@ public class TimeSlot {
     @Column(length = 20)
     private WeekDay weekDay;
 
-    @NotBlank
-    @Temporal(TemporalType.TIME)
-    private Date timeStart;
+    @Column(name = "timeStart")
+    private String timeStart;
 
-    @NotBlank
-    @Temporal(TemporalType.TIME)
-    private Date timeEnd;
+    @Column(name = "timeEnd")
+    private String timeEnd;
 
     @ManyToOne
     @JoinColumn(name = "time_table_id", referencedColumnName = "id")
@@ -32,14 +29,14 @@ public class TimeSlot {
 
     public TimeSlot() {}
 
-    public TimeSlot(@NotBlank WeekDay weekDay, @NotBlank Date timeStart, @NotBlank Date timeEnd, TimeTable timeTable) {
+    public TimeSlot(@NotBlank WeekDay weekDay, @NotBlank String timeStart, @NotBlank String timeEnd, TimeTable timeTable) {
         this.weekDay = weekDay;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.timeTable = timeTable;
     }
 
-    public TimeSlot(@NotBlank WeekDay weekDay, @NotBlank Date timeStart, @NotBlank Date timeEnd) {
+    public TimeSlot(@NotBlank WeekDay weekDay, @NotBlank String timeStart, @NotBlank String timeEnd) {
         this.weekDay = weekDay;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
@@ -53,13 +50,13 @@ public class TimeSlot {
 
     public void setWeekDay(WeekDay weekDay) { this.weekDay = weekDay; }
 
-    public Date getTimeStart() { return timeStart; }
+    public @NotBlank String getTimeStart() { return timeStart; }
 
-    public void setTimeStart(Date timeStart) { this.timeStart = timeStart; }
+    public void setTimeStart(String timeStart) { this.timeStart = timeStart; }
 
-    public Date getTimeEnd() { return timeEnd; }
+    public @NotBlank String getTimeEnd() { return timeEnd; }
 
-    public void setTimeEnd(Date timeEnd) { this.timeEnd = timeEnd; }
+    public void setTimeEnd(String timeEnd) { this.timeEnd = timeEnd; }
 
     public TimeTable getTimeTable() { return timeTable; }
 

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -59,15 +61,15 @@ public class TimeSlotController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) throws ParseException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRANCE);
+
         TimeSlot timeSlot = new TimeSlot(
                 WeekDay.valueOf(timeSlotRequest.getWeekDay()),
-                new SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(timeSlotRequest.getTimeStart()),
-                new SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(timeSlotRequest.getTimeEnd())
-        );
+                timeSlotRequest.getTimeStart(),
+                timeSlotRequest.getTimeEnd());
         timeSlotRepository.save(timeSlot);
 
         return new ResponseEntity<>(timeSlot, HttpStatus.CREATED);
-
     }
 
     @PutMapping("/{id}")
