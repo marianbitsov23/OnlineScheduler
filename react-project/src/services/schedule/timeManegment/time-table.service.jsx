@@ -13,26 +13,22 @@ class TimeTableService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createTimeTable(weekDay, timeStart, timeEnd, timeTable) {
+    createTimeTable(schedule, timeTableName, timeSlots) {
         return axios.post(API_URL, 
             {
-                weekDay,
-                timeStart,
-                timeEnd,
-                timeTable
-            },
-            {headers: authHeader()});
+                schedule,
+                timeTableName,
+                timeSlots
+            }, {headers: authHeader()});
     }
 
-    updateTimeTableInformation(slot) {
+    updateTimeTableInformation(id, schedule, timeTableName, timeSlots) {
         return axios.put(API_URL + '/' + id,
             {
-                weekDay,
-                timeStart,
-                timeEnd,
-                timeTable
-            }, 
-            {headers: authHeader()});
+                schedule,
+                timeTableName,
+                timeSlots
+            }, {headers: authHeader()});
     }
 
     deleteTimeTable(id) {
@@ -40,4 +36,4 @@ class TimeTableService {
     }
 }
 
-export default new TimeSlotService();
+export default new TimeTableService();
