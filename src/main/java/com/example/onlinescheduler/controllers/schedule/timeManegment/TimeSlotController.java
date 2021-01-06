@@ -1,6 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule.timeManegment;
 
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
+import com.example.onlinescheduler.models.schedule.timeMangement.WeekDay;
 import com.example.onlinescheduler.payload.schedule.timeManegment.TimeSlotRequest;
 import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
@@ -54,21 +58,16 @@ public class TimeSlotController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) {
-        //TODO: edit the time from the google tab
-        /*
+    public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) throws ParseException {
         TimeSlot timeSlot = new TimeSlot(
-                timeSlotRequest.getWeekDay(),
-                timeSlotRequest.getTimeStart(),
-                timeSlotRequest.getTimeEnd(),
-                timeSlotRequest.getTimeTable()
+                WeekDay.valueOf(timeSlotRequest.getWeekDay()),
+                new SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(timeSlotRequest.getTimeStart()),
+                new SimpleDateFormat("HH:mm", Locale.ENGLISH).parse(timeSlotRequest.getTimeEnd())
         );
         timeSlotRepository.save(timeSlot);
 
         return new ResponseEntity<>(timeSlot, HttpStatus.CREATED);
 
-        */
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

@@ -33,7 +33,11 @@ public class TimeTable {
         this.timeTableName = timeTableName;
         this.timeSlots = timeSlots;
     }
-    
+
+    public TimeTable(@NotBlank Schedule schedule, @NotBlank @Size(max = 120) String timeTableName) {
+        this.schedule = schedule;
+        this.timeTableName = timeTableName;
+    }
 
     public Schedule getSchedule() { return schedule; }
 

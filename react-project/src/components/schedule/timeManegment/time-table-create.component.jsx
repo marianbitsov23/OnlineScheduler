@@ -5,7 +5,7 @@ import FormBootstrap from 'react-bootstrap/Form';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/timeManegment/time-table.service';
-import authService from '../../../services/user-auth/auth.service';
+import timeSlotService from '../../../services/schedule/timeManegment/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
 
 export default class CreateTimeTable extends Component {
@@ -103,8 +103,32 @@ export default class CreateTimeTable extends Component {
         this.setState({ weekDays : weekDays });
     }
 
-    getAllFinalSlots = weekDays => {
+    saveAllFinalSlots = weekDays => {
+        const mondaySlots = weekDays.get('Monday');
+        const tuesdaySlots = weekDays.get('Tuesday');
+        const wednesdaySlots = weekDays.get('Wednesday');
+        const thursdaySlots = weekDays.get('Thursday');
+        const fridaySlots = weekDays.get('Friday');
         
+        mondaySlots.map(mondaySlot => {
+            timeSlotService.createTimeSlot('MONDAY', mondaySlot[0], mondaySlot[1]);
+        });
+
+        tuesdaySlots.map(tuesdaySlot => {
+            timeSlotService.createTimeSlot('TUESDAY', tuesdaySlot[0], tuesdaySlot[1]);
+        });
+
+        wednesdaySlots.map(wednesdaySlot => {
+            timeSlotService.createTimeSlot('WEDNESDAY', wednesdaySlot[0], wednesdaySlot[1]);
+        });
+
+        thursdaySlots.map(thursdaySlot => {
+            timeSlotService.createTimeSlot('THURSDAY', thursdaySlot[0], thursdaySlot[1]);
+        });
+
+        fridaySlots.map(fridaySlot => {
+            timeSlotService.createTimeSlot('FRIDAY', fridaySlot[0], fridaySlot[1]);
+        });
     }
 
     saveSlot = event => {
@@ -122,7 +146,7 @@ export default class CreateTimeTable extends Component {
 
         const { weekDays, timeTableName } = this.state;
 
-        timeTableService.createTimeTable(schedule.id, timeTableName, )
+        this.saveAllFinalSlots(weekDays);
     }
 
     deleteSlot = event => {
@@ -197,13 +221,12 @@ export default class CreateTimeTable extends Component {
                             <FormGroup>
                                     <Button
                                         type="submit"
-                                        variant="success"
                                         className="btn-block"
                                         disabled={isInvalid}>
                                             {this.state.loading &&
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             }
-                                            <span>Save table name</span>
+                                            <span>Save Table Name</span>
                                         </Button>
                                 </FormGroup>
                         </Form>}
@@ -311,6 +334,17 @@ export default class CreateTimeTable extends Component {
                             </tr>
                         </tbody>
                     </Table>
+
+                    <Button
+                        variant="success"
+                        className="btn-block"
+                        onClick={this.saveTimeTable}
+                        disabled={edit}>
+                            {this.state.loading &&
+                                <span className="spinner-border spinner-border-sm"></span>
+                            }
+                            <span>Create Time Table</span>
+                    </Button>
                 </Container>
             </>
         )

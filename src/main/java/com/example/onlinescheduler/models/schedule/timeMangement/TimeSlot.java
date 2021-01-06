@@ -39,6 +39,12 @@ public class TimeSlot {
         this.timeTable = timeTable;
     }
 
+    public TimeSlot(@NotBlank WeekDay weekDay, @NotBlank Date timeStart, @NotBlank Date timeEnd) {
+        this.weekDay = weekDay;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+    }
+
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }

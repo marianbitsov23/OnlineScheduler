@@ -17,18 +17,17 @@ class TimeSlotService {
         return axios.get(API_URL + '/' + timeTableId, { headers: authHeader() });
     }
 
-    createTimeSlot(weekDay, timeStart, timeEnd, timeTable) {
+    createTimeSlot(weekDay, timeStart, timeEnd) {
         return axios.post(API_URL, 
             {
                 weekDay,
                 timeStart,
-                timeEnd,
-                timeTable
+                timeEnd
             },
             {headers: authHeader()});
     }
 
-    updateTimeSlotInformation(slot) {
+    updateTimeSlotInformation(id, weekDay, timeStart, timeEnd, timeTable) {
         return axios.put(API_URL + '/' + id,
             {
                 weekDay,

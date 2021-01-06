@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class TimeSlotRequest {
     @NotBlank
-    private WeekDay weekDay;
+    private String weekDay;
 
     @NotBlank
     private String timeStart;
@@ -16,21 +16,17 @@ public class TimeSlotRequest {
     @NotBlank
     private String timeEnd;
 
-    @NotBlank
-    private TimeTable timeTable;
-
     public TimeSlotRequest() {}
 
-    public TimeSlotRequest(@NotBlank WeekDay weekDay, @NotBlank String timeStart, @NotBlank String timeEnd, @NotBlank TimeTable timeTable) {
+    public TimeSlotRequest(@NotBlank String weekDay, @NotBlank String timeStart, @NotBlank String timeEnd) {
         this.weekDay = weekDay;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-        this.timeTable = timeTable;
     }
 
-    public WeekDay getWeekDay() { return weekDay; }
+    public String getWeekDay() { return weekDay; }
 
-    public void setWeekDay(WeekDay weekDay) { this.weekDay = weekDay; }
+    public void setWeekDay(String weekDay) { this.weekDay = weekDay; }
 
     public String getTimeStart() { return timeStart; }
 
@@ -39,8 +35,4 @@ public class TimeSlotRequest {
     public String getTimeEnd() { return timeEnd; }
 
     public void setTimeEnd(String timeEnd) { this.timeEnd = timeEnd; }
-
-    public TimeTable getTimeTable() { return timeTable; }
-
-    public void setTimeTable(TimeTable timeTable) { this.timeTable = timeTable; }
 }
