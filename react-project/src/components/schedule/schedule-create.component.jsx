@@ -51,7 +51,9 @@ export default class CreateSchedule extends Component {
 
             let schedules = [];
 
-            schedules.push(result);
+            schedules.push(result.data);
+
+            scheduleService.saveCurrentSchedule(result.data);
 
             updatedUser.roles = creator.roles;
             updatedUser.schedules = schedules;

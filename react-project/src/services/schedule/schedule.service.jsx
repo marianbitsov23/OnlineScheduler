@@ -20,6 +20,10 @@ class ScheduleService {
             {headers: authHeader()});
     }
 
+    saveCurrentSchedule = schedule => {
+        localStorage.setItem("schedule", JSON.stringify(schedule));
+    }
+
     updateScheduleInformation(id, scheduleName, session, creator, hours) {
         return axios.put(API_URL + '/' + id, 
         {   
@@ -29,6 +33,10 @@ class ScheduleService {
             creator,
             hours   
         }, { headers: authHeader() });
+    }
+
+    getCurrentSchedule() {
+        return JSON.parse(localStorage.getItem("schedule"));
     }
 }
 

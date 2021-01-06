@@ -6,6 +6,7 @@ import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/timeManegment/time-table.service';
 import authService from '../../../services/user-auth/auth.service';
+import scheduleService from '../../../services/schedule/schedule.service';
 
 export default class CreateTimeTable extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class CreateTimeTable extends Component {
         this.saveSlot.bind(this);
         this.deleteSlot.bind(this);
         this.onChange.bind(this);
-        this.saveTableName.bind(this);
+        this.saveTimeTable.bind(this);
     }
 
     componentDidMount() {
@@ -102,6 +103,10 @@ export default class CreateTimeTable extends Component {
         this.setState({ weekDays : weekDays });
     }
 
+    getAllFinalSlots = weekDays => {
+        
+    }
+
     saveSlot = event => {
         event.preventDefault();
 
@@ -110,10 +115,14 @@ export default class CreateTimeTable extends Component {
         this.addTimeSlot(weekDay);
     }
 
-    saveTableName = event => {
+    saveTimeTable = event => {
         event.preventDefault();
 
-        this.setState({ edit : false });
+        const schedule = scheduleService.getCurrentSchedule();
+
+        const { weekDays, timeTableName } = this.state;
+
+        timeTableService.createTimeTable(schedule.id, timeTableName, )
     }
 
     deleteSlot = event => {
@@ -149,14 +158,6 @@ export default class CreateTimeTable extends Component {
             thursdaySlots = weekDays.get('Thursday');
             fridaySlots = weekDays.get('Friday');
         }
-        
-        let slots = [
-            {mondaySlots: mondaySlots},
-            {tuesdaySlots: tuesdaySlots},
-            {wednesdaySlots: wednesdaySlots},
-            {thursdaySlots: thursdaySlots},
-            {fridaySlots: fridaySlots}
-        ];
 
         return(
             <>
@@ -168,9 +169,7 @@ export default class CreateTimeTable extends Component {
 
                                 <Button
                                     variant="outline-secondary"
-                                    onClick={() => {
-
-                                    }}
+                                    onClick={() => this.setState({ edit: true })}
                                 >
                                         Edit Name
                                 </Button>
@@ -179,7 +178,7 @@ export default class CreateTimeTable extends Component {
 
                         {edit &&
                         <Form
-                            onSubmit={this.saveTableName}
+                            onSubmit={() => this.setState({ edit : false })}
                             ref={c => {
                                 this.form = c;
                             }}
