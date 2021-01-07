@@ -14,7 +14,6 @@ class SubjectService {
     }
 
     createSubject(subjectName) {
-        console.log(typeof subjectName);
         return axios.post(API_URL, {subjectName}, { headers: authHeader() });
     }
 

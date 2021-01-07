@@ -14,14 +14,14 @@ export default class CreateTimeTable extends Component {
 
         this.state = {
             timeTableName: "",
-            slots: [],
             weekDays: undefined,
             weekDaysTemplate: [],
             timeSlotTemplate: [],
+            allSlots: [],
             edit: true
         };
 
-        this.saveSlot.bind(this);
+        this.addSlot.bind(this);
         this.deleteSlot.bind(this);
         this.onChange.bind(this);
         this.saveTimeTable.bind(this);
@@ -74,10 +74,10 @@ export default class CreateTimeTable extends Component {
         });
     }
 
-    addTimeSlot(weekDay) {
+    addTimeSlot(dayName) {
         const { timeSlotTemplate, weekDays } = this.state;
 
-        const day = weekDay[0];
+        const day = dayName[0];
 
         let value = weekDays.get(day);
         
@@ -100,33 +100,35 @@ export default class CreateTimeTable extends Component {
         this.setState({ weekDays : weekDays });
     }
 
-    createAllSlotsForDay(dayName) {
+    saveTimeSlotInDb(dayName, slot) {
+        timeSlotService.createTimeSlot(dayName.toUpperCase(), slot[0], slot[1])
+        .then(result => {
+            this.state.allSlots.push(result.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    saveAllTimeSlotsByDayInDb(dayName) {
         const { weekDays } = this.state;
 
         let daySlots = weekDays.get(dayName)
 
-        let allSlots = [];
-
-        daySlots.map(slot => {
-            timeSlotService.createTimeSlot(dayName.toUpperCase(), slot[0], slot[1])
-            .then(result => {
-                allSlots.push(result.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        })
-    }
-
-    saveAllFinalSlots () {
-        let days = this.state.weekDaysTemplate;
-
-        for(let i = 0; i < 5; i++) {
-            this.createAllSlotsForDay(days[i]);
+        for(let i = 0; i < daySlots.length; i++) {
+            this.saveTimeSlotInDb(dayName, daySlots[i])
         }
     }
 
-    saveSlot = event => {
+    async saveAllSlotsInDb () {
+        let days = this.state.weekDaysTemplate;
+
+        for(let i = 0; i < 5; i++) {
+            this.saveAllTimeSlotsByDayInDb(days[i]);
+        }
+    }
+
+    addSlot = event => {
         event.preventDefault();
 
         const weekDay = [event.target.name];
@@ -134,14 +136,31 @@ export default class CreateTimeTable extends Component {
         this.addTimeSlot(weekDay);
     }
 
+    //TODO: fix async code
+    updateAllSlotsTableId(allSlots, table) {
+        for(let i = 0; i < allSlots.length; i++) {
+            timeSlotService.addTimeTableById(allSlots[i].id, table.id);
+        }
+    }
+
     saveTimeTable = event => {
         event.preventDefault();
 
         const schedule = scheduleService.getCurrentSchedule();
+        const { allSlots, timeTableName } = this.state;
 
-        const { weekDays, timeTableName } = this.state;
+        console.log(allSlots);
 
-        this.saveAllFinalSlots(weekDays);
+        this.saveAllSlotsInDb()
+        .then(() => {
+            timeTableService.createTimeTable(schedule, timeTableName)
+            .then(result => {
+                this.updateAllSlotsTableId(allSlots, result.data);
+            })
+            .catch(error =>{
+                console.error(error);
+            });
+        })
     }
 
     deleteSlot = event => {
@@ -149,9 +168,9 @@ export default class CreateTimeTable extends Component {
 
         let weekDays = this.state.weekDays;
 
-        const weekDay = [event.target.name];
+        const dayName = [event.target.name];
 
-        let timeSlots = weekDays.get(weekDay[0]);
+        let timeSlots = weekDays.get(dayName[0]);
 
         timeSlots.splice(timeSlots.indexOf(event.target.value), 1);
 
@@ -321,7 +340,7 @@ export default class CreateTimeTable extends Component {
                                         <Button
                                         variant="outline-info"
                                         name={weekDayTemplate}
-                                        onClick={this.saveSlot}>
+                                        onClick={this.addSlot}>
                                             Add Slot
                                         </Button>
                                     </td>

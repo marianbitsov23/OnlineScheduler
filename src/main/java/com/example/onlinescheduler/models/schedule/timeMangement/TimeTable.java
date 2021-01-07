@@ -5,6 +5,7 @@ import com.example.onlinescheduler.models.schedule.Schedule;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,16 +24,7 @@ public class TimeTable {
     @Size(max = 120)
     private String timeTableName;
 
-    @OneToMany(mappedBy = "timeTable")
-    private Set<TimeSlot> timeSlots;
-
     public TimeTable() {}
-
-    public TimeTable(@NotBlank Schedule schedule, @NotBlank @Size(max = 120) String timeTableName, Set<TimeSlot> timeSlots) {
-        this.schedule = schedule;
-        this.timeTableName = timeTableName;
-        this.timeSlots = timeSlots;
-    }
 
     public TimeTable(@NotBlank Schedule schedule, @NotBlank @Size(max = 120) String timeTableName) {
         this.schedule = schedule;
@@ -47,7 +39,7 @@ public class TimeTable {
 
     public void setTimeTableName(String timeTableName) { this.timeTableName = timeTableName; }
 
-    public Set<TimeSlot> getTimeSlots() { return timeSlots; }
+    public Long getId() { return id; }
 
-    public void setTimeSlots(Set<TimeSlot> timeSlots) { this.timeSlots = timeSlots; }
+    public void setId(Long id) { this.id = id; }
 }

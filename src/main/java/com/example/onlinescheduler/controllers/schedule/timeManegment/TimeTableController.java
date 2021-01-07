@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
@@ -44,10 +45,10 @@ public class TimeTableController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TimeTable> createTimeTable(@RequestBody TimeTableRequest timeTableRequest) {
+        //TODO: Make no duplicate table names
         TimeTable timeTable = new TimeTable(
                 timeTableRequest.getSchedule(),
-                timeTableRequest.getTimeTableName(),
-                timeTableRequest.getTimeSlots()
+                timeTableRequest.getTimeTableName()
         );
         timeTableRepository.save(timeTable);
 

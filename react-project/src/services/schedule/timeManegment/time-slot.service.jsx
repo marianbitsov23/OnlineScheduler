@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from '../../user-auth/auth-header';
 import React from 'react';
 
-const API_URL = "http://localhost:8080/api/public/time-slot/";
+const API_URL = "http://localhost:8080/api/public/time-slot";
 
 class TimeSlotService {
     getAllTimeSlots() {
@@ -15,6 +15,13 @@ class TimeSlotService {
 
     getTimeSlotByTimeTableId(timeTableId) {
         return axios.get(API_URL + '/' + timeTableId, { headers: authHeader() });
+    }
+
+    addTimeTableById(timeSlotId, timeTableId) {
+        console.log(1);
+        return axios.put(API_URL + '/update-table/' + timeSlotId,
+            {timeTableId},
+            { headers: authHeader()});
     }
 
     createTimeSlot(weekDay, timeStart, timeEnd) {

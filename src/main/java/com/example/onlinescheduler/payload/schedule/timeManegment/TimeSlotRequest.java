@@ -16,6 +16,9 @@ public class TimeSlotRequest {
     @NotBlank
     private String timeEnd;
 
+    @NotBlank
+    private Long timeTableId;
+
     public TimeSlotRequest() {}
 
     public TimeSlotRequest(@NotBlank String weekDay, @NotBlank String timeStart, @NotBlank String timeEnd) {
@@ -35,4 +38,8 @@ public class TimeSlotRequest {
     public String getTimeEnd() { return timeEnd; }
 
     public void setTimeEnd(String timeEnd) { this.timeEnd = timeEnd; }
+
+    public Long getTimeTable() { return timeTableId; }
+
+    public void setTimeTable(Long timeTableId) { this.timeTableId = timeTableId; }
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import authHeader from '../../user-auth/auth-header';
 import React from 'react';
 
-const API_URL = "http://localhost:8080/api/public/time-table/";
+const API_URL = "http://localhost:8080/api/public/time-table";
 
 class TimeTableService {
     getAllTimeTables() {
@@ -17,8 +17,7 @@ class TimeTableService {
         return axios.post(API_URL, 
             {
                 schedule,
-                timeTableName,
-                timeSlots
+                timeTableName
             }, {headers: authHeader()});
     }
 

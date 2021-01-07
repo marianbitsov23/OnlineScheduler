@@ -13,14 +13,11 @@ public class TimeTableRequest {
     @NotBlank
     private String timeTableName;
 
-    private Set<TimeSlot> timeSlots;
-
     public TimeTableRequest() {}
 
-    public TimeTableRequest(@NotBlank Schedule schedule, @NotBlank String timeTableName, Set<TimeSlot> timeSlots) {
+    public TimeTableRequest(@NotBlank Schedule schedule, @NotBlank String timeTableName) {
         this.schedule = schedule;
         this.timeTableName = timeTableName;
-        this.timeSlots = timeSlots;
     }
 
     public Schedule getSchedule() { return schedule; }
@@ -30,8 +27,4 @@ public class TimeTableRequest {
     public String getTimeTableName() { return timeTableName; }
 
     public void setTimeTableName(String timeTableName) { this.timeTableName = timeTableName; }
-
-    public Set<TimeSlot> getTimeSlots() { return timeSlots; }
-
-    public void setTimeSlots(Set<TimeSlot> timeSlots) { this.timeSlots = timeSlots; }
 }

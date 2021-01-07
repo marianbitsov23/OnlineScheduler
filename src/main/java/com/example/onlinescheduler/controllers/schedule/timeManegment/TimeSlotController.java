@@ -1,9 +1,13 @@
 package com.example.onlinescheduler.controllers.schedule.timeManegment;
 
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.models.schedule.timeMangement.WeekDay;
 import com.example.onlinescheduler.payload.schedule.timeManegment.TimeSlotRequest;
+import com.example.onlinescheduler.payload.schedule.timeManegment.TimeTableRequest;
+import com.example.onlinescheduler.payload.schedule.timeManegment.UpdateTimeTableIdRequest;
 import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeSlotRepository;
+import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
@@ -24,6 +24,9 @@ import java.util.Optional;
 public class TimeSlotController {
     @Autowired
     TimeSlotRepository timeSlotRepository;
+
+    @Autowired
+    TimeTableRepository timeTableRepository;
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -58,11 +61,23 @@ public class TimeSlotController {
         }
     }
 
+    @PutMapping("/update-table/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<TimeSlot> addTimeTableById(@PathVariable Long id, @RequestBody UpdateTimeTableIdRequest updateTimeTableIdRequest) {
+        Optional<TimeSlot> timeSlot = timeSlotRepository.findById(id);
+        Optional<TimeTable> timeTable = timeTableRepository.findById(updateTimeTableIdRequest.getTimeTableId());
+
+        if(timeSlot.isPresent() && timeTable.isPresent()) {
+            timeSlot.get().setTimeTable(timeTable.get());
+            return new ResponseEntity<>(timeSlotRepository.save(timeSlot.get()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) throws ParseException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRANCE);
-
+    public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) {
         TimeSlot timeSlot = new TimeSlot(
                 WeekDay.valueOf(timeSlotRequest.getWeekDay()),
                 timeSlotRequest.getTimeStart(),
