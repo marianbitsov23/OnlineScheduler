@@ -76,9 +76,7 @@ export default class CreateTimeTable extends Component {
 
     addTimeSlot(dayName) {
         const { timeSlotTemplate, weekDays } = this.state;
-
         const day = dayName[0];
-
         let value = weekDays.get(day);
         
         Object.size = function(obj) {
@@ -100,47 +98,28 @@ export default class CreateTimeTable extends Component {
         this.setState({ weekDays : weekDays });
     }
 
-    saveTimeSlotInDb(dayName, slot) {
-        timeSlotService.createTimeSlot(dayName.toUpperCase(), slot[0], slot[1])
-        .then(result => {
-            this.state.allSlots.push(result.data);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-
-    saveAllTimeSlotsByDayInDb(dayName) {
+    async saveAllTimeSlotsByDayInDb(dayName, tableId) {
         const { weekDays } = this.state;
-
         let daySlots = weekDays.get(dayName)
 
         for(let i = 0; i < daySlots.length; i++) {
-            this.saveTimeSlotInDb(dayName, daySlots[i])
+            await timeSlotService.createTimeSlot(dayName.toUpperCase(), daySlots[i][0], daySlots[i][1], tableId)
         }
     }
 
-    async saveAllSlotsInDb () {
+    async saveAllSlotsInDb (tableId) {
         let days = this.state.weekDaysTemplate;
 
         for(let i = 0; i < 5; i++) {
-            this.saveAllTimeSlotsByDayInDb(days[i]);
+            await this.saveAllTimeSlotsByDayInDb(days[i], tableId);
         }
     }
 
     addSlot = event => {
         event.preventDefault();
-
         const weekDay = [event.target.name];
 
         this.addTimeSlot(weekDay);
-    }
-
-    //TODO: fix async code
-    updateAllSlotsTableId(allSlots, table) {
-        for(let i = 0; i < allSlots.length; i++) {
-            timeSlotService.addTimeTableById(allSlots[i].id, table.id);
-        }
     }
 
     saveTimeTable = event => {
@@ -151,25 +130,20 @@ export default class CreateTimeTable extends Component {
 
         console.log(allSlots);
 
-        this.saveAllSlotsInDb()
-        .then(() => {
-            timeTableService.createTimeTable(schedule, timeTableName)
-            .then(result => {
-                this.updateAllSlotsTableId(allSlots, result.data);
+        timeTableService.createTimeTable(schedule, timeTableName)
+        .then(result => {
+            this.saveAllSlotsInDb(result.data.id)
+            .then(() => {
+                console.log("success");
             })
-            .catch(error =>{
-                console.error(error);
-            });
-        })
+        });
     }
 
     deleteSlot = event => {
         event.preventDefault();
 
         let weekDays = this.state.weekDays;
-
         const dayName = [event.target.name];
-
         let timeSlots = weekDays.get(dayName[0]);
 
         timeSlots.splice(timeSlots.indexOf(event.target.value), 1);

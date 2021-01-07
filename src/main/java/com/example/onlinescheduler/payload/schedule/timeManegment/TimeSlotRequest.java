@@ -17,14 +17,15 @@ public class TimeSlotRequest {
     private String timeEnd;
 
     @NotBlank
-    private Long timeTableId;
+    private Long tableId;
 
     public TimeSlotRequest() {}
 
-    public TimeSlotRequest(@NotBlank String weekDay, @NotBlank String timeStart, @NotBlank String timeEnd) {
+    public TimeSlotRequest(@NotBlank String weekDay, @NotBlank String timeStart, @NotBlank String timeEnd, @NotBlank Long tableId) {
         this.weekDay = weekDay;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+        this.tableId = tableId;
     }
 
     public String getWeekDay() { return weekDay; }
@@ -39,7 +40,7 @@ public class TimeSlotRequest {
 
     public void setTimeEnd(String timeEnd) { this.timeEnd = timeEnd; }
 
-    public Long getTimeTable() { return timeTableId; }
+    public Long getTableId() { return tableId; }
 
-    public void setTimeTable(Long timeTableId) { this.timeTableId = timeTableId; }
+    public void setTableId(Long tableId) { this.tableId = tableId; }
 }
