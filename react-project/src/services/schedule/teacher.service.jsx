@@ -13,9 +13,9 @@ class TeacherService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createTeacher(teacherName, subjects) {
+    createTeacher(teacherName, initials, subjects) {
         return axios.post(API_URL, 
-            {teacherName, subjects},
+            {teacherName, initials, subjects},
             {headers: authHeader()});
     }
 

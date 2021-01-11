@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.payload.schedule;
 
+import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Hours;
 import com.example.onlinescheduler.models.user.User;
 
@@ -16,12 +17,16 @@ public class ScheduleRequest {
     @NotBlank
     private User creator;
 
+    @NotBlank
+    private Group parentGroup;
+
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator) {
+    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator, @NotBlank Group parentGroup) {
         this.scheduleName = scheduleName;
         this.description = description;
         this.creator = creator;
+        this.parentGroup = parentGroup;
     }
 
     public String getDescription() { return description; }
@@ -36,4 +41,7 @@ public class ScheduleRequest {
 
     public void setCreator(User creator) { this.creator = creator; }
 
+    public Group getParentGroup() { return parentGroup; }
+
+    public void setParentGroup(Group parentGroup) { this.parentGroup = parentGroup; }
 }

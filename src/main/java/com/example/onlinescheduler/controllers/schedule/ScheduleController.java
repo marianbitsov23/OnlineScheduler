@@ -38,7 +38,8 @@ public class ScheduleController {
         Schedule schedule = new Schedule(
                 scheduleRequest.getScheduleName(),
                 scheduleRequest.getDescription(),
-                scheduleRequest.getCreator()
+                scheduleRequest.getCreator(),
+                scheduleRequest.getParentGroup()
         );
 
         scheduleRepository.save(schedule);

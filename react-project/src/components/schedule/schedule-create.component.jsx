@@ -13,7 +13,7 @@ export default class CreateSchedule extends Component {
 
         this.state = {
             scheduleName: "",
-            session: 1,
+            description: "",
             creator: authService.getCurrentUser(),
             message: "",
             loading: false
@@ -33,7 +33,7 @@ export default class CreateSchedule extends Component {
 
         this.form.validateAll();
 
-        const { scheduleName, session, creator } = this.state;
+        const { scheduleName, description, creator } = this.state;
 
         const updatedUser = {
             id: creator.id,
@@ -45,7 +45,7 @@ export default class CreateSchedule extends Component {
         };
 
 
-        scheduleService.createSchedule(scheduleName, parseInt(session), updatedUser)
+        scheduleService.createSchedule(scheduleName, description, updatedUser)
         .then(result => {
             //add schedule to the current user
 
@@ -57,6 +57,7 @@ export default class CreateSchedule extends Component {
 
             updatedUser.roles = creator.roles;
             updatedUser.schedules = schedules;
+            //TODO extract this
             localStorage.setItem("user", JSON.stringify(updatedUser));
         })
         .then(() => {
@@ -86,8 +87,8 @@ export default class CreateSchedule extends Component {
                     <Jumbotron fluid>
                         <Container>
                             <h1>Create your schedule</h1>
-                            <p>Enter the schedule name, the session its 
-                            for and then proceed to enter the information about it!</p>
+                            <p>Enter the schedule name, small description about it 
+                            and then proceed to enter the information about it!</p>
                         </Container>
                     </Jumbotron>
 
@@ -109,11 +110,14 @@ export default class CreateSchedule extends Component {
                         </FormGroup>
 
                         <FormGroup>
-                            <FormBootstrap.Label htmlFor="session">Session</FormBootstrap.Label>
-                            <select name="session" value={this.state.session} onChange={this.onChange}>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                            </select>
+                            <FormBootstrap.Label htmlFor="description">Description</FormBootstrap.Label>
+                            <Input
+                                type="text"
+                                className="form-control"
+                                name="description"
+                                value={this.state.description}
+                                onChange={this.onChange}
+                            />
                         </FormGroup>
                         
                         <FormGroup>

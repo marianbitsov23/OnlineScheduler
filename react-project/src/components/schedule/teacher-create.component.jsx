@@ -14,6 +14,7 @@ export default class CreateTeacher extends Component {
             firstName: "",
             lastName: "",
             teacherSubjects: [],
+            initials: "",
             allSubjects: [],
             loading: false,
             teachers: []
@@ -49,14 +50,14 @@ export default class CreateTeacher extends Component {
 
         this.setState({ loading: true });
 
-        const { firstName, lastName, teacherSubjects } = this.state;
+        const { firstName, lastName, initials, teacherSubjects } = this.state;
 
         //TODO: fix saving duplicate teachers
 
-        teacherService.createTeacher(firstName + ' ' + lastName, teacherSubjects)
+        teacherService.createTeacher(firstName + ' ' + lastName, initials, teacherSubjects)
         .then(result => {
             this.state.teachers.push(result.data);
-            this.setState({ firstName: "", lastName: "", loading: false });
+            this.setState({ firstName: "", lastName: "", initials: "", loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -72,11 +73,12 @@ export default class CreateTeacher extends Component {
     render() {
 
         const { firstName, lastName, teachers,
-            allSubjects, teacherSubjects } = this.state;
+            allSubjects, initials, teacherSubjects } = this.state;
 
         const isInvalid = 
             firstName === ""||
-            lastName === "";
+            lastName === "" ||
+            initials === "";
 
         return(
             <>
@@ -100,7 +102,7 @@ export default class CreateTeacher extends Component {
                                 }}
                             >
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="teacherName">First name</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="firstName">First name</FormBootstrap.Label>
                                     <Input
                                         type="texasfast"
                                         className="form-control"
@@ -111,12 +113,23 @@ export default class CreateTeacher extends Component {
                                 </FormGroup>
 
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="teacherName">Last name</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="lastName">Last name</FormBootstrap.Label>
                                     <Input
                                         type="texasfast"
                                         className="form-control"
                                         name="lastName"
                                         value={this.state.lastName}
+                                        onChange={this.onChange}
+                                    />
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <FormBootstrap.Label htmlFor="initials">Initials</FormBootstrap.Label>
+                                    <Input
+                                        type="texasfast"
+                                        className="form-control"
+                                        name="initials"
+                                        value={this.state.initials}
                                         onChange={this.onChange}
                                     />
                                 </FormGroup>

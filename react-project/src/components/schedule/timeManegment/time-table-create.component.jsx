@@ -29,16 +29,6 @@ export default class CreateTimeTable extends Component {
 
     componentDidMount() {
         this.initWeekDays();
-
-        /*
-        timeTableService.createTimeTable(null, "", [])
-        .then(() => {
-
-        })
-        .catch(error => {
-            console.error(error);
-        });
-        */
     }
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
