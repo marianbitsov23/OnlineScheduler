@@ -22,7 +22,7 @@ public class SubjectController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Subject> createSubject(@RequestBody SubjectRequest subjectRequest) {
-        Subject subject = new Subject(subjectRequest.getSubjectName());
+        Subject subject = new Subject(subjectRequest.getSubjectName(), subjectRequest.getSchedule());
         System.out.println(subjectRequest);
         subjectRepository.save(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);

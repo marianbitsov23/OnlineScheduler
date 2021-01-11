@@ -11,27 +11,26 @@ public class ScheduleRequest {
     private String scheduleName;
 
     @NotBlank
-    private Integer session;
+    private String description;
 
     @NotBlank
     private User creator;
 
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank Integer session, @NotBlank User creator) {
+    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator) {
         this.scheduleName = scheduleName;
-        this.session = session;
+        this.description = description;
         this.creator = creator;
     }
 
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public String getScheduleName() { return scheduleName; }
 
     public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
-
-    public Integer getSession() { return session; }
-
-    public void setSession(Integer session) { this.session = session; }
 
     public User getCreator() { return creator; }
 

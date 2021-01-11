@@ -22,7 +22,8 @@ public class Schedule {
     private String scheduleName;
 
     @NotBlank
-    private Integer session;
+    @Size(max = 300)
+    private String description;
 
     @NotBlank
     @ManyToOne
@@ -34,16 +35,16 @@ public class Schedule {
 
     public Schedule() {}
 
-    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank Integer session, @NotBlank User creator, Set<Hours> hours) {
+    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank @Size(max = 300) String description, @NotBlank User creator, Set<Hours> hours) {
         this.scheduleName = scheduleName;
-        this.session = session;
+        this.description = description;
         this.creator = creator;
         this.hours = hours;
     }
 
-    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank Integer session, @NotBlank User creator) {
+    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank @Size(max = 300) String description, @NotBlank User creator) {
         this.scheduleName = scheduleName;
-        this.session = session;
+        this.description = description;
         this.creator = creator;
     }
 
@@ -55,9 +56,9 @@ public class Schedule {
 
     public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
 
-    public Integer getSession() { return session; }
+    public String getDescription() { return description; }
 
-    public void setSession(Integer session) { this.session = session; }
+    public void setDescription(String description) { this.description = description; }
 
     public User getCreator() { return creator; }
 

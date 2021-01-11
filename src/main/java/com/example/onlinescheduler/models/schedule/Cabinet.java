@@ -19,14 +19,20 @@ public class Cabinet {
     @NotBlank
     private Boolean specialCabinet;
 
+    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private Schedule schedule;
+
     @OneToMany(mappedBy = "cabinet")
     private Set<Hours> hours;
 
     public Cabinet() {}
 
-    public Cabinet(@NotBlank @Size(max = 100) String cabinetName, @NotBlank Boolean specialCabinet) {
+    public Cabinet(@NotBlank @Size(max = 100) String cabinetName, @NotBlank Boolean specialCabinet, @NotBlank Schedule schedule) {
         this.cabinetName = cabinetName;
         this.specialCabinet = specialCabinet;
+        this.schedule = schedule;
     }
 
     public Long getId() {

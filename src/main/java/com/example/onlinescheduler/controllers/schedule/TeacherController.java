@@ -26,7 +26,12 @@ public class TeacherController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherRequest teacherRequest) {
-        Teacher teacher = new Teacher(teacherRequest.getTeacherName(), teacherRequest.getSubjects());
+        Teacher teacher = new Teacher(
+                teacherRequest.getTeacherName(),
+                teacherRequest.getInitials(),
+                teacherRequest.getSubjects(),
+                teacherRequest.getSchedule()
+        );
         teacherRepository.save(teacher);
 
         return new ResponseEntity<>(teacher, HttpStatus.CREATED);

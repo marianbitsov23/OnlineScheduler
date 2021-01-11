@@ -19,12 +19,20 @@ public class Subject {
     @Size(max = 120)
     private String subjectName;
 
+    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private Schedule schedule;
+
     @OneToMany(mappedBy = "subject")
     private Set<Hours> hours;
 
     public Subject() {}
 
-    public Subject(@NotBlank @Size(max = 120) String subjectName) { this.subjectName = subjectName; }
+    public Subject(@NotBlank @Size(max = 120) String subjectName, @NotBlank Schedule schedule) {
+        this.subjectName = subjectName;
+        this.schedule = schedule;
+    }
 
     public Long getId() { return id; }
 

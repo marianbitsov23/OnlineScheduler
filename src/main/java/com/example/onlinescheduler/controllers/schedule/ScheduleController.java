@@ -37,7 +37,7 @@ public class ScheduleController {
     public ResponseEntity<Schedule> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
         Schedule schedule = new Schedule(
                 scheduleRequest.getScheduleName(),
-                scheduleRequest.getSession(),
+                scheduleRequest.getDescription(),
                 scheduleRequest.getCreator()
         );
 
@@ -75,7 +75,7 @@ public class ScheduleController {
             newSchedule.setScheduleName(schedule.getScheduleName());
             newSchedule.setCreator(schedule.getCreator());
             newSchedule.setHours(schedule.getHours());
-            newSchedule.setSession(schedule.getSession());
+            newSchedule.setDescription(schedule.getDescription());
 
             return new ResponseEntity<>(scheduleRepository.save(newSchedule), HttpStatus.OK);
         } else {

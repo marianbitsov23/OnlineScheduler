@@ -28,16 +28,18 @@ public class Hours {
     @NotBlank
     private Integer amount;
 
+    @NotBlank
     @ManyToOne
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
     public Hours() {}
 
-    public Hours(Subject subject, Cabinet cabinet, @NotBlank Integer amount) {
+    public Hours(Subject subject, Cabinet cabinet, @NotBlank Integer amount, @NotBlank Schedule schedule) {
         this.subject = subject;
         this.cabinet = cabinet;
         this.amount = amount;
+        this.schedule = schedule;
     }
 
     public Long getId() { return id; }

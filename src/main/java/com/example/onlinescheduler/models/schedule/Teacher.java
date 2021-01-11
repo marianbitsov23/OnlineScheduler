@@ -20,6 +20,15 @@ public class Teacher {
     @Size(max = 100)
     private String teacherName;
 
+    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private Schedule schedule;
+
+    @NotBlank
+    @Size(max = 10)
+    private String initials;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "teacher_subjects",
@@ -29,11 +38,16 @@ public class Teacher {
 
     public Teacher() {}
 
-    public Teacher(@NotBlank @Size(max = 100) String teacherName, Set<Subject> subjects) {
+    public Teacher(@NotBlank @Size(max = 100) String teacherName, @NotBlank @Size(max = 10) String initials, Set<Subject> subjects, @NotBlank Schedule schedule) {
         this.teacherName = teacherName;
         this.subjects = subjects;
+        this.initials = initials;
+        this.schedule = schedule;
     }
 
+    public String getInitials() { return initials; }
+
+    public void setInitials(String initials) { this.initials = initials; }
 
     public Long getId() {
         return id;
@@ -58,4 +72,8 @@ public class Teacher {
     public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
     }
+
+    public Schedule getSchedule() { return schedule; }
+
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 }

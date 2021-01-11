@@ -40,7 +40,12 @@ public class HoursController {
 
     @PostMapping
     public ResponseEntity<Hours> createHour(@RequestBody HourRequest hourRequest) {
-        Hours newHour = new Hours(hourRequest.getSubject(), hourRequest.getCabinet(), hourRequest.getAmount());
+        Hours newHour = new Hours(
+                hourRequest.getSubject(),
+                hourRequest.getCabinet(),
+                hourRequest.getAmount(),
+                hourRequest.getSchedule()
+        );
 
         hoursRepository.save(newHour);
 

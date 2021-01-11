@@ -23,7 +23,11 @@ public class CabinetController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
-        Cabinet cabinet = new Cabinet(cabinetRequest.getCabinetName(), cabinetRequest.getSpecialCabinet());
+        Cabinet cabinet = new Cabinet(
+                cabinetRequest.getCabinetName(),
+                cabinetRequest.getSpecialCabinet(),
+                cabinetRequest.getSchedule()
+        );
         cabinetRepository.save(cabinet);
 
         return new ResponseEntity<>(cabinet, HttpStatus.CREATED);
