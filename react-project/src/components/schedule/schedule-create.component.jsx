@@ -14,6 +14,7 @@ export default class CreateSchedule extends Component {
         this.state = {
             scheduleName: "",
             description: "",
+            schoolName: "",
             creator: authService.getCurrentUser(),
             message: "",
             loading: false
@@ -33,7 +34,7 @@ export default class CreateSchedule extends Component {
 
         this.form.validateAll();
 
-        const { scheduleName, description, creator } = this.state;
+        const { scheduleName, description, creator, schoolName } = this.state;
 
         const updatedUser = {
             id: creator.id,
@@ -45,7 +46,7 @@ export default class CreateSchedule extends Component {
         };
 
 
-        scheduleService.createSchedule(scheduleName, description, updatedUser)
+        scheduleService.createSchedule(scheduleName, description, updatedUser, schoolName)
         .then(result => {
             //add schedule to the current user
 
@@ -72,9 +73,7 @@ export default class CreateSchedule extends Component {
     }
 
     onChange = event => {
-        this.setState({
-            [event.target.name] : event.target.value
-        });
+        this.setState({ [event.target.name] : event.target.value });
     }
 
     render() {
@@ -112,10 +111,21 @@ export default class CreateSchedule extends Component {
                         <FormGroup>
                             <FormBootstrap.Label htmlFor="description">Description</FormBootstrap.Label>
                             <Input
-                                type="text"
+                                type="textarea"
                                 className="form-control"
                                 name="description"
                                 value={this.state.description}
+                                onChange={this.onChange}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <FormBootstrap.Label htmlFor="schoolName">School name</FormBootstrap.Label>
+                            <Input
+                                type="textarea"
+                                className="form-control"
+                                name="schoolName"
+                                value={this.state.schoolName}
                                 onChange={this.onChange}
                             />
                         </FormGroup>

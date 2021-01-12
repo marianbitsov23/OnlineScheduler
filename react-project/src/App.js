@@ -18,6 +18,7 @@ import CreateCabinet from "./components/schedule/cabinet-create.component";
 import CreateSubject from "./components/schedule/subject-create.compnent";
 import CreateTeacher from "./components/schedule/teacher-create.component";
 import CreateTimeTable from "./components/schedule/timeManegment/time-table-create.component";
+import CreateGroup from "./components/schedule/group-create.component";
 
 class App extends Component {
     constructor(props) {
@@ -58,6 +59,7 @@ class App extends Component {
                       <Route exact path = "/create-subject" component={CreateSubject} />
                       <Route exact path = "/create-teacher" component={CreateTeacher} />
                       <Route exact path = "/create-time-table" component={CreateTimeTable} />
+                      <Route exact path = "/create-group" component={CreateGroup} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />

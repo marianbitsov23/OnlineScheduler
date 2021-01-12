@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 import authHeader from '../user-auth/auth-header';
 
@@ -14,9 +13,9 @@ class ScheduleService {
         {headers: authHeader()});
     }
 
-    createSchedule(scheduleName, description, creator) {
+    createSchedule(scheduleName, description, creator, groupName) {
         return axios.post(API_URL,
-            {scheduleName, description, creator} , 
+            {scheduleName, description, creator, groupName} , 
             {headers: authHeader()});
     }
 
