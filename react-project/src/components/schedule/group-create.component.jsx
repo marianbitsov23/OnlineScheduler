@@ -85,6 +85,29 @@ export default class CreateGroup extends Component {
                                     </Button>
                                 </Col>
                             </Row>
+                            <Row className="justify-content-md-center">
+                                <Col xs lg="2">
+                                    <Button variant="info">
+                                        {schedule.parentGroup.groupName}
+                                    </Button>
+                                </Col>
+                                <Col xs lg="2">
+                                    <Button variant="info">
+                                        {schedule.parentGroup.groupName}
+                                    </Button>
+                                </Col>
+                                <Col xs lg="2">
+                                    <Button variant="info">
+                                        {schedule.parentGroup.groupName}
+                                    </Button>
+                                </Col>
+                                <Col xs lg="2">
+                                    <Button variant="info">
+                                        {schedule.parentGroup.groupName}
+                                    </Button>
+                                </Col>
+                                
+                            </Row>
                             <Row>
                                 {groups && groups.map(group => (
                                     <Col xs lg="2">

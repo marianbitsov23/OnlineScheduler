@@ -77,7 +77,7 @@ export default class Profile extends Component {
             <>
                 <Container>
                     <h2>Your schedules</h2>
-                    {(schedules.map(schedule => (
+                    {schedules && (schedules.map(schedule => (
                         <li key={schedule.id}>Name {schedule.scheduleName} : session {schedule.session} </li>
                     )))}
                 </Container>
