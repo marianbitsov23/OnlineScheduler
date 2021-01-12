@@ -18,15 +18,15 @@ public class ScheduleRequest {
     private User creator;
 
     @NotBlank
-    private Group parentGroup;
+    private String groupName;
 
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator, @NotBlank Group parentGroup) {
+    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator, @NotBlank String groupName) {
         this.scheduleName = scheduleName;
         this.description = description;
         this.creator = creator;
-        this.parentGroup = parentGroup;
+        this.groupName = groupName;
     }
 
     public String getDescription() { return description; }
@@ -41,7 +41,7 @@ public class ScheduleRequest {
 
     public void setCreator(User creator) { this.creator = creator; }
 
-    public Group getParentGroup() { return parentGroup; }
+    public String getGroupName() { return groupName; }
 
-    public void setParentGroup(Group parentGroup) { this.parentGroup = parentGroup; }
+    public void setGroupName(String groupName) { this.groupName = groupName; }
 }

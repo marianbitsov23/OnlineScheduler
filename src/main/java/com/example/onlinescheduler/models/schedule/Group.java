@@ -11,7 +11,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private Group parent;
 
@@ -33,12 +33,16 @@ public class Group {
         this.schedule = schedule;
     }
 
+    public Group(Group parent, @NotBlank String groupName) {
+        this.parent = parent;
+        this.groupName = groupName;
+    }
 
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
 
-    public Group getParent() { return parent; }
+    public Long getParent() { return null; }
 
     public void setParent(Group parent) { this.parent = parent; }
 

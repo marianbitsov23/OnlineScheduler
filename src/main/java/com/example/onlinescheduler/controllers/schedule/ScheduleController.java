@@ -1,11 +1,9 @@
 package com.example.onlinescheduler.controllers.schedule;
 
+import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.payload.schedule.ScheduleRequest;
-import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
-import com.example.onlinescheduler.repositories.schedule.ScheduleRepository;
-import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
-import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
+import com.example.onlinescheduler.repositories.schedule.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,22 +22,20 @@ public class ScheduleController {
     ScheduleRepository scheduleRepository;
 
     @Autowired
-    TeacherRepository teacherRepository;
-
-    @Autowired
-    SubjectRepository subjectRepository;
-
-    @Autowired
-    CabinetRepository cabinetRepository;
+    GroupRepository groupRepository;
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+        Group parentGroup = new Group(null, scheduleRequest.getGroupName());
+
+        groupRepository.save(parentGroup);
+
         Schedule schedule = new Schedule(
                 scheduleRequest.getScheduleName(),
                 scheduleRequest.getDescription(),
                 scheduleRequest.getCreator(),
-                scheduleRequest.getParentGroup()
+                parentGroup
         );
 
         scheduleRepository.save(schedule);
@@ -47,6 +43,14 @@ public class ScheduleController {
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
     }
 
+    @GetMapping("/groups/{parentGroupId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Group> getGroupParentById(@PathVariable Long parentGroupId) {
+        Optional<Group> group = groupRepository.findById(parentGroupId);
+
+        return group.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping("/user/{creatorId}/schedules")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

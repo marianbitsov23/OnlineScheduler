@@ -36,8 +36,15 @@ public class GroupController {
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
         Optional<Group> foundGroup = groupRepository.findById(id);
 
-        return foundGroup.map(group -> new ResponseEntity<>(group, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if(foundGroup.isPresent()) {
+            Group group = new Group();
+            group.setId(foundGroup.get().getId());
+            group.setChildren(foundGroup.get().getChildren());
+            group.setGroupName(foundGroup.get().getGroupName());
+            return new ResponseEntity<>(group, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
@@ -45,9 +52,7 @@ public class GroupController {
     public ResponseEntity<Group> createGroup(@RequestBody GroupRequest groupRequest) {
         Group group = new Group(
                 groupRequest.getParent(),
-                groupRequest.getGroupName(),
-                groupRequest.getChildren(),
-                groupRequest.getSchedule());
+                groupRequest.getGroupName());
         groupRepository.save(group);
 
         return new ResponseEntity<>(group, HttpStatus.CREATED);
@@ -58,6 +63,7 @@ public class GroupController {
     public ResponseEntity<Group> updateGroupInformation(@PathVariable Long id, @RequestBody Group group) {
         Optional<Group> foundGroup = groupRepository.findById(id);
 
+        /*
         if(foundGroup.isPresent()) {
             Group newGroup = foundGroup.get();
             newGroup.setChildren(group.getChildren());
@@ -66,6 +72,9 @@ public class GroupController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+         */
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
