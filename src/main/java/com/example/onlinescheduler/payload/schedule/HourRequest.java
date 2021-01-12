@@ -1,6 +1,6 @@
 package com.example.onlinescheduler.payload.schedule;
 
-import com.example.onlinescheduler.models.schedule.Cabinet;
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.Subject;
 

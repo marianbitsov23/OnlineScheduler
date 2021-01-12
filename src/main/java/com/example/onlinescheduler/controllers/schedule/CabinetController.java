@@ -1,8 +1,8 @@
 package com.example.onlinescheduler.controllers.schedule;
 
-import com.example.onlinescheduler.models.schedule.Cabinet;
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.payload.schedule.CabinetRequest;
-import com.example.onlinescheduler.repositories.schedule.CabinetRepository;
+import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,6 @@ public class CabinetController {
     public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
         Cabinet cabinet = new Cabinet(
                 cabinetRequest.getCabinetName(),
-                cabinetRequest.getSpecialCabinet(),
                 cabinetRequest.getSchedule()
         );
         cabinetRepository.save(cabinet);
@@ -62,7 +61,7 @@ public class CabinetController {
         if(foundCabinet.isPresent()) {
             Cabinet newCabinet = foundCabinet.get();
             newCabinet.setCabinetName(cabinet.getCabinetName());
-            newCabinet.setSpecialCabinet(cabinet.getSpecialCabinet());
+            newCabinet.setCabinetCategories(cabinet.getCabinetCategories());
             return new ResponseEntity<>(cabinetRepository.save(newCabinet), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

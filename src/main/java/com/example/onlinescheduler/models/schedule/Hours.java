@@ -1,5 +1,7 @@
 package com.example.onlinescheduler.models.schedule;
 
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 

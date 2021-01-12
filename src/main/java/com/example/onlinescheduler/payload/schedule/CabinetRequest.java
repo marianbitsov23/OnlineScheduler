@@ -3,22 +3,23 @@ package com.example.onlinescheduler.payload.schedule;
 import com.example.onlinescheduler.models.schedule.Schedule;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 public class CabinetRequest {
     @NotBlank
     private String cabinetName;
 
     @NotBlank
-    private Boolean specialCabinet;
+    Set<String> categories;
 
     @NotBlank
     private Schedule schedule;
 
     public CabinetRequest() {}
 
-    public CabinetRequest(@NotBlank String cabinetName, @NotBlank Boolean specialCabinet, @NotBlank Schedule schedule) {
+    public CabinetRequest(@NotBlank String cabinetName, @NotBlank Set<String> categories, @NotBlank Schedule schedule) {
         this.cabinetName = cabinetName;
-        this.specialCabinet = specialCabinet;
+        this.categories = categories;
         this.schedule = schedule;
     }
 
@@ -30,7 +31,7 @@ public class CabinetRequest {
 
     public void setCabinetName(String cabinetName) { this.cabinetName = cabinetName; }
 
-    public Boolean getSpecialCabinet() { return specialCabinet; }
+    public Set<String> getCategories() { return categories; }
 
-    public void setSpecialCabinet(Boolean specialCabinet) { this.specialCabinet = specialCabinet; }
+    public void setSpecialCabinet(Set<String> categories) { this.categories = categories; }
 }
