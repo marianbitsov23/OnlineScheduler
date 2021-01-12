@@ -29,18 +29,10 @@ public class Teacher {
     @Size(max = 10)
     private String initials;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "teacher_subjects",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id"))
-    Set<Subject> subjects = new HashSet<>();
-
     public Teacher() {}
 
-    public Teacher(@NotBlank @Size(max = 100) String teacherName, @NotBlank @Size(max = 10) String initials, Set<Subject> subjects, @NotBlank Schedule schedule) {
+    public Teacher(@NotBlank @Size(max = 100) String teacherName, @NotBlank @Size(max = 10) String initials, @NotBlank Schedule schedule) {
         this.teacherName = teacherName;
-        this.subjects = subjects;
         this.initials = initials;
         this.schedule = schedule;
     }
@@ -65,15 +57,7 @@ public class Teacher {
         this.teacherName = teacherName;
     }
 
-    public Set<Subject> getSubjects() {
-        return subjects;
-    }
-
-    public void setSubjects(Set<Subject> subjects) {
-        this.subjects = subjects;
-    }
-
-    public Schedule getSchedule() { return schedule; }
+    public Schedule getSchedule() { return null; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 }

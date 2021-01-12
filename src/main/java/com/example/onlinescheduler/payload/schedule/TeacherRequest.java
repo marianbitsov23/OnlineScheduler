@@ -16,14 +16,10 @@ public class TeacherRequest {
     @NotBlank
     private Schedule schedule;
 
-    @NotBlank
-    private Set<Subject> subjects;
-
     public TeacherRequest() {}
 
-    public TeacherRequest(@NotBlank String teacherName, @NotBlank String initials, @NotBlank Set<Subject> subjects, @NotBlank Schedule schedule) {
+    public TeacherRequest(@NotBlank String teacherName, @NotBlank String initials, @NotBlank Schedule schedule) {
         this.teacherName = teacherName;
-        this.subjects = subjects;
         this.schedule = schedule;
     }
 
@@ -37,8 +33,4 @@ public class TeacherRequest {
     public String getTeacherName() { return teacherName; }
 
     public void setTeacherName(String teacherName) { this.teacherName = teacherName; }
-
-    public Set<Subject> getSubjects() { return subjects; }
-
-    public void setSubjects(Set<Subject> subjects) { this.subjects = subjects; }
 }

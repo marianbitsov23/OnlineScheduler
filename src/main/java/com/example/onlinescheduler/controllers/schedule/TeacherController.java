@@ -29,7 +29,6 @@ public class TeacherController {
         Teacher teacher = new Teacher(
                 teacherRequest.getTeacherName(),
                 teacherRequest.getInitials(),
-                teacherRequest.getSubjects(),
                 teacherRequest.getSchedule()
         );
         teacherRepository.save(teacher);
@@ -59,13 +58,14 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> updateTeacherInformation(@PathVariable Long id, @RequestBody Teacher teacher) {
         Optional<Teacher> foundTeacher = teacherRepository.findById(id);
 
         if(foundTeacher.isPresent()) {
             Teacher newTeacher = foundTeacher.get();
             newTeacher.setTeacherName(teacher.getTeacherName());
-            newTeacher.setSubjects(teacher.getSubjects());
+            newTeacher.setInitials(teacher.getInitials());
             return new ResponseEntity<>(teacherRepository.save(newTeacher), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

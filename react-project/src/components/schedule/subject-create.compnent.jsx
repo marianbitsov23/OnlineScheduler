@@ -109,7 +109,7 @@ export default class CreateSubject extends Component {
             <>
                 <Container>
                     <Card>
-                        <Card.Header>Добави предмет</Card.Header>
+                        <Card.Header>Добави нов предмет</Card.Header>
                         <Card.Body>
                             <Form
                                 onSubmit={this.createSubject}

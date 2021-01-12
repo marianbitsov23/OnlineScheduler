@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from '../user-auth/auth-header';
 
-const API_URL = "http://localhost:8080/api/public/teacher/";
+const API_URL = "http://localhost:8080/api/public/teacher";
 
 class TeacherService {
     getAllTeachers() {
@@ -12,15 +12,15 @@ class TeacherService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createTeacher(teacherName, initials, subjects) {
+    createTeacher(teacherName, initials, schedule) {
         return axios.post(API_URL, 
-            {teacherName, initials, subjects},
+            {teacherName, initials, schedule},
             {headers: authHeader()});
     }
 
-    updateTeacherInformation(id, teacherName, subjects) {
+    updateTeacherInformation(id, teacherName, initials) {
         return axios.put(API_URL + '/' + id, 
-        {teacherName, subjects},
+        {id, schedule: null, teacherName, initials},
         {headers: authHeader()});
     }
 
