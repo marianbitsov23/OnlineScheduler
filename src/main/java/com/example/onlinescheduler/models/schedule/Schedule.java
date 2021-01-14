@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "schedules",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = "scheduleName")
+        @UniqueConstraint(columnNames = "name")
 })
 public class Schedule {
     @Id
@@ -19,7 +19,7 @@ public class Schedule {
 
     @NotBlank
     @Size(max = 100)
-    private String scheduleName;
+    private String name;
 
     @NotBlank
     @Size(max = 300)
@@ -40,15 +40,15 @@ public class Schedule {
 
     public Schedule() {}
 
-    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank @Size(max = 300) String description, @NotBlank User creator, Set<Hours> hours) {
-        this.scheduleName = scheduleName;
+    public Schedule(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 300) String description, @NotBlank User creator, Set<Hours> hours) {
+        this.name = name;
         this.description = description;
         this.creator = creator;
         this.hours = hours;
     }
 
-    public Schedule(@NotBlank @Size(max = 100) String scheduleName, @NotBlank @Size(max = 300) String description, @NotBlank User creator, @NotBlank Group parentGroup) {
-        this.scheduleName = scheduleName;
+    public Schedule(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 300) String description, @NotBlank User creator, @NotBlank Group parentGroup) {
+        this.name = name;
         this.description = description;
         this.creator = creator;
         this.parentGroup = parentGroup;
@@ -58,9 +58,9 @@ public class Schedule {
 
     public void setId(Long id) { this.id = id; }
 
-    public String getScheduleName() { return scheduleName; }
+    public String getName() { return name; }
 
-    public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
+    public void setName(String name) { this.name = name; }
 
     public String getDescription() { return description; }
 

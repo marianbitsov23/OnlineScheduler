@@ -40,7 +40,7 @@ public class GroupController {
             Group group = new Group();
             group.setId(foundGroup.get().getId());
             group.setChildren(foundGroup.get().getChildren());
-            group.setGroupName(foundGroup.get().getGroupName());
+            group.setName(foundGroup.get().getName());
             return new ResponseEntity<>(group, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

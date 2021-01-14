@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ScheduleRequest {
     @NotBlank
-    private String scheduleName;
+    private String name;
 
     @NotBlank
     private String description;
@@ -22,8 +22,8 @@ public class ScheduleRequest {
 
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String scheduleName, @NotBlank String description, @NotBlank User creator, @NotBlank String groupName) {
-        this.scheduleName = scheduleName;
+    public ScheduleRequest(@NotBlank String name, @NotBlank String description, @NotBlank User creator, @NotBlank String groupName) {
+        this.name = name;
         this.description = description;
         this.creator = creator;
         this.groupName = groupName;
@@ -33,9 +33,9 @@ public class ScheduleRequest {
 
     public void setDescription(String description) { this.description = description; }
 
-    public String getScheduleName() { return scheduleName; }
+    public String getName() { return name; }
 
-    public void setScheduleName(String scheduleName) { this.scheduleName = scheduleName; }
+    public void setName(String name) { this.name = name; }
 
     public User getCreator() { return creator; }
 

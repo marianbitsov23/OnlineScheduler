@@ -1,4 +1,4 @@
-package com.example.onlinescheduler.payload.schedule;
+package com.example.onlinescheduler.payload.schedule.cabinet;
 
 import com.example.onlinescheduler.models.schedule.Schedule;
 
@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class CabinetRequest {
     @NotBlank
-    private String cabinetName;
+    private String name;
 
     @NotBlank
     Set<String> categories;
@@ -17,8 +17,8 @@ public class CabinetRequest {
 
     public CabinetRequest() {}
 
-    public CabinetRequest(@NotBlank String cabinetName, @NotBlank Set<String> categories, @NotBlank Schedule schedule) {
-        this.cabinetName = cabinetName;
+    public CabinetRequest(@NotBlank String name, @NotBlank Set<String> categories, @NotBlank Schedule schedule) {
+        this.name = name;
         this.categories = categories;
         this.schedule = schedule;
     }
@@ -27,9 +27,9 @@ public class CabinetRequest {
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public String getCabinetName() { return cabinetName; }
+    public String getName() { return name; }
 
-    public void setCabinetName(String cabinetName) { this.cabinetName = cabinetName; }
+    public void setName(String name) { this.name = name; }
 
     public Set<String> getCategories() { return categories; }
 

@@ -27,7 +27,7 @@ public class TeacherController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherRequest teacherRequest) {
         Teacher teacher = new Teacher(
-                teacherRequest.getTeacherName(),
+                teacherRequest.getName(),
                 teacherRequest.getInitials(),
                 teacherRequest.getSchedule()
         );
@@ -64,7 +64,7 @@ public class TeacherController {
 
         if(foundTeacher.isPresent()) {
             Teacher newTeacher = foundTeacher.get();
-            newTeacher.setTeacherName(teacher.getTeacherName());
+            newTeacher.setName(teacher.getName());
             newTeacher.setInitials(teacher.getInitials());
             return new ResponseEntity<>(teacherRepository.save(newTeacher), HttpStatus.OK);
         } else {

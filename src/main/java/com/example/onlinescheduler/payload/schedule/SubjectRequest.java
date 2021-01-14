@@ -6,15 +6,15 @@ import javax.validation.constraints.NotBlank;
 
 public class SubjectRequest {
     @NotBlank
-    private String subjectName;
+    private String name;
 
     @NotBlank
     private Schedule schedule;
 
     public SubjectRequest() {}
 
-    public SubjectRequest(@NotBlank String subjectName, @NotBlank Schedule schedule) {
-        this.subjectName = subjectName;
+    public SubjectRequest(@NotBlank String name, @NotBlank Schedule schedule) {
+        this.name = name;
         this.schedule = schedule;
     }
 
@@ -22,7 +22,7 @@ public class SubjectRequest {
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public String getSubjectName() { return subjectName; }
+    public String getName() { return name; }
 
-    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+    public void setName(String name) { this.name = name; }
 }

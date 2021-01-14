@@ -16,7 +16,7 @@ public class Group {
     private Group parent;
 
     @NotBlank
-    private String groupName;
+    private String name;
 
     @OneToOne(mappedBy = "parentGroup")
     private Schedule schedule;
@@ -26,16 +26,16 @@ public class Group {
 
     public Group() {}
 
-    public Group(Group parent, @NotBlank String groupName, Set<Group> children, Schedule schedule) {
+    public Group(Group parent, @NotBlank String name, Set<Group> children, Schedule schedule) {
         this.parent = parent;
-        this.groupName = groupName;
+        this.name = name;
         this.children = children;
         this.schedule = schedule;
     }
 
-    public Group(Group parent, @NotBlank String groupName) {
+    public Group(Group parent, @NotBlank String name) {
         this.parent = parent;
-        this.groupName = groupName;
+        this.name = name;
     }
 
     public Long getId() { return id; }
@@ -50,11 +50,11 @@ public class Group {
 
     public void setChildren(Set<Group> children) { this.children = children; }
 
-    public Schedule getSchedule() { return schedule; }
+    public Schedule getSchedule() { return null; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public String getGroupName() { return groupName; }
+    public String getName() { return name; }
 
-    public void setGroupName(String groupName) { this.groupName = groupName; }
+    public void setName(String name) { this.name = name; }
 }

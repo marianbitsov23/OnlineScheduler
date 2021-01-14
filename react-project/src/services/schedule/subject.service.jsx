@@ -12,17 +12,17 @@ class SubjectService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createSubject(subjectName, schedule) {
-        return axios.post(API_URL, {subjectName, schedule}, { headers: authHeader() });
+    createSubject(name, schedule) {
+        return axios.post(API_URL, {name, schedule}, { headers: authHeader() });
     }
 
-    updateSubjectInformation(id, subjectName, schedule, hours) {
-        return axios.put(API_URL + '/' + id, 
-            {id, subjectName, schedule, hours},
+    update(subject) {
+        return axios.put(API_URL + '/' + subject.id, 
+            {id: subject.id, name: subject.name, schedule: subject.schedule, hours: subject.hours},
             {headers: authHeader()});
     }
 
-    deleteSubject(id) {
+    delete(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }

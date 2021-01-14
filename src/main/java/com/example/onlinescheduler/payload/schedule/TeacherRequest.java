@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class TeacherRequest {
     @NotBlank
-    private String teacherName;
+    private String name;
 
     @NotBlank
     private String initials;
@@ -18,8 +18,8 @@ public class TeacherRequest {
 
     public TeacherRequest() {}
 
-    public TeacherRequest(@NotBlank String teacherName, @NotBlank String initials, @NotBlank Schedule schedule) {
-        this.teacherName = teacherName;
+    public TeacherRequest(@NotBlank String name, @NotBlank String initials, @NotBlank Schedule schedule) {
+        this.name = name;
         this.schedule = schedule;
     }
 
@@ -30,7 +30,7 @@ public class TeacherRequest {
 
     public void setInitials(String initials) { this.initials = initials; }
 
-    public String getTeacherName() { return teacherName; }
+    public String getName() { return name; }
 
-    public void setTeacherName(String teacherName) { this.teacherName = teacherName; }
+    public void setName(String name) { this.name = name; }
 }

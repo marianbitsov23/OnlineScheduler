@@ -1,7 +1,7 @@
 import axios from 'axios';
-import authHeader from '../user-auth/auth-header';
+import authHeader from '../../user-auth/auth-header';
 
-const API_URL = "http://localhost:8080/api/public/cabinet/";
+const API_URL = "http://localhost:8080/api/public/cabinet";
 
 class CabinetService {
     getAllCabinets() {
@@ -12,19 +12,19 @@ class CabinetService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createCabinet(cabinetName, specialCabinet) {
+    createCabinet(name, categories, schedule) {
         return axios.post(API_URL, 
-            {cabinetName, specialCabinet},
+            {name, categories, schedule},
             {headers: authHeader()} );
     }
 
-    updateCabinetInformation(id, cabinetName, specialCabinet) {
-        return axios.put(API_URL + '/' + id, 
-            {cabinetName, specialCabinet},
+    update(cabinet) {
+        return axios.put(API_URL + '/' + cabinet.id, 
+            {name: cabinet.name, categories: cabinet.categories},
             {headers: authHeader()});
     }
 
-    deleteCabinet(id) {
+    delete(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }

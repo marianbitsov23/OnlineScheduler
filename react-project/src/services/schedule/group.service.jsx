@@ -12,9 +12,9 @@ class GroupService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createGroup(parent, groupName, children, schedule) {
+    createGroup(parent, name, children, schedule) {
         return axios.post(API_URL, 
-            {parent, groupName, children, schedule},
+            {parent, name, children, schedule},
             {headers: authHeader()} );
     }
 

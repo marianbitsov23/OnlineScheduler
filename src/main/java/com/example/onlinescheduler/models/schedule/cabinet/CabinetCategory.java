@@ -9,13 +9,12 @@ public class CabinetCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private ECabinetCategory name;
+    @Column(length = 40)
+    private String name;
 
     public CabinetCategory() {}
 
-    public CabinetCategory(ECabinetCategory name) {
+    public CabinetCategory(String name) {
         this.name = name;
     }
 
@@ -27,11 +26,11 @@ public class CabinetCategory {
         this.id = id;
     }
 
-    public ECabinetCategory getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(ECabinetCategory name) {
+    public void setName(String name) {
         this.name = name;
     }
 }

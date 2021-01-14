@@ -32,7 +32,7 @@ public class ScheduleController {
         groupRepository.save(parentGroup);
 
         Schedule schedule = new Schedule(
-                scheduleRequest.getScheduleName(),
+                scheduleRequest.getName(),
                 scheduleRequest.getDescription(),
                 scheduleRequest.getCreator(),
                 parentGroup
@@ -77,7 +77,7 @@ public class ScheduleController {
 
         if(foundSchedule.isPresent()) {
             Schedule newSchedule = foundSchedule.get();
-            newSchedule.setScheduleName(schedule.getScheduleName());
+            newSchedule.setName(schedule.getName());
             newSchedule.setCreator(schedule.getCreator());
             newSchedule.setHours(schedule.getHours());
             newSchedule.setDescription(schedule.getDescription());

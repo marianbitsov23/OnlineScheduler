@@ -19,7 +19,7 @@ public class Cabinet {
 
     @NotBlank
     @Size(max = 100)
-    private String cabinetName;
+    private String name;
 
     @NotBlank
     @ManyToOne
@@ -33,13 +33,10 @@ public class Cabinet {
 
     private Set<CabinetCategory> cabinetCategories = new HashSet<>();
 
-    @OneToMany(mappedBy = "cabinet")
-    private Set<Hours> hours;
-
     public Cabinet() {}
 
-    public Cabinet(@NotBlank @Size(max = 100) String cabinetName, @NotBlank Schedule schedule) {
-        this.cabinetName = cabinetName;
+    public Cabinet(@NotBlank @Size(max = 100) String name, @NotBlank Schedule schedule) {
+        this.name = name;
         this.schedule = schedule;
     }
 
@@ -51,12 +48,12 @@ public class Cabinet {
         this.id = id;
     }
 
-    public String getCabinetName() {
-        return cabinetName;
+    public String getName() {
+        return name;
     }
 
-    public void setCabinetName(String cabinetName) {
-        this.cabinetName = cabinetName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Schedule getSchedule() { return schedule; }

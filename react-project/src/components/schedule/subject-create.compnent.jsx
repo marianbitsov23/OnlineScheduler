@@ -5,6 +5,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import scheduleService from '../../services/schedule/schedule.service';
 import subjectService from '../../services/schedule/subject.service';
+import TableList from '../shared/table.component';
 
 export default class CreateSubject extends Component {
     constructor(props) {
@@ -14,15 +15,10 @@ export default class CreateSubject extends Component {
             subjectName: "",
             loading: false,
             subjects: [],
-            editableSubject: {},
-            show: false,
             schedule: scheduleService.getCurrentSchedule()
         };
 
         this.createSubject.bind(this);
-        this.editSubject.bind(this);
-        this.deleteSubject.bind(this);
-        this.onShow.bind(this);
     }
 
     componentDidMount() {
@@ -55,53 +51,14 @@ export default class CreateSubject extends Component {
         });
     }
 
-    deleteSubject = subject => {
-        let { subjects } = this.state;
-
-        subjectService.deleteSubject(subject.id)
-        .then(() => {
-            subjects.splice(subjects.indexOf(subject), 1);
-            this.setState({ subjects });
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-
-    saveSubject = event => {
-        event.preventDefault();
-
-        this.setState({ loading: true });
-
-        const { editableSubject } = this.state;
-
-        subjectService.updateSubjectInformation(editableSubject.id, editableSubject.subjectName, editableSubject.schedule, null)
-        .then(() => {
-            this.setState({ loading: false, show: false });
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    }
-
-    onShow = subject => {
-        this.setState({ show: !this.state.show, editableSubject: subject });
-    }
-
     onChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name] : event.target.value });
     }
 
-    editSubject = event => {
-        let { editableSubject } = this.state;
-        editableSubject.subjectName = event.target.value;
-        this.setState({ editableSubject });
-    }
-
     render() {
 
-        const { subjectName, subjects, show, editableSubject} = this.state;
+        const { subjectName, subjects} = this.state;
 
         const isInvalid = subjectName === "";
 
@@ -145,80 +102,7 @@ export default class CreateSubject extends Component {
                 </Container>
                 <hr />
                 <Container>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Име на предмета</th>
-                                <th></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {subjects.map(subject => (
-                                    <tr key={subject.id}>
-                                        <td>{subject.subjectName}</td>
-                                        <Modal 
-                                        show={show}
-                                        onHide={() => this.setState({ show: !show })}
-                                        centered
-                                        >
-                                            <Modal.Header closeButton>
-                                                <Modal.Title>Променете името на предмета</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Body>
-                                                <Form
-                                                onSubmit={this.saveSubject}
-                                                ref={c => {
-                                                    this.form = c;
-                                                }}
-                                                >
-                                                    <FormGroup>
-                                                        <Input
-                                                            type="text"
-                                                            className="form-control"
-                                                            name="editableSubject"
-                                                            value={editableSubject.subjectName}
-                                                            onChange={this.editSubject}
-                                                        />
-                                                    </FormGroup>
-
-                                                    
-                                                    <FormGroup>
-                                                        <Button
-                                                            type="submit"
-                                                            variant="success"
-                                                            className="btn-block">
-                                                                {this.state.loading &&
-                                                                    <span className="spinner-border spinner-border-sm"></span>
-                                                                }
-                                                                <span>Запази</span>
-                                                            </Button>
-                                                    </FormGroup>
-                                                </Form>
-                                            </Modal.Body>
-                                        </Modal>
-                                        <td>
-                                            <Button
-                                            variant="warning"
-                                            name={subject.subjectName}
-                                            onClick={this.onShow.bind(this, subject)}
-                                            >
-                                                Промяна
-                                            </Button>
-                                        </td>
-                                        <td>
-                                            <Button
-                                            variant="danger"
-                                            name={subject.id}
-                                            onClick={this.deleteSubject.bind(this, subject)}
-                                            >
-                                                Изтриване
-                                            </Button>
-                                        </td>
-                                    </tr>                 
-                            ))}
-                        </tbody>
-                    </Table>
+                    <TableList type="предмета" elements={subjects} service={subjectService} />
                 </Container>
                 <Button
                     className="btn-block"

@@ -13,9 +13,9 @@ class ScheduleService {
         {headers: authHeader()});
     }
 
-    createSchedule(scheduleName, description, creator, groupName) {
+    createSchedule(name, description, creator, groupName) {
         return axios.post(API_URL,
-            {scheduleName, description, creator, groupName} , 
+            {name, description, creator, groupName} , 
             {headers: authHeader()});
     }
 
@@ -23,11 +23,11 @@ class ScheduleService {
         localStorage.setItem("schedule", JSON.stringify(schedule));
     }
 
-    updateScheduleInformation(id, scheduleName, session, creator, hours) {
+    updateScheduleInformation(id, name, session, creator, hours) {
         return axios.put(API_URL + '/' + id, 
         {   
             id,
-            scheduleName,
+            name,
             session,
             creator,
             hours   

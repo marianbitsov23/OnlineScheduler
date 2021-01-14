@@ -8,7 +8,7 @@ import java.util.Set;
 @Entity
 @Table(name = "subjects",
         uniqueConstraints = {
-        @UniqueConstraint(columnNames = "subjectName")
+        @UniqueConstraint(columnNames = "name")
 })
 public class Subject {
     @Id
@@ -17,7 +17,7 @@ public class Subject {
 
     @NotBlank
     @Size(max = 120)
-    private String subjectName;
+    private String name;
 
     @NotBlank
     @ManyToOne
@@ -29,8 +29,8 @@ public class Subject {
 
     public Subject() {}
 
-    public Subject(@NotBlank @Size(max = 120) String subjectName, @NotBlank Schedule schedule) {
-        this.subjectName = subjectName;
+    public Subject(@NotBlank @Size(max = 120) String name, @NotBlank Schedule schedule) {
+        this.name = name;
         this.schedule = schedule;
     }
 
@@ -38,8 +38,8 @@ public class Subject {
 
     public void setId(Long id) { this.id = id; }
 
-    public String getSubjectName() { return subjectName; }
+    public String getName() { return name; }
 
-    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
+    public void setName(String name) { this.name = name; }
 
 }

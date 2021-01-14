@@ -1,7 +1,7 @@
-package com.example.onlinescheduler.controllers.schedule;
+package com.example.onlinescheduler.controllers.schedule.cabinet;
 
 import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
-import com.example.onlinescheduler.payload.schedule.CabinetRequest;
+import com.example.onlinescheduler.payload.schedule.cabinet.CabinetRequest;
 import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/public/cabinet")
 public class CabinetController {
-
     @Autowired
     CabinetRepository cabinetRepository;
 
@@ -24,7 +23,7 @@ public class CabinetController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
         Cabinet cabinet = new Cabinet(
-                cabinetRequest.getCabinetName(),
+                cabinetRequest.getName(),
                 cabinetRequest.getSchedule()
         );
         cabinetRepository.save(cabinet);
@@ -60,7 +59,7 @@ public class CabinetController {
 
         if(foundCabinet.isPresent()) {
             Cabinet newCabinet = foundCabinet.get();
-            newCabinet.setCabinetName(cabinet.getCabinetName());
+            newCabinet.setName(cabinet.getName());
             newCabinet.setCabinetCategories(cabinet.getCabinetCategories());
             return new ResponseEntity<>(cabinetRepository.save(newCabinet), HttpStatus.OK);
         } else {

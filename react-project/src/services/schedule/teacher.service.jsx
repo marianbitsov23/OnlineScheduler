@@ -12,19 +12,19 @@ class TeacherService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createTeacher(teacherName, initials, schedule) {
+    createTeacher(name, initials, schedule) {
         return axios.post(API_URL, 
-            {teacherName, initials, schedule},
+            {name, initials, schedule},
             {headers: authHeader()});
     }
 
-    updateTeacherInformation(id, teacherName, initials) {
-        return axios.put(API_URL + '/' + id, 
-        {id, schedule: null, teacherName, initials},
+    update(teacher) {
+        return axios.put(API_URL + '/' + teacher.id, 
+        {id: teacher.id, schedule: null, name: teacher.name, initials: teacher.initials},
         {headers: authHeader()});
     }
 
-    deleteTeacher(id) {
+    delete(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }

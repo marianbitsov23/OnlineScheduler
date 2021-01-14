@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "teachers",
     uniqueConstraints = {
-    @UniqueConstraint(columnNames = "teacherName")
+    @UniqueConstraint(columnNames = "name")
 })
 public class Teacher {
     @Id
@@ -18,7 +18,7 @@ public class Teacher {
 
     @NotBlank
     @Size(max = 100)
-    private String teacherName;
+    private String name;
 
     @NotBlank
     @ManyToOne
@@ -31,8 +31,8 @@ public class Teacher {
 
     public Teacher() {}
 
-    public Teacher(@NotBlank @Size(max = 100) String teacherName, @NotBlank @Size(max = 10) String initials, @NotBlank Schedule schedule) {
-        this.teacherName = teacherName;
+    public Teacher(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 10) String initials, @NotBlank Schedule schedule) {
+        this.name = name;
         this.initials = initials;
         this.schedule = schedule;
     }
@@ -49,12 +49,12 @@ public class Teacher {
         this.id = id;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public String getName() {
+        return name;
     }
 
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Schedule getSchedule() { return null; }

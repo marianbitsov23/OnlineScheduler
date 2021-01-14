@@ -22,8 +22,7 @@ public class SubjectController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Subject> createSubject(@RequestBody SubjectRequest subjectRequest) {
-        Subject subject = new Subject(subjectRequest.getSubjectName(), subjectRequest.getSchedule());
-        System.out.println(subjectRequest);
+        Subject subject = new Subject(subjectRequest.getName(), subjectRequest.getSchedule());
         subjectRepository.save(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
@@ -56,7 +55,7 @@ public class SubjectController {
 
         if(foundSubject.isPresent()) {
             Subject newSubject = foundSubject.get();
-            newSubject.setSubjectName(subject.getSubjectName());
+            newSubject.setName(subject.getName());
             return new ResponseEntity<>(subjectRepository.save(newSubject), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Card, FormGroup, Button } from 'react-bootstrap';
+import { Container, Card, FormGroup, Button, Table, Modal } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import cabinetService from '../../services/schedule/cabinet.service';
+import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
+import cabinetService from '../../services/schedule/cabinet/cabinet.service';
+import scheduleService from '../../services/schedule/schedule.service';
+import TableList from '../shared/table.component';
 
 export default class CreateCabinet extends Component {
     constructor(props) {
@@ -11,12 +14,13 @@ export default class CreateCabinet extends Component {
 
         this.state = {
             cabinetName: "",
-            specialCabinet: false,
             loading: false,
-            cabinets: []
+            cabinets: [],
+            categories: [],
+            schedule: scheduleService.getCurrentSchedule()
         };
 
-        this.saveCabinet.bind(this);
+        this.createCabinet.bind(this);
     }
 
     componentDidMount() {
@@ -24,22 +28,28 @@ export default class CreateCabinet extends Component {
         .then(result => {
             this.setState({ cabinets: result.data });
         })
+        .then(() => {
+            cabinetCategoryService.getAllCabinetCategories()
+            .then(result => {
+                this.setState({ categories: result.data });
+            });
+        })
         .catch(error => {
             console.error(error);
         })
     }
     
 
-    saveCabinet = event => {
+    createCabinet = event => {
         event.preventDefault();
 
         this.setState({ loading: true });
 
-        const { cabinetName, specialCabinet } = this.state;
+        const { cabinetName, categories, schedule } = this.state;
 
         //TODO: fix saving duplicate cabinets
 
-        cabinetService.createCabinet(cabinetName, specialCabinet)
+        cabinetService.createCabinet(cabinetName, categories, schedule)
         .then(result => {
             this.state.cabinets.push(result.data);
             this.setState({ cabinetName: "", loading: false });
@@ -57,25 +67,18 @@ export default class CreateCabinet extends Component {
 
     render() {
 
-        const { cabinetName, cabinets} = this.state;
+        const { cabinetName, cabinets, categories } = this.state;
 
         const isInvalid = cabinetName === "";
 
         return(
             <>
                 <Container>
-                    <h2> Cabinets : </h2>
-                    {cabinets.map(cabinet => (
-                        <li key={cabinet.id}> {cabinet.cabinetName} </li>
-                    ))}
-                </Container>
-
-                <Container>
                     <Card>
                         <Card.Header>Add cabinets</Card.Header>
                         <Card.Body>
                             <Form
-                                onSubmit={this.saveCabinet}
+                                onSubmit={this.createCabinet}
                                 ref={c => {
                                     this.form = c;
                                 }}
@@ -83,7 +86,7 @@ export default class CreateCabinet extends Component {
                                 <FormGroup>
                                     <FormBootstrap.Label htmlFor="cabinetName">Cabinet number</FormBootstrap.Label>
                                     <Input
-                                        type="number"
+                                        type="text"
                                         className="form-control"
                                         name="cabinetName"
                                         value={this.state.cabinetName}
@@ -91,18 +94,6 @@ export default class CreateCabinet extends Component {
                                     />
                                 </FormGroup>
                                 
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="session">
-                                        Is this a special cabinet
-                                    </FormBootstrap.Label>
-                                    <select name="specialCabinet" 
-                                    value={this.state.specialCabinet} 
-                                    onChange={this.onChange}>
-                                        <option value="true">Yes</option>
-                                        <option value="false">No</option>
-                                    </select>
-                                </FormGroup>
-
                                 <FormGroup>
                                     <Button
                                         type="submit"
@@ -130,6 +121,10 @@ export default class CreateCabinet extends Component {
                             </Form>
                         </Card.Body>
                     </Card>
+                </Container>
+                <hr />
+                <Container>
+                    <TableList type="кабинета" elements={cabinets} service={cabinetService} />
                 </Container>
             </>
         );
