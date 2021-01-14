@@ -41,7 +41,6 @@ export default class TableList extends Component {
     }
 
     deleteElement = (element) => {
-        let { service } = this.state;
         let elements = this.props.elements;
 
         this.props.service.delete(element.id)
@@ -71,6 +70,8 @@ export default class TableList extends Component {
         const { show, editableElement } = this.state;
         const elements = this.props.elements;
 
+        console.log(elements);
+
         return(
             <Table striped bordered hover>
                 <thead>
@@ -87,6 +88,12 @@ export default class TableList extends Component {
                             <tr key={element.id}>
                                 <td>{element.name}</td>
                                 {this.props.type === "учителя" && <td>{element.initials}</td>}
+                                {this.props.type === "кабинета" && <td>{element.cabinetCategories
+                                && element.cabinetCategories.map(category => (
+                                    <ul>
+                                        <li key={category.id}>{category.name}</li>
+                                    </ul>
+                                ))}</td>}
                                 <Modal 
                                 show={show}
                                 onHide={() => this.setState({ show: !show })}

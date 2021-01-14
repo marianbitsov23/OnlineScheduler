@@ -35,9 +35,10 @@ public class Cabinet {
 
     public Cabinet() {}
 
-    public Cabinet(@NotBlank @Size(max = 100) String name, @NotBlank Schedule schedule) {
+    public Cabinet(@NotBlank @Size(max = 100) String name, @NotBlank Schedule schedule, Set<CabinetCategory> cabinetCategories) {
         this.name = name;
         this.schedule = schedule;
+        this.cabinetCategories = cabinetCategories;
     }
 
     public Long getId() {

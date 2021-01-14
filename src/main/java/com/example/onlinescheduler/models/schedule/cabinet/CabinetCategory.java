@@ -1,6 +1,9 @@
 package com.example.onlinescheduler.models.schedule.cabinet;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "categories")
@@ -12,10 +15,16 @@ public class CabinetCategory {
     @Column(length = 40)
     private String name;
 
+    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
+    private Schedule schedule;
+
     public CabinetCategory() {}
 
-    public CabinetCategory(String name) {
+    public CabinetCategory(String name, @NotBlank Schedule schedule) {
         this.name = name;
+        this.schedule = schedule;
     }
 
     public Long getId() {
@@ -33,4 +42,8 @@ public class CabinetCategory {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Schedule getSchedule() { return schedule; }
+
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 }

@@ -12,9 +12,9 @@ class CabinetCategoryService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createCabinetCategory(name) {
+    createCabinetCategory(name, schedule) {
         return axios.post(API_URL, 
-            {name},
+            {name, schedule},
             {headers: authHeader()} );
     }
 

@@ -24,7 +24,8 @@ public class CabinetController {
     public ResponseEntity<Cabinet> createCabinet(@RequestBody CabinetRequest cabinetRequest) {
         Cabinet cabinet = new Cabinet(
                 cabinetRequest.getName(),
-                cabinetRequest.getSchedule()
+                cabinetRequest.getSchedule(),
+                cabinetRequest.getCategories()
         );
         cabinetRepository.save(cabinet);
 

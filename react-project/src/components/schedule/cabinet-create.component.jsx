@@ -17,6 +17,9 @@ export default class CreateCabinet extends Component {
             loading: false,
             cabinets: [],
             categories: [],
+            cabinetCategories: [],
+            categoryName: "",
+            show: false,
             schedule: scheduleService.getCurrentSchedule()
         };
 
@@ -45,18 +48,33 @@ export default class CreateCabinet extends Component {
 
         this.setState({ loading: true });
 
-        const { cabinetName, categories, schedule } = this.state;
+        const { cabinetName, cabinetCategories, schedule } = this.state;
 
         //TODO: fix saving duplicate cabinets
 
-        cabinetService.createCabinet(cabinetName, categories, schedule)
+        cabinetService.createCabinet(cabinetName, cabinetCategories, schedule)
         .then(result => {
             this.state.cabinets.push(result.data);
-            this.setState({ cabinetName: "", loading: false });
+            this.setState({ cabinetName: "", loading: false, cabinetCategories: [] });
         })
         .catch(error => {
             console.error(error);
         });
+    }
+
+    createCategory = event => {
+        event.preventDefault();
+
+        const { categoryName, schedule } = this.state;
+
+        cabinetCategoryService.createCabinetCategory(categoryName, schedule)
+        .then(result => {
+            this.state.categories.push(result.data);
+            this.setState({ categoryName: "" });
+        })
+        .catch(error => {
+            console.error(error);
+        })
     }
 
     onChange = event => {
@@ -67,7 +85,7 @@ export default class CreateCabinet extends Component {
 
     render() {
 
-        const { cabinetName, cabinets, categories } = this.state;
+        const { show, cabinetName, cabinets, categories, cabinetCategories, categoryName } = this.state;
 
         const isInvalid = cabinetName === "";
 
@@ -75,7 +93,7 @@ export default class CreateCabinet extends Component {
             <>
                 <Container>
                     <Card>
-                        <Card.Header>Add cabinets</Card.Header>
+                        <Card.Header>Добави кабинет</Card.Header>
                         <Card.Body>
                             <Form
                                 onSubmit={this.createCabinet}
@@ -84,7 +102,7 @@ export default class CreateCabinet extends Component {
                                 }}
                             >
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="cabinetName">Cabinet number</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="cabinetName">Име / Номер на кабинета</FormBootstrap.Label>
                                     <Input
                                         type="text"
                                         className="form-control"
@@ -92,6 +110,57 @@ export default class CreateCabinet extends Component {
                                         value={this.state.cabinetName}
                                         onChange={this.onChange}
                                     />
+                                </FormGroup>
+
+                                <FormGroup>
+                                    <FormBootstrap.Label htmlFor="subjects">
+                                        Изберете категория на кабинета
+                                    </FormBootstrap.Label>
+                                    {(categories.map(category => {
+                                        if(cabinetCategories.includes(category)) {
+                                            return (
+                                                <Container key={category.id}>
+                                                    <p>
+                                                        {category.name}
+                                                    </p>
+                                                    <Button
+                                                        key={category.id}
+                                                        variant="outline-danger"
+                                                        //TODO: Find a way to extract it
+                                                        onClick={() => {
+                                                            let newCategories = cabinetCategories;
+                                                            newCategories.splice(newCategories.indexOf(category), 1);
+
+                                                            this.setState({ cabinetCategories: newCategories });
+                                                        }}
+                                                    >Премахни</Button>
+                                                </Container>
+                                            )
+                                        } else {
+                                            return(
+                                                <>
+                                                    <p key={category.id}>
+                                                        {category.name}
+                                                    </p>
+                                                    <Button
+                                                        key={category.id / 2}
+                                                        variant="outline-info"
+                                                        //TODO: Find a way to extract it
+                                                        onClick={() => {
+                                                            let newCategories = cabinetCategories;
+                                                            newCategories.push(category);
+                                                            this.setState({ cabinetCategories: newCategories });
+                                                        }}
+                                                    >Добави</Button>
+                                                </>
+                                            )
+                                        }
+                                    }))}
+                                    <Container>
+                                        <Button onClick={() => this.setState({ show: !this.state.show})}>
+                                            Добави нова категория
+                                        </Button>
+                                    </Container>
                                 </FormGroup>
                                 
                                 <FormGroup>
@@ -119,6 +188,45 @@ export default class CreateCabinet extends Component {
                                         </Button>
                                 </FormGroup>
                             </Form>
+                            <Modal 
+                                    show={show}
+                                    onHide={() => this.setState({ show: !show })}
+                                    centered
+                                    >
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Доабви нова категория</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <Form
+                                            onSubmit={this.createCategory}
+                                            ref={c => {
+                                                this.form = c;
+                                            }}
+                                            >
+                                                <FormGroup>
+                                                    <Input
+                                                        type="text"
+                                                        className="form-control"
+                                                        name="categoryName"
+                                                        value={categoryName}
+                                                        onChange={this.onChange}
+                                                    />
+                                                </FormGroup>
+
+                                                <FormGroup>
+                                                    <Button
+                                                        type="submit"
+                                                        variant="success"
+                                                        className="btn-block">
+                                                            {this.state.loading &&
+                                                                <span className="spinner-border spinner-border-sm"></span>
+                                                            }
+                                                            <span>Добави</span>
+                                                        </Button>
+                                                </FormGroup>
+                                            </Form>
+                                        </Modal.Body>
+                                    </Modal>
                         </Card.Body>
                     </Card>
                 </Container>

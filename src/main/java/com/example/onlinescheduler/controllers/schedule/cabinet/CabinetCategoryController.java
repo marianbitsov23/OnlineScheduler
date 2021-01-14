@@ -44,7 +44,7 @@ public class CabinetCategoryController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<CabinetCategory> createCabinetCategory(@RequestBody CabinetCategoryRequest cabinetCategoryRequest) {
-        CabinetCategory cabinetCategory = new CabinetCategory(cabinetCategoryRequest.getName());
+        CabinetCategory cabinetCategory = new CabinetCategory(cabinetCategoryRequest.getName(), cabinetCategoryRequest.getSchedule());
         cabinetCategoryRepository.save(cabinetCategory);
 
         return new ResponseEntity<>(cabinetCategory, HttpStatus.CREATED);
