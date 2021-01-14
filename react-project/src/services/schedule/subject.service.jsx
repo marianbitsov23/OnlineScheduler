@@ -12,8 +12,8 @@ class SubjectService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createSubject(name, schedule) {
-        return axios.post(API_URL, {name, schedule}, { headers: authHeader() });
+    create(subject) {
+        return axios.post(API_URL, { name: subject.name, schedule: subject.schedule }, { headers: authHeader() });
     }
 
     update(subject) {

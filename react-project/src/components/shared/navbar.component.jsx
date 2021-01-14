@@ -17,11 +17,7 @@ export default class Navigation extends Component {
     componentDidMount() {
         const currentUser = authService.getCurrentUser();
 
-        if (currentUser) {
-            this.setState({
-                currentUser: currentUser
-            });
-        }
+        if (currentUser) this.setState({currentUser: currentUser});
     }
 
     logOut() {

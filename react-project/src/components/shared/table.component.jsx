@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import cabinetService from '../../services/schedule/cabinet/cabinet.service';
-import subjectService from '../../services/schedule/subject.service';
-import teacherService from '../../services/schedule/teacher.service';
-import authService from '../../services/user-auth/auth.service';
-import { Container, Card, FormGroup, Button, Table, Modal } from 'react-bootstrap';
+import { FormGroup, Button, Table, Modal } from 'react-bootstrap';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 
@@ -42,7 +38,7 @@ export default class TableList extends Component {
 
     deleteElement = (element) => {
         let elements = this.props.elements;
-
+        
         this.props.service.delete(element.id)
         .then(() => {
             elements.splice(elements.indexOf(element), 1);
@@ -70,15 +66,13 @@ export default class TableList extends Component {
         const { show, editableElement } = this.state;
         const elements = this.props.elements;
 
-        console.log(elements);
-
         return(
             <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>Име</th>
-                        {this.props.type === "кабинета" && <th>Категории</th>}
-                        {this.props.type === "учителя" && <th>Инициали</th>}
+                        {this.props.type === "cabinet" && <th>Категории</th>}
+                        {this.props.type === "teacher" && <th>Инициали</th>}
                         <th></th>
                         <th></th>
                     </tr>
@@ -87,8 +81,8 @@ export default class TableList extends Component {
                     {elements && elements.map(element => (
                             <tr key={element.id}>
                                 <td>{element.name}</td>
-                                {this.props.type === "учителя" && <td>{element.initials}</td>}
-                                {this.props.type === "кабинета" && <td>{element.cabinetCategories
+                                {this.props.type === "teacher" && <td>{element.initials}</td>}
+                                {this.props.type === "cabinet" && <td>{element.cabinetCategories
                                 && element.cabinetCategories.map(category => (
                                     <ul>
                                         <li key={category.id}>{category.name}</li>
@@ -119,7 +113,7 @@ export default class TableList extends Component {
                                                 />
                                             </FormGroup>
 
-                                            {this.props.type === "учителя" && 
+                                            {this.props.type === "teacher" && 
                                                 <FormGroup>
                                                     <Input
                                                         type="text"
