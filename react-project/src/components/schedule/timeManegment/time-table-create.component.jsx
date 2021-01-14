@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Container, Table, Button, Jumbotron, FormGroup } from 'react-bootstrap';
+import { Container, Table, Button, Jumbotron, FormGroup, Row, Col } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
@@ -16,9 +16,11 @@ export default class CreateTimeTable extends Component {
             timeTableName: "",
             weekDays: undefined,
             weekDaysTemplate: [],
-            timeSlotTemplate: [],
+            timeSlotTemplateMorning: [],
+            timeSlotTemplateEvening: [],
             allSlots: [],
-            edit: true
+            edit: true,
+            time: "1"
         };
 
         this.addSlot.bind(this);
@@ -37,7 +39,7 @@ export default class CreateTimeTable extends Component {
         let weekDays = new Map();
         let weekDaysTemplate = [];
 
-        const timeSlotTemplate = [
+        const timeSlotTemplateMorning = [
             ["8:00", "8:40"],
             ["8:50", "9:30"],
             ["9:40", "10:20"],
@@ -45,6 +47,16 @@ export default class CreateTimeTable extends Component {
             ["11:50", "12:30"],
             ["12:40", "13:20"],
             ["13:30", "14:10"]
+        ];
+
+        const timeSlotTemplateEvening = [
+            ["13:00", "13:40"],
+            ["13:50", "14:30"],
+            ["14:40", "15:20"],
+            ["15:50", "16:40"],
+            ["16:50", "17:30"],
+            ["17:40", "18:20"],
+            ["18:30", "19:10"]
         ];
 
         weekDaysTemplate.push('Monday');
@@ -60,14 +72,19 @@ export default class CreateTimeTable extends Component {
         this.setState({ 
             weekDays : weekDays,
             weekDaysTemplate : weekDaysTemplate,
-            timeSlotTemplate : timeSlotTemplate
+            timeSlotTemplateMorning : timeSlotTemplateMorning,
+            timeSlotTemplateEvening: timeSlotTemplateEvening
         });
     }
 
     addTimeSlot(dayName) {
-        const { timeSlotTemplate, weekDays } = this.state;
+        const { timeSlotTemplateMorning, timeSlotTemplateEvening, weekDays } = this.state;
         const day = dayName[0];
         let value = weekDays.get(day);
+        let timeSlotTemplate = [];
+
+        this.state.time === "1" ? timeSlotTemplate = timeSlotTemplateMorning 
+            : timeSlotTemplate = timeSlotTemplateEvening;
         
         Object.size = function(obj) {
             let size = 0, key;
@@ -143,6 +160,8 @@ export default class CreateTimeTable extends Component {
 
     render() {
 
+        console.log(this.state.time);
+
         const { timeTableName, weekDays, weekDaysTemplate, edit } = this.state;
 
         const isInvalid = timeTableName === "";
@@ -170,23 +189,25 @@ export default class CreateTimeTable extends Component {
                                 <h1>{timeTableName}</h1>
 
                                 <Button
-                                    variant="outline-secondary"
-                                    onClick={() => this.setState({ edit: true })}
-                                >
-                                        Edit Name
+                                variant="outline-secondary"
+                                onClick={() => {
+                                    this.setState({ edit: true }); 
+                                    this.initWeekDays();
+                                }}>
+                                    Редактирай
                                 </Button>
                             </>
                         }
 
                         {edit &&
                         <Form
-                            onSubmit={() => this.setState({ edit : false })}
+                            onSubmit={() => this.setState({ edit : false,  })}
                             ref={c => {
                                 this.form = c;
                             }}
                         >
                             <FormGroup>
-                                <FormBootstrap.Label htmlFor="timeTableName">Time table name</FormBootstrap.Label>
+                                <FormBootstrap.Label htmlFor="timeTableName">Име на времевата таблица</FormBootstrap.Label>
                                 <Input
                                     type="text"
                                     className="form-control"
@@ -194,6 +215,14 @@ export default class CreateTimeTable extends Component {
                                     value={this.state.timeTableName}
                                     onChange={this.onChange}
                                 />
+                            </FormGroup>
+
+                            <FormGroup controlId="exampleForm.ControlSelect1">
+                                <FormBootstrap.Label>Изберете смяна</FormBootstrap.Label>
+                                <FormBootstrap.Control as="select" name="time" value={this.state.time} onChange={this.onChange}>
+                                    <option value="1">Първа смяна</option>
+                                    <option value="2">Втора смяна</option>
+                                </FormBootstrap.Control>
                             </FormGroup>
 
                             <FormGroup>
@@ -204,7 +233,7 @@ export default class CreateTimeTable extends Component {
                                             {this.state.loading &&
                                                 <span className="spinner-border spinner-border-sm"></span>
                                             }
-                                            <span>Save Table Name</span>
+                                            <span>Запази</span>
                                         </Button>
                                 </FormGroup>
                         </Form>}
@@ -212,11 +241,11 @@ export default class CreateTimeTable extends Component {
                     <Table striped bordered hover>
                         <thead>
                             <tr>
-                                <th>Monday</th>
-                                <th>Tuesday</th>
-                                <th>Wednesday</th>
-                                <th>Thursday</th>
-                                <th>Friday</th>
+                                <th>Понеделник</th>
+                                <th>Вторник</th>
+                                <th>Сряда</th>
+                                <th>Четвъртък</th>
+                                <th>Петък</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -224,76 +253,101 @@ export default class CreateTimeTable extends Component {
                                 <td>
                                     {mondaySlots && mondaySlots.map(mondaySlot => (
                                         <>
-                                            {mondaySlot && <p>
-                                                {mondaySlot[0]} - {mondaySlot[1]}
-                                                <Button
-                                                    sime="sm"
-                                                    name="Monday"
-                                                    value={mondaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Remove</Button>
-                                                </p>} 
+                                            {mondaySlot && 
+                                            <Row>
+                                                <Col>
+                                                    {mondaySlot[0]} - {mondaySlot[1]}
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        size="sm"
+                                                        name="Monday"
+                                                        value={mondaySlot}
+                                                        onClick={this.deleteSlot}
+                                                        variant="outline-danger">
+                                                        Премахни</Button>
+                                                </Col>
+                                            </Row>} 
                                         </>
                                     ))}
                                 </td>     
                                 <td>
                                     {tuesdaySlots && tuesdaySlots.map(tuesdaySlot => (
                                         <>
-                                            {tuesdaySlot && <p>
-                                                {tuesdaySlot[0]} - {tuesdaySlot[1]}
-                                                <Button
-                                                    sime="sm"
-                                                    name="Tuesday"
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Remove</Button>
-                                            </p>} 
+                                            {tuesdaySlot &&
+                                            <Row>
+                                                <Col>
+                                                    {tuesdaySlot[0]} - {tuesdaySlot[1]}
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        size="sm"
+                                                        name="Tuesday"
+                                                        onClick={this.deleteSlot}
+                                                        variant="outline-danger">
+                                                        Премахни</Button>
+                                                </Col>
+                                            </Row>} 
                                         </>
                                     ))}
                                 </td> 
                                 <td>
                                     {wednesdaySlots && wednesdaySlots.map(wednesdaySlot => (
                                         <>
-                                            {wednesdaySlot && <p>
-                                                {wednesdaySlot[0]} - {wednesdaySlot[1]}
-                                                <Button
-                                                    sime="sm"
-                                                    name="Wednesday"
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Remove</Button>
-                                                </p>} 
+                                            {wednesdaySlot &&
+                                            <Row>
+                                                <Col>
+                                                    {wednesdaySlot[0]} - {wednesdaySlot[1]}
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        size="sm"
+                                                        name="Wednesday"
+                                                        onClick={this.deleteSlot}
+                                                        variant="outline-danger">
+                                                        Премахни</Button>
+                                                </Col>
+                                            </Row>} 
                                         </>
                                     ))}
                                 </td> 
                                 <td>
                                     {thursdaySlots && thursdaySlots.map(thursdaySlot => (
                                         <>
-                                            {thursdaySlot && <p>
-                                                {thursdaySlot[0]} - {thursdaySlot[1]}
-                                                <Button
-                                                    sime="sm"
-                                                    name="Thursday"
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Remove</Button>
-                                                </p>} 
+                                            {thursdaySlot &&
+                                            <Row>
+                                                <Col>
+                                                    {thursdaySlot[0]} - {thursdaySlot[1]}
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        size="sm"
+                                                        name="Thursday"
+                                                        onClick={this.deleteSlot}
+                                                        variant="outline-danger">
+                                                        Премахни</Button>
+                                                </Col>
+                                            </Row>} 
                                         </>
                                     ))}
                                 </td>
                                 <td>
                                     {fridaySlots && fridaySlots.map(fridaySlot => (
                                         <>
-                                          {fridaySlot && <p>
-                                              {fridaySlot[0]} - {fridaySlot[1]}
-                                              <Button
-                                                    sime="sm"
-                                                    name="Friday"
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Remove</Button>
-                                              </p>} 
+                                            {fridaySlot &&
+                                            <Row>
+                                                <Col>
+                                                    {fridaySlot[0]} - {fridaySlot[1]}
+                                                </Col>
+                                                <Col>
+                                                    <Button
+                                                        size="sm"
+                                                        name="Friday"
+                                                        onClick={this.deleteSlot}
+                                                        variant="outline-danger">
+                                                        Премахни</Button>
+                                                </Col>
+                                            </Row>} 
                                         </>
                                     ))}
                                 </td> 
@@ -304,8 +358,9 @@ export default class CreateTimeTable extends Component {
                                         <Button
                                         variant="outline-info"
                                         name={weekDayTemplate}
+                                        disabled={this.state.edit}
                                         onClick={this.addSlot}>
-                                            Add Slot
+                                            Добави час
                                         </Button>
                                     </td>
                                 ))}
@@ -321,7 +376,7 @@ export default class CreateTimeTable extends Component {
                             {this.state.loading &&
                                 <span className="spinner-border spinner-border-sm"></span>
                             }
-                            <span>Create Time Table</span>
+                            <span>Създай Времева Таблица</span>
                     </Button>
                 </Container>
             </>
