@@ -8,6 +8,11 @@ class TimeTableService {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
+    getAllTimeTablesByScheduleId(scheduleId) {
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/time-tables', 
+        {headers: authHeader()});
+    }
+
     getTimeTableById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }

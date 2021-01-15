@@ -3,6 +3,7 @@ import { Container, Button } from 'react-bootstrap';
 import subjectService from '../../services/schedule/subject.service';
 import ModelInput from '../shared/model-input.component';
 import { Link } from 'react-router-dom';
+import scheduleService from '../../services/schedule/schedule.service';
 
 export default class CreateSubject extends Component {
     constructor(props) {
@@ -10,17 +11,18 @@ export default class CreateSubject extends Component {
 
         this.state = {
             subjects: [],
+            schedule: scheduleService.getCurrentSchedule()
         };
     }
 
     componentDidMount() {
-        subjectService.getAllSubjects()
+        subjectService.getAllSubjectsByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ subjects: result.data });
         })
         .catch(error => {
             console.error(error);
-        })
+        });
     }
     
     render() {

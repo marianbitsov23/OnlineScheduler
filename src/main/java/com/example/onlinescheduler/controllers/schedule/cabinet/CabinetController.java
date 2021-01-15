@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule.cabinet;
 
+import com.example.onlinescheduler.models.schedule.Teacher;
 import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.payload.schedule.cabinet.CabinetRequest;
 import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetRepository;
@@ -30,6 +31,15 @@ public class CabinetController {
         cabinetRepository.save(cabinet);
 
         return new ResponseEntity<>(cabinet, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/schedule/{scheduleId}/cabinets")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Cabinet>> getCabinetsByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<Cabinet>> cabinets = cabinetRepository.findAllCabinetsByScheduleId(scheduleId);
+
+        return cabinets.map(cabinetList -> new ResponseEntity<>(cabinetList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

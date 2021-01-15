@@ -216,7 +216,7 @@ export default class CreateTimeTable extends Component {
                                 />
                             </FormGroup>
 
-                            <FormGroup controlId="exampleForm.ControlSelect1">
+                            <FormGroup>
                                 <FormBootstrap.Label>Изберете смяна</FormBootstrap.Label>
                                 <FormBootstrap.Control as="select" name="time" value={this.state.time} onChange={this.onChange}>
                                     <option value="1">Първа смяна</option>

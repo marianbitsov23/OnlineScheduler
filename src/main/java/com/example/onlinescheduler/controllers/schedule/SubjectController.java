@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.payload.schedule.SubjectRequest;
 import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
@@ -25,6 +26,15 @@ public class SubjectController {
         Subject subject = new Subject(subjectRequest.getName(), subjectRequest.getSchedule());
         subjectRepository.save(subject);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/schedule/{scheduleId}/subjects")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Subject>> getSubjectsByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<Subject>> subjects = subjectRepository.findAllSubjectsByScheduleId(scheduleId);
+
+        return subjects.map(subjectList -> new ResponseEntity<>(subjectList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

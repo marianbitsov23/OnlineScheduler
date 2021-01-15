@@ -4,6 +4,7 @@ import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-cate
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import ModelInput from '../shared/model-input.component';
 import { Link } from 'react-router-dom';
+import scheduleService from '../../services/schedule/schedule.service';
 
 export default class CreateCabinet extends Component {
     constructor(props) {
@@ -12,31 +13,38 @@ export default class CreateCabinet extends Component {
         this.state = {
             cabinets: [],
             categories: [],
+            schedule: scheduleService.getCurrentSchedule()
         };
     }
 
     componentDidMount() {
-        cabinetService.getAllCabinets()
+        cabinetService.getAllCabinetsByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ cabinets: result.data });
         })
         .catch(error => {
             console.error(error);
-        })
+        });
 
-        cabinetCategoryService.getAllCabinetCategories()
+        cabinetCategoryService.getDefaultCabinetCategories()
         .then(result => {
-            this.setState({ categories: result.data });
+            let categories = result.data;
+            cabinetCategoryService.getAllCabinetCategoriesByScheduleId(this.state.schedule.id)
+            .then(result => {
+                this.setState({ categories: categories.concat(result.data) });
+            });
         })
         .catch(error => {
             console.error(error);
-        })
+        });
     }
     
 
     render() {
 
         const { cabinets, categories } = this.state;
+
+        console.log(categories);
 
         return(
             <>

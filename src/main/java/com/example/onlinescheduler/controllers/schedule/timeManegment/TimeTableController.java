@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule.timeManegment;
 
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.timeManegment.TimeTableRequest;
@@ -31,6 +32,15 @@ public class TimeTableController {
         } else {
             return new ResponseEntity<>(timeTables, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/schedule/{scheduleId}/time-tables")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<TimeTable>> getTimeTablesByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<TimeTable>> timeTables = timeTableRepository.findAllTimeTablesByScheduleId(scheduleId);
+
+        return timeTables.map(timeTableList -> new ResponseEntity<>(timeTableList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{id}")

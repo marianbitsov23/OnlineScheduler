@@ -3,6 +3,7 @@ import { Container, Button } from 'react-bootstrap';
 import teacherService from '../../services/schedule/teacher.service';
 import ModelInput from '../shared/model-input.component';
 import { Link } from 'react-router-dom';
+import scheduleService from '../../services/schedule/schedule.service';
 
 export default class CreateTeacher extends Component {
     constructor(props) {
@@ -10,11 +11,12 @@ export default class CreateTeacher extends Component {
 
         this.state = {
             teachers: [],
+            schedule: scheduleService.getCurrentSchedule()
         };
     }
 
     componentDidMount() {
-        teacherService.getAllTeachers()
+        teacherService.getAllTeachersByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ teachers: result.data });
         })

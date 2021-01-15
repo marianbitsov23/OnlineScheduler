@@ -8,6 +8,16 @@ class CabinetCategoryService {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
+    getDefaultCabinetCategories() {
+        return axios.get(API_URL + '/default/', 
+        {headers: authHeader()});
+    }
+
+    getAllCabinetCategoriesByScheduleId(scheduleId) {
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/categories', 
+        {headers: authHeader()});
+    }
+
     getCabinetCategoryById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }

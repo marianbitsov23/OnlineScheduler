@@ -2,7 +2,6 @@ package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Teacher;
 import com.example.onlinescheduler.payload.schedule.TeacherRequest;
-import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
 import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +17,6 @@ import java.util.Optional;
 @RequestMapping("/api/public/teacher")
 public class TeacherController {
     @Autowired
-    SubjectRepository subjectRepository;
-
-    @Autowired
     TeacherRepository teacherRepository;
 
     @PostMapping
@@ -34,6 +30,15 @@ public class TeacherController {
         teacherRepository.save(teacher);
 
         return new ResponseEntity<>(teacher, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/schedule/{scheduleId}/teachers")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Teacher>> getTeachersByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<Teacher>> teachers = teacherRepository.findAllTeachersByScheduleId(scheduleId);
+
+        return teachers.map(teacherList -> new ResponseEntity<>(teacherList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

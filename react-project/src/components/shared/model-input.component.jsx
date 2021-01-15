@@ -15,6 +15,7 @@ export default class ModelInput extends Component {
             elementName: "",
             initials: "",
             loading: false,
+            teachingHoursSubjects: [],
             schedule: scheduleService.getCurrentSchedule()
         };
 
@@ -47,8 +48,10 @@ export default class ModelInput extends Component {
                 element = { name: elementName, initials: initials, schedule: schedule };
                 break;
             case "cabinet":
-                element = { name: elementName, categories: JSON.parse(localStorage.getItem("categories")),
-                schedule: schedule };
+                element = { name: elementName, 
+                    categories: JSON.parse(localStorage.getItem("categories")),
+                    schedule: schedule
+                };
                 break;
             default:
                 break;
@@ -102,6 +105,17 @@ export default class ModelInput extends Component {
                                         onChange={this.onChange}
                                     />
                                 </FormGroup>
+                                
+                                {this.props.type === "teaching-hour" &&
+                                <FormGroup>
+                                    <FormBootstrap.Label>Изберете смяна</FormBootstrap.Label>
+                                    <FormBootstrap.Control as="select" name="time" value={this.state.time} onChange={this.onChange}>
+                                        <option value="1">Първа смяна</option>
+                                        <option value="2">Втора смяна</option>
+                                    </FormBootstrap.Control>
+                                </FormGroup>
+                                }
+                                
                                 {this.props.type === "cabinet" && 
                                     <CategorySelect 
                                         cabinetName={this.state.elementName} 
@@ -109,6 +123,7 @@ export default class ModelInput extends Component {
                                         categories={this.props.categories} 
                                     />
                                 }
+
                                 {this.props.type === "teacher" && 
                                 <FormGroup>
                                     <FormBootstrap.Label htmlFor="initials">Инициали</FormBootstrap.Label>

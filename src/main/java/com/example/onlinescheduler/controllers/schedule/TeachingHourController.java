@@ -1,11 +1,13 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.TeachingHour;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.TeachingHourRequest;
 import com.example.onlinescheduler.repositories.schedule.TeachingHourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +29,15 @@ public class TeachingHourController {
         } else {
             return new ResponseEntity<>(allHours, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/schedule/{scheduleId}/teaching-hours")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<TeachingHour>> getTeachingHoursByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<TeachingHour>> teachingHours = teachingHourRepository.findAllTeachingHoursByScheduleId(scheduleId);
+
+        return teachingHours.map(teachingHourList -> new ResponseEntity<>(teachingHourList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{id}")

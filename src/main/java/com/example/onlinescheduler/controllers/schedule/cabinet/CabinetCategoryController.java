@@ -32,6 +32,24 @@ public class CabinetCategoryController {
         }
     }
 
+    @GetMapping("/default")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<CabinetCategory>> getDefaultCabinetCategories() {
+        Optional<List<CabinetCategory>> cabinetCategories = cabinetCategoryRepository.findAllBySchedule(null);
+
+        return cabinetCategories.map(cabinetCategoryList -> new ResponseEntity<>(cabinetCategoryList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/schedule/{scheduleId}/categories")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<CabinetCategory>> getCabinetsByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<CabinetCategory>> cabinetCategories = cabinetCategoryRepository.findAllCabinetCategoriesByScheduleId(scheduleId);
+
+        return cabinetCategories.map(cabinetCategoryList -> new ResponseEntity<>(cabinetCategoryList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<CabinetCategory> getCabinetCategoryById(@PathVariable Long id) {

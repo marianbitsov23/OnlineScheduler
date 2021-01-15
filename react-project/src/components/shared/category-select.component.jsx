@@ -20,9 +20,9 @@ export default class CategorySelect extends Component {
     createCategory = event => {
         event.preventDefault();
 
-        const { categoryName, schedule } = this.state;
+        const { categoryName } = this.state;
 
-        cabinetCategoryService.createCabinetCategory(categoryName, schedule)
+        cabinetCategoryService.createCabinetCategory(categoryName, this.props.schedule)
         .then(result => {
             this.props.categories.push(result.data);
             this.setState({ categoryName: "", show: false });
@@ -90,7 +90,7 @@ export default class CategorySelect extends Component {
                                     key={category.id / 2}
                                     variant="outline-info"
                                     onClick={this.handleSelect.bind(this, "add", category)}
-                                >Добави</Button>
+                                >Избери</Button>
                                 </Col>
                             </Row>
                         )
