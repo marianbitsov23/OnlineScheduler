@@ -1,7 +1,6 @@
 package com.example.onlinescheduler.payload.schedule;
 
 import com.example.onlinescheduler.models.schedule.Group;
-import com.example.onlinescheduler.models.schedule.Hours;
 import com.example.onlinescheduler.models.user.User;
 
 import javax.validation.constraints.NotBlank;

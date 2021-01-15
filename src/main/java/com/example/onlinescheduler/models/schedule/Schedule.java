@@ -35,17 +35,8 @@ public class Schedule {
     @JoinColumn(name = "parent_group_id", referencedColumnName = "id")
     private Group parentGroup;
 
-    @OneToMany(mappedBy = "schedule")
-    private Set<Hours> hours;
-
     public Schedule() {}
 
-    public Schedule(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 300) String description, @NotBlank User creator, Set<Hours> hours) {
-        this.name = name;
-        this.description = description;
-        this.creator = creator;
-        this.hours = hours;
-    }
 
     public Schedule(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 300) String description, @NotBlank User creator, @NotBlank Group parentGroup) {
         this.name = name;
@@ -69,10 +60,6 @@ public class Schedule {
     public User getCreator() { return creator; }
 
     public void setCreator(User creator) { this.creator = creator; }
-
-    public Set<Hours> getHours() { return hours; }
-
-    public void setHours(Set<Hours> hours) { this.hours = hours; }
 
     public Group getParentGroup() { return parentGroup; }
 

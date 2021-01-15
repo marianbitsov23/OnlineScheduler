@@ -3,6 +3,7 @@ import { Container, Button } from 'react-bootstrap';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import ModelInput from '../shared/model-input.component';
+import { Link } from 'react-router-dom';
 
 export default class CreateCabinet extends Component {
     constructor(props) {
@@ -42,11 +43,13 @@ export default class CreateCabinet extends Component {
                 <Container>
                     <ModelInput type="cabinet" categories={categories} elements={cabinets} service={cabinetService}/>
                 </Container>
-                <Button
-                    className="btn-block"
-                >
-                    Напред
-                </Button>
+                <Link to={"/create-teaching-hour"}>
+                    <Button
+                        className="btn-block"
+                    >
+                        Напред
+                    </Button>
+                </Link>
             </>
         );
     }

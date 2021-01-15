@@ -7,6 +7,7 @@ import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/timeManegment/time-table.service';
 import timeSlotService from '../../../services/schedule/timeManegment/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
+import { Link } from 'react-router-dom';
 
 export default class CreateTimeTable extends Component {
     constructor(props) {
@@ -18,7 +19,7 @@ export default class CreateTimeTable extends Component {
             weekDaysTemplate: [],
             timeSlotTemplateMorning: [],
             timeSlotTemplateEvening: [],
-            allSlots: [],
+            loading: false,
             edit: true,
             time: "1"
         };
@@ -133,15 +134,16 @@ export default class CreateTimeTable extends Component {
         event.preventDefault();
 
         const schedule = scheduleService.getCurrentSchedule();
-        const { allSlots, timeTableName } = this.state;
+        const { timeTableName } = this.state;
 
-        console.log(allSlots);
+        this.setState({ loading: true });
 
         timeTableService.createTimeTable(schedule, timeTableName)
         .then(result => {
             this.saveAllSlotsInDb(result.data.id)
             .then(() => {
-                console.log("success");
+                this.initWeekDays();
+                this.setState({ edit: true, timeTableName: "", loading: false });
             })
         });
     }
@@ -159,9 +161,6 @@ export default class CreateTimeTable extends Component {
     }
 
     render() {
-
-        console.log(this.state.time);
-
         const { timeTableName, weekDays, weekDaysTemplate, edit } = this.state;
 
         const isInvalid = timeTableName === "";
@@ -379,6 +378,13 @@ export default class CreateTimeTable extends Component {
                             <span>Създай Времева Таблица</span>
                     </Button>
                 </Container>
+                <Link to={"/create-subject"}>
+                    <Button
+                        className="btn-block"
+                    >
+                        Напред
+                    </Button>
+                </Link>
             </>
         )
     }

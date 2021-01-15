@@ -61,7 +61,6 @@ public class TimeSlotController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TimeSlot> createTimeSlot(@RequestBody TimeSlotRequest timeSlotRequest) {
-        System.out.println(timeSlotRequest.getTableId());
         Optional<TimeTable> timeTable = timeTableRepository.findById(timeSlotRequest.getTableId());
         TimeTable newTimeTable;
 
@@ -88,7 +87,6 @@ public class TimeSlotController {
 
         if(foundTimeSlot.isPresent()) {
             TimeSlot newTimeSlot = foundTimeSlot.get();
-            //TODO: edit the time from the google tab
             newTimeSlot.setTimeTable(timeSlot.getTimeTable());
             newTimeSlot.setWeekDay(timeSlot.getWeekDay());
 

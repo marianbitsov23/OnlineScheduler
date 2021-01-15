@@ -79,7 +79,6 @@ public class ScheduleController {
             Schedule newSchedule = foundSchedule.get();
             newSchedule.setName(schedule.getName());
             newSchedule.setCreator(schedule.getCreator());
-            newSchedule.setHours(schedule.getHours());
             newSchedule.setDescription(schedule.getDescription());
 
             return new ResponseEntity<>(scheduleRepository.save(newSchedule), HttpStatus.OK);

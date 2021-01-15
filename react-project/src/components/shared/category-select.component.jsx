@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Modal, FormGroup, Button, Col, Row } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
-import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
-import cabinetService from '../../services/schedule/cabinet/cabinet.service';
-
 
 export default class CategorySelect extends Component {
     constructor(props) {

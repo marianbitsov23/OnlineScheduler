@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
 import AuthService from "./services/user-auth/auth.service";
-
 import Login from "./components/sign/login.component";
 import Register from "./components/sign/register.component";
 import Home from "./components/home.component";
@@ -19,6 +17,7 @@ import CreateSubject from "./components/schedule/subject-create.compnent";
 import CreateTeacher from "./components/schedule/teacher-create.component";
 import CreateTimeTable from "./components/schedule/timeManegment/time-table-create.component";
 import CreateGroup from "./components/schedule/group-create.component";
+import CreateTeachingHour from "./components/schedule/teaching-hour-create.component";
 
 class App extends Component {
     constructor(props) {
@@ -59,6 +58,7 @@ class App extends Component {
                       <Route exact path = "/create-subject" component={CreateSubject} />
                       <Route exact path = "/create-teacher" component={CreateTeacher} />
                       <Route exact path = "/create-time-table" component={CreateTimeTable} />
+                      <Route exact path = "/create-teaching-hour" component={CreateTeachingHour} />
                       <Route exact path = "/create-group" component={CreateGroup} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />

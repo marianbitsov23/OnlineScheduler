@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import teacherService from '../../services/schedule/teacher.service';
 import ModelInput from '../shared/model-input.component';
+import { Link } from 'react-router-dom';
 
 export default class CreateTeacher extends Component {
     constructor(props) {
@@ -31,11 +32,13 @@ export default class CreateTeacher extends Component {
                 <Container>
                     <ModelInput type="teacher" elements={teachers} service={teacherService}/>
                 </Container>
-                <Button
-                    className="btn-block"
-                >
-                    Напред
-                </Button>
+                <Link to={"/create-cabinet"}>
+                    <Button
+                        className="btn-block"
+                    >
+                        Напред
+                    </Button>
+                </Link>
             </>
         );
     }

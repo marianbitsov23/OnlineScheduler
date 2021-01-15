@@ -24,9 +24,6 @@ public class Subject {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @OneToMany(mappedBy = "subject")
-    private Set<Hours> hours;
-
     public Subject() {}
 
     public Subject(@NotBlank @Size(max = 120) String name, @NotBlank Schedule schedule) {

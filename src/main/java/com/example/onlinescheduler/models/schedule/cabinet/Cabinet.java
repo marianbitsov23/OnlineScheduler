@@ -1,9 +1,6 @@
 package com.example.onlinescheduler.models.schedule.cabinet;
 
-import com.example.onlinescheduler.models.schedule.Hours;
 import com.example.onlinescheduler.models.schedule.Schedule;
-import com.example.onlinescheduler.models.user.Role;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

@@ -50,6 +50,8 @@ export default class ModelInput extends Component {
                 element = { name: elementName, categories: JSON.parse(localStorage.getItem("categories")),
                 schedule: schedule };
                 break;
+            default:
+                break;
         }
 
         service.create(element)

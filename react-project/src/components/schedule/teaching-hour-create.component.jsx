@@ -1,38 +1,37 @@
 import React, { Component } from 'react';
 import { Container, Button } from 'react-bootstrap';
-import subjectService from '../../services/schedule/subject.service';
+import teachingHourService from '../../services/schedule/teaching-hour.service';
 import ModelInput from '../shared/model-input.component';
 import { Link } from 'react-router-dom';
 
-export default class CreateSubject extends Component {
+export default class CreateTeachingHour extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            subjects: [],
+            teachingHours: [],
         };
     }
 
     componentDidMount() {
-        subjectService.getAllSubjects()
+        teachingHourService.getTeachingHours()
         .then(result => {
-            this.setState({ subjects: result.data });
+            this.setState({ teachingHourService: result.data });
         })
         .catch(error => {
             console.error(error);
-        })
+        });
     }
-    
-    render() {
 
-        const { subjects} = this.state;
+    render() {
+        const { teachingHours } = this.state;
 
         return(
             <>
                 <Container>
-                    <ModelInput type="subject" elements={subjects} service={subjectService} />
+                    <ModelInput type="teaching-hour" elements={teachingHours} service={teachingHourService}/>
                 </Container>
-                <Link to={"/create-teacher"}>
+                <Link to={"/"}>
                     <Button
                         className="btn-block"
                     >
