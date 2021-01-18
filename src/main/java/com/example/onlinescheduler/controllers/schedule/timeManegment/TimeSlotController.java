@@ -46,10 +46,10 @@ public class TimeSlotController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/{timeTableId}")
+    @GetMapping("/table/{timeTableId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<TimeSlot>> getAllTimeSlotsByTimeTableId(@PathVariable Long id) {
-        Optional<List<TimeSlot>> timeSlots = timeSlotRepository.findAllByTimeTable_Id(id);
+    public ResponseEntity<List<TimeSlot>> getAllTimeSlotsByTimeTableId(@PathVariable Long timeTableId) {
+        Optional<List<TimeSlot>> timeSlots = timeSlotRepository.findAllByTimeTable_Id(timeTableId);
 
         if(timeSlots.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

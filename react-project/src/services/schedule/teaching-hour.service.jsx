@@ -13,6 +13,7 @@ class TeachingHourService {
     }
 
     create(teachingHour) {
+        console.log(teachingHour);
         return axios.post(API_URL, 
             {
                 subject: teachingHour.subject,

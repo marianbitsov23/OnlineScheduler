@@ -8,6 +8,7 @@ import timeTableService from '../../../services/schedule/timeManegment/time-tabl
 import timeSlotService from '../../../services/schedule/timeManegment/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
 import { Link } from 'react-router-dom';
+import TimeSlotSelect from '../../shared/time-slot-select.component';
 
 export default class CreateTimeTable extends Component {
     constructor(props) {
@@ -24,8 +25,6 @@ export default class CreateTimeTable extends Component {
             time: "1"
         };
 
-        this.addSlot.bind(this);
-        this.deleteSlot.bind(this);
         this.onChange.bind(this);
         this.saveTimeTable.bind(this);
     }
@@ -33,8 +32,6 @@ export default class CreateTimeTable extends Component {
     componentDidMount() {
         this.initWeekDays();
     }
-
-    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     initWeekDays() {
         let weekDays = new Map();
@@ -78,37 +75,11 @@ export default class CreateTimeTable extends Component {
         });
     }
 
-    addTimeSlot(dayName) {
-        const { timeSlotTemplateMorning, timeSlotTemplateEvening, weekDays } = this.state;
-        const day = dayName[0];
-        let value = weekDays.get(day);
-        let timeSlotTemplate = [];
-
-        this.state.time === "1" ? timeSlotTemplate = timeSlotTemplateMorning 
-            : timeSlotTemplate = timeSlotTemplateEvening;
-        
-        Object.size = function(obj) {
-            let size = 0, key;
-            for(key in obj) {
-                if(obj.hasOwnProperty(key)) size++;
-            }
-            return size;
-        }
-
-        let size = Object.size(value);
-
-        if(size < 7) {
-            let newTimeList = weekDays.get(day);
-            newTimeList.push(timeSlotTemplate[size]);
-            weekDays.set(day, newTimeList);
-        }
-
-        this.setState({ weekDays : weekDays });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     async saveAllTimeSlotsByDayInDb(dayName, tableId) {
-        const { weekDays } = this.state;
-        let daySlots = weekDays.get(dayName)
+        const weekDays = new Map(JSON.parse(localStorage.getItem("weekDays")));
+        let daySlots = weekDays.get(dayName);
 
         for(let i = 0; i < daySlots.length; i++) {
             await timeSlotService.createTimeSlot(dayName.toUpperCase(), daySlots[i][0], daySlots[i][1], tableId)
@@ -121,13 +92,6 @@ export default class CreateTimeTable extends Component {
         for(let i = 0; i < 5; i++) {
             await this.saveAllTimeSlotsByDayInDb(days[i], tableId);
         }
-    }
-
-    addSlot = event => {
-        event.preventDefault();
-        const weekDay = [event.target.name];
-
-        this.addTimeSlot(weekDay);
     }
 
     saveTimeTable = event => {
@@ -143,41 +107,16 @@ export default class CreateTimeTable extends Component {
             this.saveAllSlotsInDb(result.data.id)
             .then(() => {
                 this.initWeekDays();
+                localStorage.setItem("weekDays", JSON.stringify({}));
                 this.setState({ edit: true, timeTableName: "", loading: false });
             })
         });
-    }
-
-    deleteSlot = event => {
-        event.preventDefault();
-
-        let weekDays = this.state.weekDays;
-        const dayName = [event.target.name];
-        let timeSlots = weekDays.get(dayName[0]);
-
-        timeSlots.splice(timeSlots.indexOf(event.target.value), 1);
-
-        this.setState({ weekDays: weekDays });
     }
 
     render() {
         const { timeTableName, weekDays, weekDaysTemplate, edit } = this.state;
 
         const isInvalid = timeTableName === "";
-
-        let mondaySlots = undefined;
-        let tuesdaySlots = undefined;
-        let wednesdaySlots = undefined; 
-        let thursdaySlots = undefined; 
-        let fridaySlots = undefined;
-
-        if(weekDays) {
-            mondaySlots = weekDays.get('Monday');
-            tuesdaySlots = weekDays.get('Tuesday');
-            wednesdaySlots = weekDays.get('Wednesday');
-            thursdaySlots = weekDays.get('Thursday');
-            fridaySlots = weekDays.get('Friday');
-        }
 
         return(
             <>
@@ -237,136 +176,14 @@ export default class CreateTimeTable extends Component {
                                 </FormGroup>
                         </Form>}
                     </Jumbotron>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Понеделник</th>
-                                <th>Вторник</th>
-                                <th>Сряда</th>
-                                <th>Четвъртък</th>
-                                <th>Петък</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    {mondaySlots && mondaySlots.map(mondaySlot => (
-                                        <>
-                                            {mondaySlot && 
-                                            <Row>
-                                                <Col>
-                                                    {mondaySlot[0]} - {mondaySlot[1]}
-                                                </Col>
-                                                <Col>
-                                                    <Button
-                                                        size="sm"
-                                                        name="Monday"
-                                                        value={mondaySlot}
-                                                        onClick={this.deleteSlot}
-                                                        variant="outline-danger">
-                                                        Премахни</Button>
-                                                </Col>
-                                            </Row>} 
-                                        </>
-                                    ))}
-                                </td>     
-                                <td>
-                                    {tuesdaySlots && tuesdaySlots.map(tuesdaySlot => (
-                                        <>
-                                            {tuesdaySlot &&
-                                            <Row>
-                                                <Col>
-                                                    {tuesdaySlot[0]} - {tuesdaySlot[1]}
-                                                </Col>
-                                                <Col>
-                                                    <Button
-                                                        size="sm"
-                                                        name="Tuesday"
-                                                        onClick={this.deleteSlot}
-                                                        variant="outline-danger">
-                                                        Премахни</Button>
-                                                </Col>
-                                            </Row>} 
-                                        </>
-                                    ))}
-                                </td> 
-                                <td>
-                                    {wednesdaySlots && wednesdaySlots.map(wednesdaySlot => (
-                                        <>
-                                            {wednesdaySlot &&
-                                            <Row>
-                                                <Col>
-                                                    {wednesdaySlot[0]} - {wednesdaySlot[1]}
-                                                </Col>
-                                                <Col>
-                                                    <Button
-                                                        size="sm"
-                                                        name="Wednesday"
-                                                        onClick={this.deleteSlot}
-                                                        variant="outline-danger">
-                                                        Премахни</Button>
-                                                </Col>
-                                            </Row>} 
-                                        </>
-                                    ))}
-                                </td> 
-                                <td>
-                                    {thursdaySlots && thursdaySlots.map(thursdaySlot => (
-                                        <>
-                                            {thursdaySlot &&
-                                            <Row>
-                                                <Col>
-                                                    {thursdaySlot[0]} - {thursdaySlot[1]}
-                                                </Col>
-                                                <Col>
-                                                    <Button
-                                                        size="sm"
-                                                        name="Thursday"
-                                                        onClick={this.deleteSlot}
-                                                        variant="outline-danger">
-                                                        Премахни</Button>
-                                                </Col>
-                                            </Row>} 
-                                        </>
-                                    ))}
-                                </td>
-                                <td>
-                                    {fridaySlots && fridaySlots.map(fridaySlot => (
-                                        <>
-                                            {fridaySlot &&
-                                            <Row>
-                                                <Col>
-                                                    {fridaySlot[0]} - {fridaySlot[1]}
-                                                </Col>
-                                                <Col>
-                                                    <Button
-                                                        size="sm"
-                                                        name="Friday"
-                                                        onClick={this.deleteSlot}
-                                                        variant="outline-danger">
-                                                        Премахни</Button>
-                                                </Col>
-                                            </Row>} 
-                                        </>
-                                    ))}
-                                </td> 
-                            </tr>
-                            <tr>
-                                {weekDaysTemplate && weekDaysTemplate.map(weekDayTemplate => (
-                                    <td>
-                                        <Button
-                                        variant="outline-info"
-                                        name={weekDayTemplate}
-                                        disabled={this.state.edit}
-                                        onClick={this.addSlot}>
-                                            Добави час
-                                        </Button>
-                                    </td>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </Table>
-
+                    <TimeSlotSelect 
+                        time={this.state.time}
+                        edit={this.state.edit}
+                        weekDays={weekDays}
+                        weekDaysTemplate={weekDaysTemplate}
+                        timeSlotTemplateEvening={this.state.timeSlotTemplateEvening}
+                        timeSlotTemplateMorning={this.state.timeSlotTemplateMorning}
+                    />
                     <Button
                         variant="success"
                         className="btn-block"

@@ -41,6 +41,7 @@ public class TeachingHourController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TeachingHour> getHourById(@PathVariable Long id) {
        Optional<TeachingHour> foundHour = teachingHourRepository.findById(id);
 
@@ -49,6 +50,7 @@ public class TeachingHourController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TeachingHour> createHour(@RequestBody TeachingHourRequest teachingHourRequest) {
         TeachingHour newTeachingHour = new TeachingHour(
                 teachingHourRequest.getSubject(),
@@ -66,6 +68,7 @@ public class TeachingHourController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TeachingHour> updateHourInformation(@PathVariable Long id, @RequestBody TeachingHour teachingHour) {
         Optional<TeachingHour> foundTeachingHour = teachingHourRepository.findById(id);
 
@@ -84,6 +87,7 @@ public class TeachingHourController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TeachingHour> deleteHour(@PathVariable Long id) {
         Optional<TeachingHour> teachingHour = teachingHourRepository.findById(id);
         if(teachingHour.isPresent()) {

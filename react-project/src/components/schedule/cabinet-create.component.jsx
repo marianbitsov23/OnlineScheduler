@@ -44,8 +44,6 @@ export default class CreateCabinet extends Component {
 
         const { cabinets, categories } = this.state;
 
-        console.log(categories);
-
         return(
             <>
                 <Container>

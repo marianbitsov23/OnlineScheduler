@@ -12,8 +12,8 @@ class TimeSlotService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    getTimeSlotByTimeTableId(timeTableId) {
-        return axios.get(API_URL + '/' + timeTableId, { headers: authHeader() });
+    async getTimeSlotByTimeTableId(timeTableId) {
+        return axios.get(API_URL + '/table/' + timeTableId, { headers: authHeader() });
     }
 
     async createTimeSlot(weekDay, timeStart, timeEnd, tableId) {

@@ -15,7 +15,6 @@ export default class ModelInput extends Component {
             elementName: "",
             initials: "",
             loading: false,
-            teachingHoursSubjects: [],
             schedule: scheduleService.getCurrentSchedule()
         };
 
@@ -105,16 +104,6 @@ export default class ModelInput extends Component {
                                         onChange={this.onChange}
                                     />
                                 </FormGroup>
-                                
-                                {this.props.type === "teaching-hour" &&
-                                <FormGroup>
-                                    <FormBootstrap.Label>Изберете смяна</FormBootstrap.Label>
-                                    <FormBootstrap.Control as="select" name="time" value={this.state.time} onChange={this.onChange}>
-                                        <option value="1">Първа смяна</option>
-                                        <option value="2">Втора смяна</option>
-                                    </FormBootstrap.Control>
-                                </FormGroup>
-                                }
                                 
                                 {this.props.type === "cabinet" && 
                                     <CategorySelect 

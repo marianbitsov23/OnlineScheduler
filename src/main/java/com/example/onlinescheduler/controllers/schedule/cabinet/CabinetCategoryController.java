@@ -1,6 +1,5 @@
 package com.example.onlinescheduler.controllers.schedule.cabinet;
 
-import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.cabinet.CabinetCategory;
 import com.example.onlinescheduler.payload.schedule.cabinet.CabinetCategoryRequest;
 import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetCategoryRepository;
