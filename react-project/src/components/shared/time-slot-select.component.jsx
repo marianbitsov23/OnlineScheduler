@@ -11,14 +11,7 @@ export default class TimeSlotSelect extends Component {
             weekDaysTemplate: [],
             timeSlotTemplateMorning: [],
             timeSlotTemplateEvening: [],
-            timeSlots: undefined
-        }
-    }
-
-
-    componentDidMount() {
-        if(this.props.type === 'select') {
-            this.fetchTimeSlots();
+            fetchedTimeSlots: this.props.timeSlots
         }
     }
 
@@ -71,16 +64,15 @@ export default class TimeSlotSelect extends Component {
 
         this.addTimeSlot(weekDay);
     }
-    
 
-    fetchTimeSlots() {
-        timeSlotService.getTimeSlotByTimeTableId(this.props.timeTable.id)
-        .then(result => {
-            this.setState({ timeSlots: result.data})
-        })
-        .catch(error => {
-            console.error(error);
-        });
+    selectSlot = event => {
+        event.preventDefault();
+
+        const { timeSlots, changeTimeSlots } = this.props;
+
+        timeSlots[event.target.value].selected = !timeSlots[event.target.value].selected;
+        localStorage.setItem("chosenSlots", JSON.stringify(timeSlots));
+        changeTimeSlots(timeSlots);
     }
 
     render() {
@@ -92,25 +84,25 @@ export default class TimeSlotSelect extends Component {
         let thursdaySlots = []; 
         let fridaySlots = [];
 
-        let timeSlots = this.state.timeSlots;
+        let timeSlots = this.props.timeSlots;
 
         if(this.props.type === 'select' && timeSlots) {
             timeSlots.map(res => {
                 switch(res.weekDay) {
                     case 'MONDAY': 
-                        mondaySlots.push([res.timeStart], [res.timeEnd]);
+                        mondaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
                         break;
                     case 'TUESDAY': 
-                        tuesdaySlots.push([res.timeStart], [res.timeEnd]);
+                        tuesdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
                         break;
                     case 'WEDNESDAY': 
-                        wednesdaySlots.push([res.timeStart], [res.timeEnd]);
+                        wednesdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
                         break;
                     case 'THURSDAY': 
-                        thursdaySlots.push([res.timeStart], [res.timeEnd]);
+                        thursdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
                         break;
                     case 'FRIDAY': 
-                        fridaySlots.push([res.timeStart], [res.timeEnd]);
+                        fridaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
                         break;
                 }
             })
@@ -121,8 +113,6 @@ export default class TimeSlotSelect extends Component {
             thursdaySlots = weekDays.get('Thursday');
             fridaySlots = weekDays.get('Friday');
         }
-
-        console.log(timeSlots);
 
         return (
             <>
@@ -146,8 +136,8 @@ export default class TimeSlotSelect extends Component {
                                             <Col>
                                                 {mondaySlot[0]} - {mondaySlot[1]}
                                             </Col>
-                                            {this.props.type !=='select' &&
                                             <Col>
+                                                {this.props.type !=='select' &&
                                                 <Button
                                                     size="sm"
                                                     name="Monday"
@@ -155,7 +145,26 @@ export default class TimeSlotSelect extends Component {
                                                     onClick={this.deleteSlot}
                                                     variant="outline-danger">
                                                     Премахни</Button>
-                                            </Col>}
+                                                }
+                                                {mondaySlot[2] && !mondaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Monday"
+                                                    value={mondaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-success">
+                                                    Избери</Button>
+                                                }
+                                                {mondaySlot[2] && mondaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Monday"
+                                                    value={mondaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-danger">
+                                                    Премахни</Button>
+                                                }
+                                            </Col>
                                         </Row>} 
                                     </>
                                 ))}
@@ -168,15 +177,35 @@ export default class TimeSlotSelect extends Component {
                                             <Col>
                                                 {tuesdaySlot[0]} - {tuesdaySlot[1]}
                                             </Col>
-                                            {this.props.type !=='select' &&
                                             <Col>
+                                            {this.props.type !=='select' &&
                                                 <Button
                                                     size="sm"
                                                     name="Tuesday"
+                                                    value={tuesdaySlot}
                                                     onClick={this.deleteSlot}
                                                     variant="outline-danger">
                                                     Премахни</Button>
-                                            </Col>}
+                                                }
+                                                {tuesdaySlot[2] && !tuesdaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Tuesday"
+                                                    value={tuesdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-success">
+                                                    Избери</Button>
+                                                }
+                                                {tuesdaySlot[2] && tuesdaySlot[2][0] && 
+                                                <Button
+                                                    size="sm"
+                                                    name="Tuesday"
+                                                    value={tuesdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-danger">
+                                                    Премахни</Button>
+                                                }
+                                            </Col>
                                         </Row>} 
                                     </>
                                 ))}
@@ -189,15 +218,35 @@ export default class TimeSlotSelect extends Component {
                                             <Col>
                                                 {wednesdaySlot[0]} - {wednesdaySlot[1]}
                                             </Col>
-                                            {this.props.type !=='select' &&
                                             <Col>
+                                            {this.props.type !=='select' &&
                                                 <Button
                                                     size="sm"
                                                     name="Wednesday"
+                                                    value={wednesdaySlot}
                                                     onClick={this.deleteSlot}
                                                     variant="outline-danger">
                                                     Премахни</Button>
-                                            </Col>}
+                                                }
+                                                {wednesdaySlot[2] && !wednesdaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Wednesday"
+                                                    value={wednesdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-success">
+                                                    Избери</Button>
+                                                }
+                                                {wednesdaySlot[2] && wednesdaySlot[2][0] && 
+                                                <Button
+                                                    size="sm"
+                                                    name="Wednesday"
+                                                    value={wednesdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-danger">
+                                                    Премахни</Button>
+                                                }
+                                            </Col>
                                         </Row>} 
                                     </>
                                 ))}
@@ -210,15 +259,35 @@ export default class TimeSlotSelect extends Component {
                                             <Col>
                                                 {thursdaySlot[0]} - {thursdaySlot[1]}
                                             </Col>
-                                            {this.props.type !=='select' &&
                                             <Col>
+                                            {this.props.type !=='select' &&
                                                 <Button
                                                     size="sm"
                                                     name="Thursday"
+                                                    value={thursdaySlot}
                                                     onClick={this.deleteSlot}
                                                     variant="outline-danger">
                                                     Премахни</Button>
-                                            </Col>}
+                                                }
+                                                {thursdaySlot[2] && !thursdaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Thursday"
+                                                    value={thursdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-success">
+                                                    Избери</Button>
+                                                }
+                                                {thursdaySlot[2] && thursdaySlot[2][0] && 
+                                                <Button
+                                                    size="sm"
+                                                    name="Thursday"
+                                                    value={thursdaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-danger">
+                                                    Премахни</Button>
+                                                }
+                                            </Col>
                                         </Row>} 
                                     </>
                                 ))}
@@ -231,15 +300,35 @@ export default class TimeSlotSelect extends Component {
                                             <Col>
                                                 {fridaySlot[0]} - {fridaySlot[1]}
                                             </Col>
-                                            {this.props.type !=='select' &&
                                             <Col>
+                                            {this.props.type !=='select' &&
                                                 <Button
                                                     size="sm"
                                                     name="Friday"
+                                                    value={fridaySlot}
                                                     onClick={this.deleteSlot}
                                                     variant="outline-danger">
                                                     Премахни</Button>
-                                            </Col>}
+                                                }
+                                                {fridaySlot[2] && !fridaySlot[2][0] &&
+                                                <Button
+                                                    size="sm"
+                                                    name="Friday"
+                                                    value={fridaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-success">
+                                                    Избери</Button>
+                                                }
+                                                {fridaySlot[2] && fridaySlot[2][0] && 
+                                                <Button
+                                                    size="sm"
+                                                    name="Friday"
+                                                    value={fridaySlot[3]}
+                                                    onClick={this.selectSlot}
+                                                    variant="outline-danger">
+                                                    Премахни</Button>
+                                                }
+                                            </Col>
                                         </Row>} 
                                     </>
                                 ))}

@@ -43,9 +43,9 @@ public class TeachingHour {
 
     @NotBlank
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "teaching_hour-time_slots",
-            joinColumns = @JoinColumn(name = "teaching_hour_id"),
-            inverseJoinColumns = @JoinColumn(name = "time_slot_id"))
+    @JoinTable(name = "teaching_slots",
+            joinColumns = @JoinColumn(name = "teachingHour_id"),
+            inverseJoinColumns = @JoinColumn(name = "timeSlot_id"))
 
     private Set<TimeSlot> timeSlots = new HashSet<>();
 

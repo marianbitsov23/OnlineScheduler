@@ -12,7 +12,7 @@ class TimeSlotService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    async getTimeSlotByTimeTableId(timeTableId) {
+    async getTimeSlotsByTimeTableId(timeTableId) {
         return axios.get(API_URL + '/table/' + timeTableId, { headers: authHeader() });
     }
 

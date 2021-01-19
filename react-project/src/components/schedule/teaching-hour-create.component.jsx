@@ -31,7 +31,7 @@ export default class CreateTeachingHour extends Component {
             selectedTeacher: 0,
             selectedCabinet: 0,
             selectedTimeTable: 0,
-            selctedTimeSlots: [],
+            fetchedTimeSlots: [],
             hoursPerWeek: 1,
             overAWeek: false,
             schedule: scheduleService.getCurrentSchedule()
@@ -90,8 +90,15 @@ export default class CreateTeachingHour extends Component {
 
     async fetchAllTimeTables() {
         timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
-        .then(result => {
-            this.setState({ timeTables: result.data });
+        .then(timeTables => {
+            timeTables.data.map(timeTable => {
+                timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
+                .then(slots => {
+                    slots.data.map(res => { res.selected = false; })
+                    timeTable.slots = slots.data;
+                })
+            })
+            this.setState({ timeTables: timeTables.data });
         })
         .catch(error => {
             console.error(error);
@@ -109,7 +116,7 @@ export default class CreateTeachingHour extends Component {
             hoursPerWeek: this.state.hoursPerWeek,
             overAWeek: this.state.overAWeek,
             cabinet: this.state.cabinets[this.state.selectedCabinet],
-            timeSlots: this.state.selctedTimeSlots,
+            timeSlots: this.state.timeTables[this.state.selectedTimeTable].slots,
             schedule: this.state.schedule
         })
         .then(result => {
@@ -126,6 +133,11 @@ export default class CreateTeachingHour extends Component {
     onChange = event => {
         event.preventDefault();
         this.setState({ [event.target.name] : event.target.value });
+    }
+
+    changeTimeSlots = timeSlots => {
+        this.state.timeTables[this.state.selectedTimeTable].slots = timeSlots;
+        this.setState({});
     }
 
     render() {
@@ -268,9 +280,17 @@ export default class CreateTeachingHour extends Component {
                         </FormGroup>
                         {timeTables[this.state.selectedTimeTable] &&
                         <TimeSlotSelect
-                            timeTable={this.state.timeTables[this.state.selectedTimeTable]}
+                            timeSlots={timeTables[this.state.selectedTimeTable].slots}
                             type="select"
+                            changeTimeSlots={this.changeTimeSlots}
                         />}
+                        <Button
+                            variant="success"
+                            className="btn-block"
+                            onClick={() => this.setState({ hours: false, show: true })}
+                        >   
+                            Запази
+                    </Button>
                     </Modal.Body>
                 </Modal>
                 <Link to={"/"}>
