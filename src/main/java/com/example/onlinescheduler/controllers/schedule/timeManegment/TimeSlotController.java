@@ -108,4 +108,21 @@ public class TimeSlotController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/table/{timeTableId}/slots")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<TimeSlot> deleteAllTimeSlotsByTimeTableId(@PathVariable Long timeTableId) {
+        Optional<List<TimeSlot>> timeSlots = timeSlotRepository.findAllByTimeTable_Id(timeTableId);
+
+        System.out.println(timeTableId);
+
+        if(timeSlots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            for(TimeSlot timeSlot : timeSlots.get()) {
+                timeSlotRepository.delete(timeSlot);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 }

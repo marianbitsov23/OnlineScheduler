@@ -41,6 +41,11 @@ class TimeSlotService {
     deleteTimeSlot(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
+
+    deleteTimeSlotsByTimeTableId(timeTableId) {
+        return axios.delete(API_URL + '/table/' + timeTableId + "/slots", 
+        { headers: authHeader() });
+    }
 }
 
 export default new TimeSlotService();

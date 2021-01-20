@@ -8,12 +8,16 @@ class TeachingHourService {
         return axios.get(API_URL, { headers: authHeader() });
     }
 
+    getAllTeachingHoursByScheduleId(scheduleId) {
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/teaching-hours', 
+        {headers: authHeader()});
+    }
+
     getTeachingHourById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
     create(teachingHour) {
-        console.log(teachingHour);
         return axios.post(API_URL, 
             {
                 subject: teachingHour.subject,

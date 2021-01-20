@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule.timeManegment;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
@@ -63,5 +64,34 @@ public class TimeTableController {
         timeTableRepository.save(timeTable);
 
         return new ResponseEntity<>(timeTable, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<TimeTable> updateTimeTableInformation(@PathVariable Long id, @RequestBody TimeTable timeTable ) {
+        Optional<TimeTable> foundTimeTable = timeTableRepository.findById(id);
+
+        if(foundTimeTable.isPresent()) {
+            TimeTable newTimeTable = foundTimeTable.get();
+            newTimeTable.setName(timeTable.getName());
+            newTimeTable.setSchedule(timeTable.getSchedule());
+
+            return new ResponseEntity<>(timeTableRepository.save(newTimeTable), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<TimeTable> deleteTimeTable(@PathVariable Long id) {
+        Optional<TimeTable> foundTimeTable = timeTableRepository.findById(id);
+
+        if(foundTimeTable.isPresent()) {
+            timeTableRepository.delete(foundTimeTable.get());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

@@ -34,7 +34,7 @@ class TimeTableService {
             }, {headers: authHeader()});
     }
 
-    deleteTimeTable(id) {
+    delete(id) {
         return axios.delete(API_URL + '/' + id, { headers: authHeader() });
     }
 }

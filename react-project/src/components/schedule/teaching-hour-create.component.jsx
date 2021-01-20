@@ -13,6 +13,8 @@ import Input from "react-validation/build/input";
 import TableList from '../shared/table.component';
 import timeSlotService from '../../services/schedule/timeManegment/time-slot.service';
 import TimeSlotSelect from '../shared/time-slot-select.component';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default class CreateTeachingHour extends Component {
     constructor(props) {
@@ -39,9 +41,9 @@ export default class CreateTeachingHour extends Component {
     }
 
     async componentDidMount() {
-        teachingHourService.getAllTeachingHours()
+        teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
         .then(result => {
-            this.setState({ teachingHourService: result.data });
+            this.setState({ teachingHours: result.data });
         })
         .catch(error => {
             console.error(error);
@@ -56,7 +58,7 @@ export default class CreateTeachingHour extends Component {
         await this.fetchAllTimeTables();
     }
 
-    async fetchAllGroup() {}
+    async fetchAllGroups() {}
 
     async fetchAllSubjects() {
         subjectService.getAllSubjectsByScheduleId(this.state.schedule.id)
@@ -121,8 +123,6 @@ export default class CreateTeachingHour extends Component {
         })
         .then(result => {
             this.state.teachingHours.push(result.data);
-            console.log(result.data);
-
             this.setState({ show: false, loading: false });
         })
         .catch(error => {
@@ -138,6 +138,10 @@ export default class CreateTeachingHour extends Component {
     changeTimeSlots = timeSlots => {
         this.state.timeTables[this.state.selectedTimeTable].slots = timeSlots;
         this.setState({});
+    }
+
+    handleCheck = event => {
+        this.setState({ [event.target.name]: event.target.checked });
     }
 
     render() {
@@ -176,7 +180,7 @@ export default class CreateTeachingHour extends Component {
                         variant="success"
                         onClick={() => this.setState({ show: true })}
                     >
-                        Напред
+                        Създай нов хорараиум за предмет ({subjects[0] && subjects[this.state.selectedSubject].name})
                     </Button>
                 </Container>
                 <Container>
@@ -226,7 +230,16 @@ export default class CreateTeachingHour extends Component {
                                 />
 
                                 <FormGroup>
-                                    <FormCheck type="checkbox" label="През седмица" />
+                                <FormControlLabel
+                                    control={
+                                    <Checkbox 
+                                        checked={this.state.overAWeek} 
+                                        onChange={this.handleCheck} 
+                                        name="overAWeek" 
+                                        color="primary"
+                                    />}
+                                    label="През седмица"
+                                />
                                 </FormGroup>
                             </FormGroup>
 
@@ -239,12 +252,14 @@ export default class CreateTeachingHour extends Component {
                                 </FormBootstrap.Control>
                             </FormGroup>
 
-                            <Button
-                                variant="outline-info"
-                                onClick={() => this.setState({ hours: true, show: false })}
-                            >
-                                Изберете часове
-                            </Button>
+                            <FormGroup>
+                                <Button
+                                    variant="outline-info"
+                                    onClick={() => this.setState({ hours: true, show: false })}
+                                >
+                                    Изберете часове
+                                </Button>
+                            </FormGroup>
 
                             <FormGroup>
                                 <Button
@@ -281,6 +296,7 @@ export default class CreateTeachingHour extends Component {
                         {timeTables[this.state.selectedTimeTable] &&
                         <TimeSlotSelect
                             timeSlots={timeTables[this.state.selectedTimeTable].slots}
+                            weekDaysTemplate={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
                             type="select"
                             changeTimeSlots={this.changeTimeSlots}
                         />}

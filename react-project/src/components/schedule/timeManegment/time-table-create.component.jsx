@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
-import { Container, Table, Button, Jumbotron, FormGroup, Row, Col } from 'react-bootstrap';
+import TableList from '../../shared/table.component';
+import { Container, Button, Jumbotron, FormGroup, } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
@@ -22,7 +22,9 @@ export default class CreateTimeTable extends Component {
             timeSlotTemplateEvening: [],
             loading: false,
             edit: true,
-            time: "1"
+            time: "1",
+            timeTables: [],
+            schedule: scheduleService.getCurrentSchedule()
         };
 
         this.onChange.bind(this);
@@ -31,10 +33,18 @@ export default class CreateTimeTable extends Component {
 
     componentDidMount() {
         this.initWeekDays();
+
+        timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
+        .then(timeTables => {
+            this.setState({ timeTables: timeTables.data });
+        })
+        .catch(error => {
+            console.error(error);
+        });
     }
 
     initWeekDays() {
-        let weekDays = new Map();
+        let weekDays = [];
         let weekDaysTemplate = [];
 
         const timeSlotTemplateMorning = [
@@ -62,10 +72,6 @@ export default class CreateTimeTable extends Component {
         weekDaysTemplate.push('Wednesday');
         weekDaysTemplate.push('Thursday');
         weekDaysTemplate.push('Friday');
-
-        for(let i = 0; i < 5; i ++) {
-            weekDays.set(weekDaysTemplate[i], []);
-        }
         
         this.setState({ 
             weekDays : weekDays,
@@ -78,11 +84,10 @@ export default class CreateTimeTable extends Component {
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     async saveAllTimeSlotsByDayInDb(dayName, tableId) {
-        const weekDays = new Map(JSON.parse(localStorage.getItem("weekDays")));
-        let daySlots = weekDays.get(dayName);
+        const weekDays = JSON.parse(localStorage.getItem("weekDays"));
 
-        for(let i = 0; i < daySlots.length; i++) {
-            await timeSlotService.createTimeSlot(dayName.toUpperCase(), daySlots[i][0], daySlots[i][1], tableId)
+        for(let i = 0; i < weekDays.length; i++) {
+            await timeSlotService.createTimeSlot(weekDays[i].weekDay, weekDays[i].timeStart, weekDays[i].timeEnd, tableId);
         }
     }
 
@@ -108,13 +113,14 @@ export default class CreateTimeTable extends Component {
             .then(() => {
                 this.initWeekDays();
                 localStorage.setItem("weekDays", JSON.stringify({}));
+                this.state.timeTables.push(result.data)
                 this.setState({ edit: true, timeTableName: "", loading: false });
             })
         });
     }
 
     render() {
-        const { timeTableName, weekDays, weekDaysTemplate, edit } = this.state;
+        const { timeTableName, weekDays, weekDaysTemplate, edit, timeTables } = this.state;
 
         const isInvalid = timeTableName === "";
 
@@ -194,6 +200,9 @@ export default class CreateTimeTable extends Component {
                             }
                             <span>Създай Времева Таблица</span>
                     </Button>
+                </Container>
+                <Container>
+                    <TableList type="time-table" elements={timeTables} service={timeTableService} />
                 </Container>
                 <Link to={"/create-subject"}>
                     <Button

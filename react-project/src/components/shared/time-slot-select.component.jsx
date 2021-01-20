@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Row, Col } from 'react-bootstrap';
+import { Table, Button, Row, Col, Container } from 'react-bootstrap';
 import timeSlotService from '../../services/schedule/timeManegment/time-slot.service';
 
 export default class TimeSlotSelect extends Component {
@@ -18,43 +18,34 @@ export default class TimeSlotSelect extends Component {
     addTimeSlot(dayName) {
         const { timeSlotTemplateMorning, timeSlotTemplateEvening, weekDays } = this.props;
         const day = dayName[0];
-        let value = weekDays.get(day);
         let timeSlotTemplate = [];
 
         this.props.time === "1" ? timeSlotTemplate = timeSlotTemplateMorning 
             : timeSlotTemplate = timeSlotTemplateEvening;
         
-        Object.size = function(obj) {
-            let size = 0, key;
-            for(key in obj) {
-                if(obj.hasOwnProperty(key)) size++;
-            }
-            return size;
+        let newTimeSlots = weekDays.filter(weekDay => weekDay.weekDay === day.toUpperCase());
+
+        if(newTimeSlots.length < 7) {
+            weekDays.push({
+                weekDay: day.toUpperCase(),
+                timeStart: timeSlotTemplate[newTimeSlots.length][0],
+                timeEnd: timeSlotTemplate[newTimeSlots.length][1]
+            });
         }
 
-        let size = Object.size(value);
-
-        if(size < 7) {
-            let newTimeList = weekDays.get(day);
-            newTimeList.push(timeSlotTemplate[size]);
-            weekDays.set(day, newTimeList);
-        }
-
-        localStorage.setItem("weekDays", JSON.stringify(Array.from(weekDays.entries())));
+        localStorage.setItem("weekDays", JSON.stringify(Array.from(weekDays)));
         this.setState({ weekDays: weekDays });
     }
 
     deleteSlot = event => {
         event.preventDefault();
 
-        let weekDays = this.props.weekDays;
-        const dayName = [event.target.name];
-        let timeSlots = weekDays.get(dayName[0]);
+        let timeSlots = this.props.weekDays;
 
-        timeSlots.splice(timeSlots.indexOf(event.target.value), 1);
+        timeSlots.splice(event.target.value, 1);
 
-        localStorage.setItem("weekDays", JSON.stringify(Array.from(weekDays.entries())));
-        this.setState({ weekDays: weekDays });
+        localStorage.setItem("weekDays", JSON.stringify(Array.from(timeSlots)));
+        this.setState({ weekDays: timeSlots });
     }
 
     
@@ -71,47 +62,30 @@ export default class TimeSlotSelect extends Component {
         const { timeSlots, changeTimeSlots } = this.props;
 
         timeSlots[event.target.value].selected = !timeSlots[event.target.value].selected;
-        localStorage.setItem("chosenSlots", JSON.stringify(timeSlots));
+        
         changeTimeSlots(timeSlots);
     }
 
     render() {
         const { weekDays, weekDaysTemplate } = this.props;
 
-        let mondaySlots = [];
-        let tuesdaySlots = [];
-        let wednesdaySlots = []; 
-        let thursdaySlots = []; 
-        let fridaySlots = [];
+        let numberOfRows = [1, 2, 3, 4, 5, 6, 7];
+        let timeSlots;
 
-        let timeSlots = this.props.timeSlots;
+        this.props.timeSlots !== undefined 
+            ? timeSlots = this.props.timeSlots.reverse()
+            : timeSlots = weekDays;
 
-        if(this.props.type === 'select' && timeSlots) {
-            timeSlots.map(res => {
-                switch(res.weekDay) {
-                    case 'MONDAY': 
-                        mondaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
-                        break;
-                    case 'TUESDAY': 
-                        tuesdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
-                        break;
-                    case 'WEDNESDAY': 
-                        wednesdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
-                        break;
-                    case 'THURSDAY': 
-                        thursdaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
-                        break;
-                    case 'FRIDAY': 
-                        fridaySlots.push([[res.timeStart], [res.timeEnd], [res.selected], [timeSlots.indexOf(res)]]);
-                        break;
-                }
-            })
-        } else if(weekDays) {
-            mondaySlots = weekDays.get('Monday');
-            tuesdaySlots = weekDays.get('Tuesday');
-            wednesdaySlots = weekDays.get('Wednesday');
-            thursdaySlots = weekDays.get('Thursday');
-            fridaySlots = weekDays.get('Friday');
+        if(timeSlots) {
+            this.props.weekDaysTemplate.map((weekDayTemplate, i) => {
+                    let index = 0;
+                    timeSlots.map(res => {
+                        if(res.weekDay === weekDayTemplate.toUpperCase()) {
+                            index++;
+                            res.index = index;
+                        }
+                    })
+                })
         }
 
         return (
@@ -127,215 +101,54 @@ export default class TimeSlotSelect extends Component {
                         </tr>
                     </thead>
                     <tbody>
+                        {numberOfRows.map(row => (
+                            <tr key={row}>
+                                {weekDaysTemplate.map((weekDayTemplate, index) => (
+                                    <td key={index}>
+                                        {timeSlots.map((timeSlot, index) => (
+                                            <>
+                                            {timeSlot.weekDay === weekDayTemplate.toUpperCase() &&
+                                            timeSlot.index === row &&
+                                                <Row key={index}>
+                                                    <Col>{timeSlot.timeStart} - {timeSlot.timeEnd}</Col>
+                                                    <Col>
+                                                        {this.props.type !=='select' &&
+                                                        <Button
+                                                            size="sm"
+                                                            value={timeSlots.indexOf(timeSlot)}
+                                                            onClick={this.deleteSlot}
+                                                            variant="outline-danger">
+                                                            Изтриване</Button>
+                                                        }
+                                                        {!timeSlot.selected &&
+                                                        this.props.type ==='select' &&
+                                                            <Button
+                                                                size="sm"
+                                                                value={timeSlots.indexOf(timeSlot)}
+                                                                onClick={this.selectSlot}
+                                                                variant="outline-success">
+                                                                Избери</Button>
+                                                        }
+                                                        {timeSlot.selected && 
+                                                        this.props.type ==='select' &&
+                                                        <Button
+                                                            size="sm"
+                                                            value={timeSlots.indexOf(timeSlot)}
+                                                            onClick={this.selectSlot}
+                                                            variant="outline-danger">
+                                                            Премахване</Button>
+                                                        }
+                                                    </Col>
+                                                </Row>
+                                            }
+                                            </>
+                                        ))}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
                         <tr>
-                            <td>
-                                {mondaySlots && mondaySlots.map(mondaySlot => (
-                                    <>
-                                        {mondaySlot && 
-                                        <Row>
-                                            <Col>
-                                                {mondaySlot[0]} - {mondaySlot[1]}
-                                            </Col>
-                                            <Col>
-                                                {this.props.type !=='select' &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Monday"
-                                                    value={mondaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                                {mondaySlot[2] && !mondaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Monday"
-                                                    value={mondaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-success">
-                                                    Избери</Button>
-                                                }
-                                                {mondaySlot[2] && mondaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Monday"
-                                                    value={mondaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                            </Col>
-                                        </Row>} 
-                                    </>
-                                ))}
-                            </td>     
-                            <td>
-                                {tuesdaySlots && tuesdaySlots.map(tuesdaySlot => (
-                                    <>
-                                        {tuesdaySlot &&
-                                        <Row>
-                                            <Col>
-                                                {tuesdaySlot[0]} - {tuesdaySlot[1]}
-                                            </Col>
-                                            <Col>
-                                            {this.props.type !=='select' &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Tuesday"
-                                                    value={tuesdaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                                {tuesdaySlot[2] && !tuesdaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Tuesday"
-                                                    value={tuesdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-success">
-                                                    Избери</Button>
-                                                }
-                                                {tuesdaySlot[2] && tuesdaySlot[2][0] && 
-                                                <Button
-                                                    size="sm"
-                                                    name="Tuesday"
-                                                    value={tuesdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                            </Col>
-                                        </Row>} 
-                                    </>
-                                ))}
-                            </td> 
-                            <td>
-                                {wednesdaySlots && wednesdaySlots.map(wednesdaySlot => (
-                                    <>
-                                        {wednesdaySlot &&
-                                        <Row>
-                                            <Col>
-                                                {wednesdaySlot[0]} - {wednesdaySlot[1]}
-                                            </Col>
-                                            <Col>
-                                            {this.props.type !=='select' &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Wednesday"
-                                                    value={wednesdaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                                {wednesdaySlot[2] && !wednesdaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Wednesday"
-                                                    value={wednesdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-success">
-                                                    Избери</Button>
-                                                }
-                                                {wednesdaySlot[2] && wednesdaySlot[2][0] && 
-                                                <Button
-                                                    size="sm"
-                                                    name="Wednesday"
-                                                    value={wednesdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                            </Col>
-                                        </Row>} 
-                                    </>
-                                ))}
-                            </td> 
-                            <td>
-                                {thursdaySlots && thursdaySlots.map(thursdaySlot => (
-                                    <>
-                                        {thursdaySlot &&
-                                        <Row>
-                                            <Col>
-                                                {thursdaySlot[0]} - {thursdaySlot[1]}
-                                            </Col>
-                                            <Col>
-                                            {this.props.type !=='select' &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Thursday"
-                                                    value={thursdaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                                {thursdaySlot[2] && !thursdaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Thursday"
-                                                    value={thursdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-success">
-                                                    Избери</Button>
-                                                }
-                                                {thursdaySlot[2] && thursdaySlot[2][0] && 
-                                                <Button
-                                                    size="sm"
-                                                    name="Thursday"
-                                                    value={thursdaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                            </Col>
-                                        </Row>} 
-                                    </>
-                                ))}
-                            </td>
-                            <td>
-                                {fridaySlots && fridaySlots.map(fridaySlot => (
-                                    <>
-                                        {fridaySlot &&
-                                        <Row>
-                                            <Col>
-                                                {fridaySlot[0]} - {fridaySlot[1]}
-                                            </Col>
-                                            <Col>
-                                            {this.props.type !=='select' &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Friday"
-                                                    value={fridaySlot}
-                                                    onClick={this.deleteSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                                {fridaySlot[2] && !fridaySlot[2][0] &&
-                                                <Button
-                                                    size="sm"
-                                                    name="Friday"
-                                                    value={fridaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-success">
-                                                    Избери</Button>
-                                                }
-                                                {fridaySlot[2] && fridaySlot[2][0] && 
-                                                <Button
-                                                    size="sm"
-                                                    name="Friday"
-                                                    value={fridaySlot[3]}
-                                                    onClick={this.selectSlot}
-                                                    variant="outline-danger">
-                                                    Премахни</Button>
-                                                }
-                                            </Col>
-                                        </Row>} 
-                                    </>
-                                ))}
-                            </td> 
-                        </tr>
-                        <tr>
-                            {weekDaysTemplate && weekDaysTemplate.map(weekDayTemplate => (
+                            {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map((weekDayTemplate, index) => (
                                 <td>
                                     <Button
                                     variant="outline-info"

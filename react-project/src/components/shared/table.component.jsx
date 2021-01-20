@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { FormGroup, Button, Table, Modal } from 'react-bootstrap';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
+import timeSlotService from '../../services/schedule/timeManegment/time-slot.service';
 
 export default class TableList extends Component {
     constructor(props) {
@@ -70,9 +71,14 @@ export default class TableList extends Component {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Име</th>
+                        {this.props.type !== "teaching-hour" && <th>Име</th>}
                         {this.props.type === "cabinet" && <th>Категории</th>}
                         {this.props.type === "teacher" && <th>Инициали</th>}
+                        {this.props.type === "teaching-hour" && <th>Група</th>}
+                        {this.props.type === "teaching-hour" && <th>Преподавател</th>}
+                        {this.props.type === "teaching-hour" && <th>Час / Седмица</th>}
+                        {this.props.type === "teaching-hour" && <th>Кабинет</th>}
+                        {this.props.type === "teaching-hour" && <th>Слотове</th>}
                         <th></th>
                         <th></th>
                     </tr>
@@ -80,7 +86,7 @@ export default class TableList extends Component {
                 <tbody>
                     {elements && elements.map(element => (
                             <tr key={element.id}>
-                                <td>{element.name}</td>
+                                {this.props.type !== "teaching-hour" && <td>{element.name}</td>}
                                 {this.props.type === "teacher" && <td>{element.initials}</td>}
                                 {this.props.type === "cabinet" && <td>{element.cabinetCategories
                                 && element.cabinetCategories.map(category => (
@@ -88,6 +94,11 @@ export default class TableList extends Component {
                                         <li key={category.id}>{category.name}</li>
                                     </ul>
                                 ))}</td>}
+                                {this.props.type === "teaching-hour" && <th>12A</th>}
+                                {this.props.type === "teaching-hour" && <th>{element.teacher.name} ({element.teacher.initials})</th>}
+                                {this.props.type === "teaching-hour" && <th>{element.hoursPerWeek}</th>}
+                                {this.props.type === "teaching-hour" && <th>{element.cabinet.name}</th>}
+                                {this.props.type === "teaching-hour" && <th>Брой: {element.timeSlots.length}</th>}
                                 <Modal 
                                 show={show}
                                 onHide={() => this.setState({ show: !show })}
