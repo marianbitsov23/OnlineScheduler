@@ -15,7 +15,7 @@ export default class TableList extends Component {
             editableElement: {},
             selectedTeacher: 0,
             selectedCabinet: 0,
-
+            selectedTimeTable: 0
         };
 
     }
@@ -92,7 +92,7 @@ export default class TableList extends Component {
     render() {
 
         const { show, editableElement } = this.state;
-        const {teachers, cabinets} = this.props;
+        const {teachers, cabinets, timeTables} = this.props;
         const elements = this.props.elements;
 
         return(
@@ -105,6 +105,7 @@ export default class TableList extends Component {
                         {this.props.type === "teaching-hour" && <th>Група</th>}
                         {this.props.type === "teaching-hour" && <th>Преподавател</th>}
                         {this.props.type === "teaching-hour" && <th>Час / Седмица</th>}
+                        {this.props.type === "teaching-hour" && <th>През седмица</th>}
                         {this.props.type === "teaching-hour" && <th>Кабинет</th>}
                         {this.props.type === "teaching-hour" && <th>Слотове</th>}
                         <th></th>
@@ -125,9 +126,12 @@ export default class TableList extends Component {
                                 {this.props.type === "teaching-hour" && <th>12A</th>}
                                 {this.props.type === "teaching-hour" && <th>{element.teacher.name} ({element.teacher.initials})</th>}
                                 {this.props.type === "teaching-hour" && <th>{element.hoursPerWeek}</th>}
+                                {this.props.type === "teaching-hour" && element.overAWeek && <th>Да</th>}
+                                {this.props.type === "teaching-hour" && !element.overAWeek && <th>Не</th>}
                                 {this.props.type === "teaching-hour" && <th>{element.cabinet.name}</th>}
                                 {this.props.type === "teaching-hour" && <th>Брой: {element.timeSlots.length}</th>}
                                 <Modal 
+                                size="lg"
                                 show={show}
                                 onHide={() => this.setState({ show: !show })}
                                 centered
@@ -204,7 +208,7 @@ export default class TableList extends Component {
                                                 </FormGroup>
                                                 
                                                 <FormGroup>
-                                                    <FormBootstrap.Label>Променте кабинета</FormBootstrap.Label>
+                                                    <FormBootstrap.Label>Променете кабинета</FormBootstrap.Label>
                                                     <FormBootstrap.Control as="select" 
                                                     name="selectedCabinet" 
                                                     value={this.state.selectedCabinet} 

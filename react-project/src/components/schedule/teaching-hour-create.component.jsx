@@ -188,6 +188,7 @@ export default class CreateTeachingHour extends Component {
                         type="teaching-hour" 
                         teachers={teachers} 
                         cabinets={cabinets}
+                        timeTables={timeTables}
                         elements={teachingHours}
                         service={teachingHourService}
                     />

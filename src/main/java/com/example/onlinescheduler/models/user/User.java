@@ -42,6 +42,7 @@ public class User {
 
     private Set<Role> roles = new HashSet<>();
 
+    private String resetPasswordToken;
 
     public User() {}
 
@@ -71,4 +72,8 @@ public class User {
     public Set<Role> getRoles() { return roles; }
 
     public void setRoles(Set<Role> roles) { this.roles = roles; }
+
+    public String getResetPasswordToken() { return resetPasswordToken; }
+
+    public void setResetPasswordToken(String resetPasswordToken) { this.resetPasswordToken = resetPasswordToken; }
 }

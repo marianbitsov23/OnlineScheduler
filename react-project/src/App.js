@@ -18,6 +18,8 @@ import CreateTeacher from "./components/schedule/teacher-create.component";
 import CreateTimeTable from "./components/schedule/timeManegment/time-table-create.component";
 import CreateGroup from "./components/schedule/group-create.component";
 import CreateTeachingHour from "./components/schedule/teaching-hour-create.component";
+import ForgotPassword from "./components/sign/forgot-password.component";
+import ResetPassword from "./components/sign/reset-password.component";
 
 class App extends Component {
     constructor(props) {
@@ -52,6 +54,8 @@ class App extends Component {
               <Container className="mt-3">
                   <Switch>
                       <Route exact path={["/", "/home"]} component={Home} />
+                      <Route exact path="/forgot-password" component={ForgotPassword} />
+                      <Route exact path="/reset_password" component={ResetPassword} />
                       <Route exact path="/login" component={Login} />
                       <Route exact path = "/create-schedule" component={CreateSchedule} />
                       <Route exact path = "/create-cabinet" component={CreateCabinet} />
