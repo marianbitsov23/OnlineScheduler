@@ -25,12 +25,12 @@ class TimeTableService {
             }, {headers: authHeader()});
     }
 
-    updateTimeTableInformation(id, schedule, timeTableName, timeSlots) {
-        return axios.put(API_URL + '/' + id,
+    update(timeTable) {
+        return axios.put(API_URL + '/' + timeTable.id,
             {
-                schedule,
-                timeTableName,
-                timeSlots
+                schedule: timeTable.schedule,
+                name: timeTable.name,
+                timeSlots: timeTable.timeSlots
             }, {headers: authHeader()});
     }
 

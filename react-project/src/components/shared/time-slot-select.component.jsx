@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Table, Button, Row, Col, Container } from 'react-bootstrap';
-import timeSlotService from '../../services/schedule/timeManegment/time-slot.service';
 
 export default class TimeSlotSelect extends Component {
     constructor(props) {
@@ -73,7 +72,7 @@ export default class TimeSlotSelect extends Component {
         let timeSlots;
 
         this.props.timeSlots !== undefined 
-            ? timeSlots = this.props.timeSlots.reverse()
+            ? timeSlots = this.props.timeSlots
             : timeSlots = weekDays;
 
         if(timeSlots) {

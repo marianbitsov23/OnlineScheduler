@@ -184,7 +184,13 @@ export default class CreateTeachingHour extends Component {
                     </Button>
                 </Container>
                 <Container>
-                    <TableList type="teaching-hour" elements={teachingHours} service={teachingHourService} />
+                    <TableList 
+                        type="teaching-hour" 
+                        teachers={teachers} 
+                        cabinets={cabinets}
+                        elements={teachingHours}
+                        service={teachingHourService}
+                    />
                 </Container>
                 <Modal 
                 show={show}
@@ -229,7 +235,7 @@ export default class CreateTeachingHour extends Component {
                                     onChange={this.onChange}
                                 />
 
-                                <FormGroup>
+                            <FormGroup>
                                 <FormControlLabel
                                     control={
                                     <Checkbox 
@@ -289,7 +295,7 @@ export default class CreateTeachingHour extends Component {
                             <FormBootstrap.Label>Изберете график</FormBootstrap.Label>
                             <FormBootstrap.Control as="select" name="selectedTimeTable" value={this.state.selectedTimeTable} onChange={this.onChange}>
                                 {timeTables && timeTables.map((timeTable, index) => (
-                                    <option key={timeTable.id} value={index}>{timeTable.timeTableName}</option>
+                                    <option key={timeTable.id} value={index}>{timeTable.name}</option>
                                 ))}
                             </FormBootstrap.Control>
                         </FormGroup>
