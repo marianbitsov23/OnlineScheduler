@@ -49,6 +49,10 @@ export default class Login extends Component {
     render() {
         const { username, password } = this.state;
 
+        const disabled =
+            username === ''||
+            password === '';
+
         return (
             <>
                 <Container component="main" maxWidth="xs">
@@ -66,7 +70,7 @@ export default class Login extends Component {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                            Sign In
+                            Login
                         </Typography>
                         <Form style={{}} onSubmit={this.handleLogin}>
                             <TextField
@@ -97,6 +101,7 @@ export default class Login extends Component {
                                 fullWidth
                                 variant="contained"
                                 color="primary"
+                                disabled={disabled}
                                 style={{ marginBottom: '1rem'}}
                             >
                                 {this.state.loading &&

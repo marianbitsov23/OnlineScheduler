@@ -30,25 +30,27 @@ export default class Navigation extends Component {
 
         return (
             <>
-                <Navbar bg="dark" variant="dark">
+                <Navbar bg="dark" variant="dark" expand="lg">
                     <Link to={"/"}>
                         <Navbar.Brand>OnlineScheduler</Navbar.Brand>
                     </Link>
-                    <Nav className="mr-auto">
-                        <Nav.Item>
-                            <Link to={"/home"} className="nav-link">
-                                Home
-                            </Link>
-                        </Nav.Item>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="mr-auto">
+                            <Nav.Item>
+                                <Link to={"/home"} className="nav-link">
+                                    Home
+                                </Link>
+                            </Nav.Item>
 
-                        {currentUser && (
-                        <Nav.Item>
-                            <Link to={"/schedules"} className="nav-link white">
-                                Schedules
-                            </Link>
-                        </Nav.Item>
-                        )}
-                    </Nav>
+                            {currentUser && (
+                            <Nav.Item>
+                                <Link to={"/schedules"} className="nav-link white">
+                                    Schedules
+                                </Link>
+                            </Nav.Item>
+                            )}
+                        </Nav>
 
                     {currentUser ? (
                         <Nav className="ml-auto">
@@ -79,6 +81,7 @@ export default class Navigation extends Component {
                             </Nav.Item>
                         </Nav>
                     )}
+                    </Navbar.Collapse>
                 </Navbar>
             </>
         );

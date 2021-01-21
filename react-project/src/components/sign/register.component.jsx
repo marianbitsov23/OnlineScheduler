@@ -83,7 +83,10 @@ export  default class Register extends Component {
         const{ username, email, password, 
             isInvalidUsername, isInvalidEmail, isInvalidPassword } = this.state;
         
-
+            const disabled =
+                isInvalidUsername ||
+                isInvalidEmail ||
+                isInvalidPassword;
         return (
             <>
                 <Container component="main" maxWidth="xs">
@@ -149,6 +152,7 @@ export  default class Register extends Component {
                                 fullWidth
                                 variant="contained"
                                 color="primary"
+                                disabled={disabled}
                                 style={{ marginBottom: '1rem'}}
                             >
                                 {this.state.loading &&
