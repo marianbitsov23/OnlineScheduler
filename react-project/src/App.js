@@ -11,15 +11,16 @@ import ScheduleBoard from "./components/board-schedules.component";
 import BoardAdmin from "./components/board-admin.component";
 import Navigation from "./components/shared/navbar.component";
 import { Container } from "react-bootstrap";
-import CreateSchedule from "./components/schedule/schedule-create.component";
-import CreateCabinet from "./components/schedule/cabinet-create.component";
-import CreateSubject from "./components/schedule/subject-create.compnent";
-import CreateTeacher from "./components/schedule/teacher-create.component";
-import CreateTimeTable from "./components/schedule/timeManegment/time-table-create.component";
-import CreateGroup from "./components/schedule/group-create.component";
-import CreateTeachingHour from "./components/schedule/teaching-hour-create.component";
 import ForgotPassword from "./components/sign/forgot-password.component";
 import ResetPassword from "./components/sign/reset-password.component";
+import ManageSchedules from "./components/schedule/schedule-management.component";
+import ManageCabinets from "./components/schedule/cabinet-management.component";
+import ManageSubjects from "./components/schedule/subject-management.compnent";
+import ManageTeachers from "./components/schedule/teacher-management.component";
+import ManageTimeTables from "./components/schedule/timeManegment/time-table-management.component";
+import ManageTeachingHours from "./components/schedule/teaching-hour-management.component";
+import ManageGroups from "./components/schedule/group-management.component";
+import Footer from "./components/shared/footer.component";
 
 class App extends Component {
     constructor(props) {
@@ -49,7 +50,11 @@ class App extends Component {
 
     render() {
         return (
-            <>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '100vh'
+            }}>
               <Navigation />
               <Container className="mt-3">
                   <Switch>
@@ -57,20 +62,21 @@ class App extends Component {
                       <Route exact path="/forgot-password" component={ForgotPassword} />
                       <Route exact path="/reset_password" component={ResetPassword} />
                       <Route exact path="/login" component={Login} />
-                      <Route exact path = "/create-schedule" component={CreateSchedule} />
-                      <Route exact path = "/create-cabinet" component={CreateCabinet} />
-                      <Route exact path = "/create-subject" component={CreateSubject} />
-                      <Route exact path = "/create-teacher" component={CreateTeacher} />
-                      <Route exact path = "/create-time-table" component={CreateTimeTable} />
-                      <Route exact path = "/create-teaching-hour" component={CreateTeachingHour} />
-                      <Route exact path = "/create-group" component={CreateGroup} />
+                      <Route exact path = "/schedule-management" component={ManageSchedules} />
+                      <Route exact path = "/cabinet-management" component={ManageCabinets} />
+                      <Route exact path = "/subject-management" component={ManageSubjects} />
+                      <Route exact path = "/teacher-management" component={ManageTeachers} />
+                      <Route exact path = "/time-table-management" component={ManageTimeTables} />
+                      <Route exact path = "/teaching-hour-management" component={ManageTeachingHours} />
+                      <Route exact path = "/group-management" component={ManageGroups} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />
                       <Route path="/admin" component={BoardAdmin} />
                   </Switch>
               </Container>
-          </>
+              <Footer />
+          </div>
         );
     }
 }

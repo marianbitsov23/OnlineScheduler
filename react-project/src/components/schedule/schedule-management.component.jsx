@@ -7,7 +7,7 @@ import scheduleService from "../../services/schedule/schedule.service";
 import authService from '../../services/user-auth/auth.service';
 
 
-export default class CreateSchedule extends Component {
+export default class ManageSchedules extends Component {
     constructor(props) {
         super(props);
 

@@ -1,53 +1,12 @@
 import React, { Component } from 'react';
 import authService from "../../services/user-auth/auth.service";
-
+import { FormGroup, Alert } from 'react-bootstrap';
 import { isEmail } from "validator";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import { Col, Row, Card, Button, FormGroup, Alert } from 'react-bootstrap';
-import FormBootstrap from 'react-bootstrap/Form';
-
-const email = value => {
-    if (!isEmail(value)) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This is not a valid emial.
-            </div>
-        );
-    } 
-};
-
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
-
-
-const vusername = value => {
-    if (value.length < 3 || value.length > 20) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                The username must be between 3 and 20 characters!
-            </div>
-        );
-    }
-};
-
-const vpassword = value => {
-    if (value.length < 6 || value.length > 40) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                The password must be between 6 and 40 characters!
-            </div>
-        );
-    }
-};
+import { Avatar, CssBaseline, Container, 
+    Typography, TextField, Button, Grid } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Link } from 'react-router-dom';
 
 export  default class Register extends Component {
     constructor(props) {
@@ -59,12 +18,37 @@ export  default class Register extends Component {
             username: "",
             password: "",
             email: "",
-            successful: false,
-            message: ""
+            message: "",
+            loading: false,
+            isInvalidUsername: false,
+            isInvalidEmail: false,
+            isInvalidPassword: false
         };
     }
 
     onChange = event => {
+        switch([event.target.name][0]) {
+            case 'username':
+                this.setState({ 
+                    isInvalidUsername: 
+                        event.target.value.length < 3 ||
+                        event.target.value.length > 20
+                });
+                break;
+            case 'password':
+                this.setState({ 
+                    isInvalidPassword: 
+                        event.target.value.length < 6 ||
+                        event.target.value.length > 40
+                });
+                break;
+            case 'email':
+                this.setState({
+                    isInvalidEmail: 
+                        !isEmail(event.target.value)
+                });
+                break;
+        }
         this.setState({
             [event.target.name]: event.target.value
         });
@@ -73,130 +57,122 @@ export  default class Register extends Component {
     handleRegister = event => {
         event.preventDefault();
 
-        console.log("EEE PEDAL");
+        const { username, password, email } = this.state;
 
         this.setState({
             message: "",
-            successful: false
+            loading: false
         });
 
-        this.form.validateAll();
+        authService.register(username, email, password)
+        .then(() => {
+            authService.login(this.state.username, this.state.password)
+            .then(() => {
+                this.props.history.push("/profile");
+                window.location.reload();
+            });
+        })
+        .catch(error => {
+            this.setState({ message: error.message, loading: false})
+        });
 
-        if (this.checkBtn.context._errors.length === 0) {
-            authService.register(
-                this.state.username,
-                this.state.email,
-                this.state.password
-            ).then(
-                response => {
-                    this.setState({
-                        message: response.data.message,
-                        successful: true
-                    });
-                    authService.login(this.state.username, this.state.password).then(
-                        () => {
-                            this.props.history.push("/profile");
-                            window.location.reload();
-                        })
-                },
-                error => {
-                    const resMessage = 
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                        error.message ||
-                        error.toString()
-
-                    this.setState({
-                        successful: false,
-                        message: resMessage
-                    });
-                }
-            );
-        }
     }
 
     render() {
+
+        const{ username, email, password, 
+            isInvalidUsername, isInvalidEmail, isInvalidPassword } = this.state;
+        
+
         return (
             <>
-                <Col className="md-6">
-                    <Row className="justify-content-md-center">
-                        <Card style={{ width: '54em', padding: '2rem' }} className="mx-auto my-4">
-                            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }} >
-                                Create an account
-                            </Card.Title>
-                            <Form
-                                onSubmit={this.handleRegister}
-                                ref={c => {
-                                    this.form = c;
-                                }}
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div style={{
+                        marginTop: '.5rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                    }}>
+                        <Avatar style={{
+                            margin: '1rem',
+                            backgroundColor: 'red'
+                        }}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Create account
+                        </Typography>
+                        <Form style={{}} onSubmit={this.handleRegister}>
+                            <TextField
+                                error={isInvalidUsername}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Username"
+                                name="username"
+                                value={username}
+                                onChange={this.onChange}
+                                autoComplete="username"
+                                helperText='The username must be between 3 and 20 characters!'
+                            />
+                            <TextField
+                                error={isInvalidEmail}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Email Address"
+                                name="email"
+                                value={email}
+                                onChange={this.onChange}
+                                autoComplete="email"
+                                helperText='Enter a valid email example@emp.com'
+                            />
+                            <TextField
+                                error={isInvalidPassword}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Password"
+                                name="password"
+                                type="password"
+                                value={password}
+                                onChange={this.onChange}
+                                autoComplete="current-password"
+                                helperText='The password must be between 6 and 40 characters!'
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                style={{ marginBottom: '1rem'}}
                             >
+                                {this.state.loading &&
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                }
+                                <span>Register</span>
+                            </Button>
+                            {this.state.message && (
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="username">Username</FormBootstrap.Label>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        name="username"
-                                        value={this.state.username}
-                                        onChange={this.onChange}
-                                        validattions={[required, vusername]}
-                                    />
+                                    <Alert variant="danger" role="alert">
+                                        {this.state.message}
+                                    </Alert>
                                 </FormGroup>
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="email">Email</FormBootstrap.Label>
-                                    <Input
-                                        type="email"
-                                        className="form-control"
-                                        name="email"
-                                        value={this.state.email}
-                                        onChange={this.onChange}
-                                        validattions={[required, email]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="password">Password</FormBootstrap.Label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="password"
-                                        value={this.state.password}
-                                        onChange={this.onChange}
-                                        validattions={[required, vpassword]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        className="btn-block"
-                                        disabled={this.state.loading}>
-                                            Register
-                                        </Button>
-                                </FormGroup>
-                                {this.state.message && (
-                                    <FormGroup>
-                                        {this.state.successful
-                                        ? 
-                                            <Alert variant="success" role="alert">
-                                                {this.state.message}
-                                            </Alert>
-                                        :
-                                            <Alert variant="danger" role="alert">
-                                                {this.state.message}
-                                            </Alert>
-                                        }
-                                    </FormGroup>
-                                )}
-                                <CheckButton
-                                    style={{ display: "none" }}
-                                    ref={c => {
-                                        this.checkBtn = c;
-                                    }}
-                                />
-                                </Form>
-                        </Card>
-                    </Row>
-                </Col>
+                            )}
+                            <Grid container justify="flex-end">
+                                <Grid item>
+                                    <Link to={"/login"} className="nav-link">
+                                        Already have an account? Sign in
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </Form>
+                    </div>
+                </Container>
             </>
         );
     }

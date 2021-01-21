@@ -10,7 +10,7 @@ import scheduleService from '../../../services/schedule/schedule.service';
 import { Link } from 'react-router-dom';
 import TimeSlotSelect from '../../shared/time-slot-select.component';
 
-export default class CreateTimeTable extends Component {
+export default class ManageTimeTables extends Component {
     constructor(props) {
         super(props);
 

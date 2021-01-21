@@ -8,7 +8,7 @@ import scheduleService from '../../services/schedule/schedule.service';
 import { AiOutlinePlus } from 'react-icons/ai';
 
 
-export default class CreateGroup extends Component {
+export default class ManageGroups extends Component {
     constructor(props) {
         super(props);
 

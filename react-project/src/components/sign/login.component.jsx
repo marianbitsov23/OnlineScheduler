@@ -1,22 +1,12 @@
 import React from 'react';
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import FormBootstrap from 'react-bootstrap/Form';
-
 import { Component } from "react";
+import { FormGroup, Alert } from 'react-bootstrap';
 import authService from "../../services/user-auth/auth.service";
-import { Col, Card, FormGroup, Button, Alert, Row } from 'react-bootstrap';
-
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
+import { Avatar, CssBaseline, Container, 
+        Typography, TextField, Button, Grid } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Link } from 'react-router-dom';
 
 export default class Login extends Component {
     constructor(props) {
@@ -41,107 +31,101 @@ export default class Login extends Component {
     handleLogin = event => {
         event.preventDefault();
 
-        this.setState({
-            message: "",
-            loading: true
-        });
+        this.setState({ message: "", loading: true});
 
-        this.form.validateAll();
-
-        if (this.checkBtn.context._errors.length === 0) {
-            authService.login(this.state.username, this.state.password).then(
-                () => {
-                    this.props.history.push("/profile");
-                    window.location.reload();
-                },
-                error => {
-                    console.log(error)
-                    const resMessage = 
-                    (error.response &&
-                        error.response.data &&
-                        error.response.data.message) ||
-                        error.message ||
-                        error.toString()
-
-                    this.setState({
-                        loading: false,
-                        message: resMessage
-                    });
-                }
-            );
-        } else {
+        authService.login(this.state.username, this.state.password)
+        .then(() => {
+            this.props.history.push("/profile");
+            window.location.reload();
+        })
+        .catch(error => {
             this.setState({
-                loading: false
+                loading: false,
+                message: error.message
             });
-        }
+        });
     }
 
     render() {
+        const { username, password } = this.state;
+
         return (
             <>
-                <Col className="md-6">
-                    <Row className="justify-content-md-center">
-                        <Card style={{ width: '54em', padding: '2rem' }} className="mx-auto my-4">
-                            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }} >
-                                Sign in
-                            </Card.Title>
-                            <Form
-                                onSubmit={this.handleLogin}
-                                ref={c => {
-                                    this.form = c;
-                                }}
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <div style={{
+                        marginTop: '.5rem',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center'
+                    }}>
+                        <Avatar style={{
+                            margin: '1rem',
+                            backgroundColor: 'red'
+                        }}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Sign In
+                        </Typography>
+                        <Form style={{}} onSubmit={this.handleLogin}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Username"
+                                name="username"
+                                value={username}
+                                onChange={this.onChange}
+                                autoComplete="text"
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Password"
+                                name="password"
+                                type="password"
+                                value={password}
+                                onChange={this.onChange}
+                                autoComplete="current-password"
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                style={{ marginBottom: '1rem'}}
                             >
+                                {this.state.loading &&
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                }
+                                <span>Login</span>
+                            </Button>
+                            {this.state.message && (
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="username">Username</FormBootstrap.Label>
-                                    <Input
-                                        type="username"
-                                        className="form-control"
-                                        name="username"
-                                        value={this.state.username}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
+                                    <Alert variant="danger" role="alert">
+                                        {this.state.message}
+                                    </Alert>
                                 </FormGroup>
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="password">Password</FormBootstrap.Label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="password"
-                                        value={this.state.password}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        className="btn-block"
-                                        disabled={this.state.loading}>
-                                            {this.state.loading &&
-                                                <span className="spinner-border spinner-border-sm"></span>
-                                            }
-                                            <span>Login</span>
-                                        </Button>
-                                </FormGroup>
-                                {this.state.message && (
-                                    <FormGroup>
-                                        <Alert variant="danger" role="alert">
-                                            {this.state.message}
-                                        </Alert>
-                                    </FormGroup>
-                                )}
-                                <CheckButton
-                                    style={{ display: "none" }}
-                                    ref={c => {
-                                        this.checkBtn = c;
-                                    }}
-                                />
-                                </Form>
-                        </Card>
-                    </Row>
-                </Col>
+                            )}
+                            <Grid container>
+                                <Grid item xs>
+                                    <Link to={"/forgot-password"} className="nav-link">
+                                        Forgot Password
+                                    </Link>
+                                </Grid>
+                                <Grid item>
+                                    <Link to={"/register"} className="nav-link">
+                                        Don't have an account? Sign Up
+                                    </Link>
+                                </Grid>
+                            </Grid>
+                        </Form>
+                    </div>
+                </Container>
             </>
         );
     }

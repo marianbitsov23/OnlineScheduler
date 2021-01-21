@@ -16,7 +16,7 @@ import TimeSlotSelect from '../shared/time-slot-select.component';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-export default class CreateTeachingHour extends Component {
+export default class ManageTeachingHours extends Component {
     constructor(props) {
         super(props);
 
