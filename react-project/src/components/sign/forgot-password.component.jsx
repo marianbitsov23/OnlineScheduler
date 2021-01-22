@@ -43,7 +43,7 @@ export default class ForgotPassword extends Component {
         authService.forgotPassword(email)
         .then(result => {
             console.log(result.data);
-            this.setState({ message: result.data, alert: false, loading: false });
+            this.setState({ message: result.data.message, alert: false, loading: false });
         })
         .catch(error => {
             console.error(error);

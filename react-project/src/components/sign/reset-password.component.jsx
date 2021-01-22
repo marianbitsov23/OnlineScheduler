@@ -4,9 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import FormBootstrap from 'react-bootstrap/Form';
 import { Card, Button, Row, Col, FormGroup, Alert } from "react-bootstrap";
-import LockIcon from '@material-ui/icons/Lock';
 import authService from "../../services/user-auth/auth.service";
-import randomstring from "randomstring/index";
 
 const required = value => {
     if (!value) {
@@ -46,7 +44,7 @@ export default class ResetPassword extends Component {
         authService.resetPassword(token, password)
         .then(result => {
             console.log(result.data);
-            this.setState({ message: result.data, alert: false, loading: false });
+            this.setState({ message: result.data.message, alert: false, loading: false });
         })
         .catch(error => {
             console.error(error);
@@ -88,7 +86,7 @@ export default class ResetPassword extends Component {
                                     />
                                 </FormGroup>
                                 <FormGroup>
-                                    <FormBootstrap.Label htmlFor="password">Password</FormBootstrap.Label>
+                                    <FormBootstrap.Label htmlFor="password">New password</FormBootstrap.Label>
                                     <Input
                                         type="password"
                                         className="form-control"

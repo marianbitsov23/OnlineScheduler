@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-
-import UserService from "../services/user-auth/user.service";
-import { Container, Jumbotron, Row, Button, Card } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import scheduleService from "../services/schedule/schedule.service";
 import authService from "../services/user-auth/auth.service";
@@ -37,7 +35,7 @@ export default class ScheduleBoard extends Component {
             <Grid container className="myFlexGrow">
                 <Grid container justify="center" item xs={12}>
                     {schedules.map(schedule => (
-                        <Link to={'/schedule-management'} className="withoutDecoration">
+                        <Link to={'/schedule-management'} className="nav-link">
                             <Card bg="primary" text="white" 
                             className="myDefaultMargin"
                             style={{ width: '20rem' }}>

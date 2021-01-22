@@ -40,7 +40,10 @@ export default class Profile extends Component {
 
         AuthService.deleteUser(this.state.currentUser.id)
         .then(AuthService.logout())
-        .then(this.props.history.push("/login"));
+        .then(() => {
+            this.props.history.push("/login");
+            window.location.reload();
+        });
     }
 
     saveInformation = event => {
@@ -71,17 +74,8 @@ export default class Profile extends Component {
 
     render() {
 
-        const schedules = this.state.schedules;
-
-        return (
+     return (
             <>
-                <Container>
-                    <h2>Your schedules</h2>
-                    {schedules && (schedules.map(schedule => (
-                        <li key={schedule.id}>Name {schedule.scheduleName} : session {schedule.session} </li>
-                    )))}
-                </Container>
-
                 <Container>
                     <Row className="justify-content-md-center">
                         <Card bg="secondary" text="white" style={{ width: '24rem' }}>

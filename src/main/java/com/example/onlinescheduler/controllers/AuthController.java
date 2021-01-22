@@ -102,7 +102,7 @@ public class AuthController {
                     + "<p>Click the link below to change your password:</p>"
                     + "<p><a href=\"" + link + "\">Change my password</a></p>"
                     + "<br>"
-                    + "<p>Confirmation token: " + token + "</p>"
+                    + "<h3>Security key: <strong>" + token + "</strong></h3>"
                     + "<p>Copy this token and paste it in the reset password form.</p>"
                     + "<p>in order to reset your password.</p>"
                     + "<br>"
@@ -160,7 +160,7 @@ public class AuthController {
                     .body(new MessageResponse("Username is already taken!"));
         }
 
-        if(userRepository.existsByUsername(signupRequest.getEmail())) {
+        if(userRepository.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Email is already in use!"));

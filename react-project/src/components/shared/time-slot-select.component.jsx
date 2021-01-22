@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Button, Row, Col, Container } from 'react-bootstrap';
+import { Table, Button, Row, Col } from 'react-bootstrap';
 
 export default class TimeSlotSelect extends Component {
     constructor(props) {
@@ -76,15 +76,15 @@ export default class TimeSlotSelect extends Component {
             : timeSlots = weekDays;
 
         if(timeSlots) {
-            this.props.weekDaysTemplate.map((weekDayTemplate, i) => {
-                    let index = 0;
-                    timeSlots.map(res => {
-                        if(res.weekDay === weekDayTemplate.toUpperCase()) {
-                            index++;
-                            res.index = index;
-                        }
-                    })
-                })
+            this.props.weekDaysTemplate.map(weekDayTemplate => {
+                let index = 0;
+                timeSlots.map(res => {
+                    if(res.weekDay === weekDayTemplate.toUpperCase()) {
+                        index++;
+                        res.index = index;
+                    }
+                });
+            });
         }
 
         return (

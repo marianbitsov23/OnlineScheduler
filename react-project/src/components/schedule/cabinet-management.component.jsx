@@ -6,7 +6,7 @@ import ModelInput from '../shared/model-input.component';
 import { Link } from 'react-router-dom';
 import scheduleService from '../../services/schedule/schedule.service';
 
-export default class CreateCabinet extends Component {
+export default class ManageCabinets extends Component {
     constructor(props) {
         super(props);
 
@@ -29,6 +29,7 @@ export default class CreateCabinet extends Component {
         cabinetCategoryService.getDefaultCabinetCategories()
         .then(result => {
             let categories = result.data;
+            this.setState({ categories: categories });
             cabinetCategoryService.getAllCabinetCategoriesByScheduleId(this.state.schedule.id)
             .then(result => {
                 this.setState({ categories: categories.concat(result.data) });

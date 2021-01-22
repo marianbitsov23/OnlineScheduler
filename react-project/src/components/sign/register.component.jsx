@@ -48,6 +48,8 @@ export  default class Register extends Component {
                         !isEmail(event.target.value)
                 });
                 break;
+            default:
+                break;
         }
         this.setState({
             [event.target.name]: event.target.value
@@ -73,7 +75,13 @@ export  default class Register extends Component {
             });
         })
         .catch(error => {
-            this.setState({ message: error.message, loading: false})
+            const response = 
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                        error.message ||
+                        error.toString()
+            this.setState({ message: response, loading: false})
         });
 
     }

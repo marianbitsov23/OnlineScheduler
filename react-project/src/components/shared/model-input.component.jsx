@@ -15,6 +15,7 @@ export default class ModelInput extends Component {
             elementName: "",
             initials: "",
             loading: false,
+            categories: [],
             schedule: scheduleService.getCurrentSchedule()
         };
 
@@ -31,7 +32,7 @@ export default class ModelInput extends Component {
 
         this.setState({ loading: true });
 
-        const { elementName, schedule, initials } = this.state;
+        const { elementName, schedule, initials, categories } = this.state;
 
         const service = this.props.service;
 
@@ -48,7 +49,7 @@ export default class ModelInput extends Component {
                 break;
             case "cabinet":
                 element = { name: elementName, 
-                    categories: JSON.parse(localStorage.getItem("categories")),
+                    categories: categories,
                     schedule: schedule
                 };
                 break;
@@ -59,12 +60,15 @@ export default class ModelInput extends Component {
         service.create(element)
         .then(result => {
             this.props.elements.push(result.data);
-            localStorage.setItem("categories", JSON.stringify([]));
             this.setState({ elementName: "", initials: "", loading: false });
         })
         .catch(error => {
             console.error(error);
         });
+    }
+
+    selectCategories = categories => {
+        this.setState({ categories: categories });
     }
 
     render() {
@@ -110,6 +114,7 @@ export default class ModelInput extends Component {
                                         cabinetName={this.state.elementName} 
                                         schedule={this.state.schedule} 
                                         categories={this.props.categories} 
+                                        selectCategories={this.selectCategories}
                                     />
                                 }
 

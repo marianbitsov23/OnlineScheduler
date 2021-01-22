@@ -37,13 +37,25 @@ export default class CategorySelect extends Component {
 
         if(type === "add") {
             newCategories.push(category);
-            localStorage.setItem("categories", JSON.stringify(newCategories));
+            this.props.selectCategories(newCategories);
             this.setState({ cabinetCategories: newCategories });
         } else {
             newCategories.splice(newCategories.indexOf(category), 1);
-            localStorage.setItem("categories", JSON.stringify(newCategories));
+            this.props.selectCategories(newCategories);
             this.setState({ cabinetCategories: newCategories });
         }
+    }
+
+    deleteCategory = category => {
+        cabinetCategoryService.deleteCabinetCategory(category.id)
+        .then(() => {
+            let categories = this.props.categories;
+            categories.splice(categories.indexOf(category), 1);
+            this.props.selectCategories(categories);
+        })
+        .catch(error => {
+            console.error(error);
+        })
     }
 
     onChange = event => {
@@ -71,12 +83,19 @@ export default class CategorySelect extends Component {
                                 {category.name}
                             </Col>
                             <Col>
-                            <Button
-                                    key={category.id}
-                                    variant="outline-danger"
-                                    onClick={this.handleSelect.bind(this, "remove", category)}
-                                >Премахни</Button>
+                                <Button
+                                        variant="outline-danger"
+                                        onClick={this.handleSelect.bind(this, "remove", category)}
+                                    >Премахни</Button>
                             </Col>
+                            {category.schedule &&
+                            <Col>
+                                <Button
+                                variant="outline-danger"
+                                onClick={this.deleteCategory.bind(this, category)}
+                                >Изтрий</Button>
+                            </Col>
+                            }
                         </Row>
                         )
                     } else {
@@ -86,12 +105,19 @@ export default class CategorySelect extends Component {
                                     {category.name}
                                 </Col>
                                 <Col>
-                                <Button
-                                    key={category.id / 2}
-                                    variant="outline-info"
-                                    onClick={this.handleSelect.bind(this, "add", category)}
-                                >Избери</Button>
+                                    <Button
+                                        variant="outline-info"
+                                        onClick={this.handleSelect.bind(this, "add", category)}
+                                    >Избери</Button>
                                 </Col>
+                                {category.schedule &&
+                                <Col>
+                                    <Button
+                                    variant="outline-danger"
+                                    onClick={this.deleteCategory.bind(this, category)}
+                                    >Изтрий</Button>
+                                </Col>
+                                }
                             </Row>
                         )
                     }

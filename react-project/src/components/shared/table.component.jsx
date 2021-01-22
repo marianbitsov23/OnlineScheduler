@@ -92,7 +92,7 @@ export default class TableList extends Component {
     render() {
 
         const { show, editableElement } = this.state;
-        const {teachers, cabinets, timeTables} = this.props;
+        const { teachers, cabinets } = this.props;
         const elements = this.props.elements;
 
         return(

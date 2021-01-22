@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Button, Jumbotron, FormGroup, Modal, FormCheck } from 'react-bootstrap';
+import { Container, Button, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
 import subjectService from '../../services/schedule/subject.service';
 import teacherService from '../../services/schedule/teacher.service';
