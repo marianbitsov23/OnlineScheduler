@@ -1,22 +1,12 @@
 import React, { Component } from "react";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import FormBootstrap from 'react-bootstrap/Form';
-import { Card, Button, Row, Col, FormGroup, Alert } from "react-bootstrap";
-import LockIcon from '@material-ui/icons/Lock';
+import { FormGroup, Alert } from "react-bootstrap";
 import authService from "../../services/user-auth/auth.service";
-
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
-
+import { Avatar, CssBaseline, Container, 
+    Typography, TextField, Button, Grid } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { Link } from 'react-router-dom';
+import { isEmail } from "validator";
 
 export default class ForgotPassword extends Component {
     constructor(props) {
@@ -26,12 +16,16 @@ export default class ForgotPassword extends Component {
             email: "",
             loading: false,
             message: "",
-            alert: false
+            alert: false,
+            isInvalidEmail: false
         };
     }
 
     onChange = event => {
-        this.setState({[event.target.name] : event.target.value});
+        this.setState({
+            [event.target.name] : event.target.value,
+            isInvalidEmail: !isEmail(event.target.value)
+        });
     }
 
     forgotPassword = event => {
@@ -42,81 +36,91 @@ export default class ForgotPassword extends Component {
 
         authService.forgotPassword(email)
         .then(result => {
-            console.log(result.data);
             this.setState({ message: result.data.message, alert: false, loading: false });
         })
         .catch(error => {
-            console.error(error);
-            this.setState({ message: error.message, alert: true, loading: false });
+            const response = 
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                        error.message ||
+                        error.toString()
+            this.setState({ message: response, alert: true, loading: false });
         });
     }
 
     render() {
-        return(
-            <Col className="md-6">
-                    <Row className="justify-content-md-center">
-                        <Card style={{ width: '36em', padding: '2rem' }} className="mx-auto my-4">
-                            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }} >
-                                Reset my password
-                            </Card.Title>
-                            <Row  className="justify-content-md-center">
-                                <LockIcon fontSize="large" />
-                            </Row>
-                            <Form
-                                onSubmit={this.forgotPassword}
-                                ref={c => {
-                                    this.form = c;
-                                }}
-                            >
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="username">Email</FormBootstrap.Label>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        name="email"
-                                        placeholder="example@example.com"
-                                        value={this.state.email}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        className="btn-block"
-                                        disabled={this.state.loading}>
-                                            {this.state.loading &&
-                                                <span className="spinner-border spinner-border-sm"></span>
-                                            }
-                                            <span>Send email</span>
-                                        </Button>
-                                </FormGroup>
+        const { email, isInvalidEmail, alert } = this.state;
 
-                                {this.state.message && alert && (
-                                <FormGroup>
-                                    <Alert variant="danger" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
-                                )}
-                                {this.state.message && !alert && (
-                                <FormGroup>
-                                    <Alert variant="success" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
-                                )}
-                                <CheckButton
-                                    style={{ display: "none" }}
-                                    ref={c => {
-                                        this.checkBtn = c;
-                                    }}
-                                />
-                                </Form>
-                        </Card>
-                    </Row>
-                </Col>
+        return(
+            <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <div style={{
+                    marginTop: '.5rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}>
+                    <Avatar style={{
+                        margin: '1rem',
+                        backgroundColor: 'red'
+                    }}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Forgot password
+                    </Typography>
+                    <Form style={{}} onSubmit={this.forgotPassword}>
+                        <TextField
+                            error={isInvalidEmail}
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Email Address"
+                            name="email"
+                            value={email}
+                            onChange={this.onChange}
+                            autoComplete="email"
+                            helperText='Enter a valid email example@emp.com'
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            disabled={isInvalidEmail}
+                            style={{ marginBottom: '1rem'}}
+                        >
+                            {this.state.loading &&
+                                <span className="spinner-border spinner-border-sm"></span>
+                            }
+                            <span>Send email</span>
+                        </Button>
+                        {this.state.message && alert && (
+                        <FormGroup>
+                            <Alert variant="danger" role="alert">
+                                {this.state.message}
+                            </Alert>
+                        </FormGroup>
+                        )}
+                        {this.state.message && !alert && (
+                        <FormGroup>
+                            <Alert variant="success" role="alert">
+                                {this.state.message}
+                            </Alert>
+                        </FormGroup>
+                        )}
+                        <Grid container justify="flex-end">
+                            <Grid item>
+                                <Link to={"/login"} className="nav-link">
+                                    You remembered it? Sign in
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Form>
+                </div>
+            </Container>
         )
     }
 }
