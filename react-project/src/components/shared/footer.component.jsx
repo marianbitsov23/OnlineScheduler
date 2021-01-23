@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
+import '../../scss/footer.scss';
 
 function Copyright() {
     return (
@@ -17,24 +18,9 @@ function Copyright() {
     );
 }
 
-const useStyles = makeStyles((theme) => ({
-    main: {
-        marginTop: theme.spacing(8),
-        marginBottom: theme.spacing(2),
-    },
-    footer: {
-        padding: theme.spacing(3, 2),
-        marginTop: 'auto',
-        backgroundColor: '#343a40',
-        color: 'white'
-    },
-}));
-
 export default function Footer() {
-    const classes = useStyles();
-
     return (
-        <footer className={classes.footer}>
+        <footer className="footer baseColor">
             <Container maxWidth="sm">
                 <Copyright />
             </Container>

@@ -30,7 +30,7 @@ export default class Navigation extends Component {
 
         return (
             <>
-                <Navbar bg="dark" variant="dark" expand="lg">
+                <Navbar className="myDefaultPadding baseColor" variant="dark" expand="lg">
                     <Link to={"/"}>
                         <Navbar.Brand>OnlineScheduler</Navbar.Brand>
                     </Link>

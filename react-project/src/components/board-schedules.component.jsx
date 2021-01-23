@@ -35,7 +35,10 @@ export default class ScheduleBoard extends Component {
             <Grid container className="myFlexGrow">
                 <Grid container justify="center" item xs={12}>
                     {schedules.map(schedule => (
-                        <Link to={'/schedule-management'} className="nav-link">
+                        <Link to={'/schedule-management'} 
+                        onClick={() => scheduleService.saveCurrentSchedule(schedule)} 
+                        className="nav-link"
+                        >
                             <Card bg="primary" text="white" 
                             className="myDefaultMargin"
                             style={{ width: '20rem' }}>

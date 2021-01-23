@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "../src/scss/common.scss";
+import 'semantic-ui-css/semantic.min.css'
+import '../src/scss/color-palette.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";
@@ -22,6 +23,7 @@ import ManageTimeTables from "./components/schedule/timeManegment/time-table-man
 import ManageTeachingHours from "./components/schedule/teaching-hour-management.component";
 import ManageGroups from "./components/schedule/group-management.component";
 import Footer from "./components/shared/footer.component";
+import ScheduleDashboard from "./components/schedule/dashboard/schedule-dashboard.component";
 
 class App extends Component {
     constructor(props) {
@@ -57,7 +59,6 @@ class App extends Component {
               minHeight: '100vh'
             }}>
               <Navigation />
-              <Container className="mt-3">
                   <Switch>
                       <Route exact path={["/", "/home"]} component={Home} />
                       <Route exact path="/forgot-password" component={ForgotPassword} />
@@ -69,13 +70,13 @@ class App extends Component {
                       <Route exact path = "/teacher-management" component={ManageTeachers} />
                       <Route exact path = "/time-table-management" component={ManageTimeTables} />
                       <Route exact path = "/teaching-hour-management" component={ManageTeachingHours} />
+                      <Route exact path = "/schedule-dashboard" component={ScheduleDashboard} />
                       <Route exact path = "/group-management" component={ManageGroups} />
                       <Route exact path="/register" component={Register} />
                       <Route exact path="/profile" component={Profile} />
                       <Route path="/schedules" component={ScheduleBoard} />
                       <Route path="/admin" component={BoardAdmin} />
                   </Switch>
-              </Container>
               <Footer />
           </div>
         );
