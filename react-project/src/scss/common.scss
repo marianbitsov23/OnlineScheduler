@@ -16,7 +16,7 @@
 }
 
 .myDefaultPadding {
-    padding: 1rem;
+    padding: 1rem !important;
 }
 
 .withoutDecoration {
@@ -28,5 +28,13 @@
 }
 
 .myDefaultMinWidth {
-    min-width: 250px;
+    min-width: 320px;
+}
+
+.myMaxWidth {
+    max-width: 800px;
+}
+
+.myDefaultMarginTopBottom {
+    margin: 1rem 0;
 }

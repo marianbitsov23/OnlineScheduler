@@ -4,7 +4,7 @@ import scheduleService from '../../../services/schedule/schedule.service';
 import teachingHourService from '../../../services/schedule/teaching-hour.service';
 import { Card } from 'semantic-ui-react'
 import { AppBar, CssBaseline, IconButton,
-         Toolbar, Typography, Badge,
+         Toolbar, Typography,
          Drawer, Divider, Container,
          Grid, Paper, List} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
@@ -83,10 +83,13 @@ const useStyles = theme => ({
         padding: theme.spacing(2),
         display: 'flex',
         overflow: 'auto',
-        flexDirection: 'column',
+        flexDirection: 'row',
     },
     fixedHeight: {
-        height: 240,
+        height: 500,
+    },
+    fixedWidth: {
+        width: 900,
     },
     flexRow: {
         display: 'flex',
@@ -99,7 +102,6 @@ class ScheduleDashboard extends Component {
 
         this.state = {
             schedule: scheduleService.getCurrentSchedule(),
-            teachingHours: [],
             open: true,
             weekDays: []
         };
@@ -140,12 +142,15 @@ class ScheduleDashboard extends Component {
         const { weekDays } = this.state;
         const { source, destination } = result;
 
+        console.log(destination);
+
         if(!destination) return;
         if (source.droppableId !== destination.droppableId) {
             const sourceColumn = weekDays[source.droppableId];
             const destColumn = weekDays[destination.droppableId];
             const sourceItems = [...sourceColumn.items];
             const destItems = [...destColumn.items];
+            if(destItems.length === 8 && destination.droppableId !== "0") return;
             const [recordedItem] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, recordedItem);
 
@@ -194,7 +199,7 @@ class ScheduleDashboard extends Component {
     }
 
     render() {
-        const { teachingHours, open, weekDays } = this.state;
+        const { open, weekDays } = this.state;
         const { classes } = this.props;
 
         return(
@@ -233,56 +238,54 @@ class ScheduleDashboard extends Component {
                         <List>{secondaryListItems}</List>
                     </Drawer>
                     <div className={classes.content}>
-                        <Container maxWidth="lg" className="myDefaultPadding">
+                        <Container maxWidth="xl" className="myDefaultPadding">
                             <Grid container spacing={3}>
-                                <Grid item xs={12} md={8} lg={9}>
-                                    <div className="myDisplayFlex">
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <div className="myDisplayFlexColumn">
                                     <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
-                                        {Object.entries(weekDays).map(([columnId, column], index) => (
-                                            <div key={columnId}>
-                                                <h2>{column.name}</h2>
-                                                <div className="myDefaultMargin">
-                                                    <Droppable droppableId={columnId} key={columnId}>
-                                                        {(provided, snapshot) => (
-                                                            <div
-                                                            {...provided.droppableProps}
-                                                            ref={provided.innerRef}
-                                                            style={{
-                                                                background: snapshot.isDraggingOver
-                                                                    ? 'lightblue'
-                                                                    : 'lightgrey'
-                                                            }}
-                                                            className="myDefaultPadding myDefaultMinHeight myDefaultMinWidth"
-                                                            >
-                                                                {column.items.map((teachingHour, index) => (
-                                                                    <Draggable key={teachingHour.id} draggableId={teachingHour.id.toString()} index={index}>
-                                                                    {provided => (
-                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                                                            <Card>
-                                                                                <Card.Content>
-                                                                                    <Card.Header>
-                                                                                        Предмет: {teachingHour.subject.name}
-                                                                                    </Card.Header>
-                                                                                    <Card.Meta>
-                                                                                        Кабинет: {teachingHour.cabinet.name}
-                                                                                    </Card.Meta>
-                                                                                    <Card.Description>
-                                                                                        През седмица: {teachingHour.overAWeek && <> Да</>}
-                                                                                        {!teachingHour.overAWeek && <> Не</>}
-                                                                                    </Card.Description>
-                                                                                </Card.Content>
-                                                                            </Card>
-                                                                        </div>
-                                                                    )}
-                                                                    </Draggable>
-                                                                ))}
-                                                            {provided.placeholder}
-                                                            </div>
-                                                        )}
-                                                    </Droppable>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        <Droppable droppableId="0" key="0">
+                                        {(provided, snapshot) => (
+                                            <Paper 
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            className={classes.paper}>
+                                                {weekDays[0] && weekDays[0].items.length === 0 && <h3>Nothing left here</h3>}
+                                                {weekDays[0] && <CardSlot column={weekDays[0]}/>}
+                                                {provided.placeholder}
+                                            </Paper>
+                                        )}
+                                        </Droppable>
+                                        <div className="myDefaultMarginTopBottom">
+                                            <Paper className={clsx(classes.paper)}>
+                                            {Object.entries(weekDays).slice(1).map(([columnId, column], index) => (
+                                                    <div key={columnId}>
+                                                        <h2>{column.name}</h2>
+                                                        <div className="myDefaultMargin">
+                                                            <Droppable droppableId={columnId} key={columnId}>
+                                                                {(provided, snapshot) => (
+                                                                    <Paper
+                                                                    {...provided.droppableProps}
+                                                                    ref={provided.innerRef}
+                                                                    style={{
+                                                                        background: snapshot.isDraggingOver
+                                                                            ? 'lightblue'
+                                                                            : 'lightgrey'
+                                                                    }}
+                                                                    className="
+                                                                    myDefaultPadding 
+                                                                    myDefaultMinHeight
+                                                                    myDefaultMinWidth"
+                                                                    >
+                                                                        <CardSlot column={column}/>
+                                                                        {provided.placeholder}
+                                                                    </Paper>
+                                                                )}
+                                                            </Droppable>
+                                                        </div>
+                                                    </div>
+                                            ))}
+                                            </Paper>
+                                        </div>
                                     </DragDropContext>
                                     </div>
                                 </Grid>
@@ -294,5 +297,37 @@ class ScheduleDashboard extends Component {
         )
     }
 }
+
+const CardSlot = ({column}) => (
+        <>
+        {column.items.map((teachingHour, index) => (
+            <Draggable key={teachingHour.id} draggableId={teachingHour.id.toString()} index={index}>
+            {provided => (
+                <div 
+                className="myDefaultMargin"
+                ket={index} 
+                ref={provided.innerRef} 
+                {...provided.draggableProps} 
+                {...provided.dragHandleProps}>
+                    <Card>
+                        <Card.Content>
+                            <Card.Header>
+                                Предмет: {teachingHour.subject.name}
+                            </Card.Header>
+                            <Card.Meta>
+                                Кабинет: {teachingHour.cabinet.name}
+                            </Card.Meta>
+                            <Card.Description>
+                                През седмица: {teachingHour.overAWeek && <> Да</>}
+                                {!teachingHour.overAWeek && <> Не</>}
+                            </Card.Description>
+                        </Card.Content>
+                    </Card>
+                </div>
+            )}
+            </Draggable>
+        ))}
+        </>
+);
 
 export default withStyles(useStyles)(ScheduleDashboard)
