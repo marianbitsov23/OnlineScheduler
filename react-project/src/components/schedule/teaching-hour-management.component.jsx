@@ -112,13 +112,16 @@ export default class ManageTeachingHours extends Component {
 
         this.setState({ loading: true });
 
+        const timeSlots = this.state.timeTables[this.state.selectedTimeTable].slots
+        .filter(slot => slot.selected);
+        
         teachingHourService.create({
             subject: this.state.subjects[this.state.selectedSubject],
             teacher: this.state.teachers[this.state.selectedTeacher],
             hoursPerWeek: this.state.hoursPerWeek,
             overAWeek: this.state.overAWeek,
             cabinet: this.state.cabinets[this.state.selectedCabinet],
-            timeSlots: this.state.timeTables[this.state.selectedTimeTable].slots,
+            timeSlots: timeSlots,
             schedule: this.state.schedule
         })
         .then(result => {
