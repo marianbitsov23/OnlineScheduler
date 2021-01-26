@@ -93,10 +93,10 @@ export default class ManageTeachingHours extends Component {
     async fetchAllTimeTables() {
         timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
         .then(timeTables => {
-            timeTables.data.map(timeTable => {
+            timeTables.data.forEach(timeTable => {
                 timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
                 .then(slots => {
-                    slots.data.map(res => { res.selected = false; })
+                    slots.data.forEach(res => { res.selected = false; })
                     timeTable.slots = slots.data;
                 })
             })
@@ -136,8 +136,9 @@ export default class ManageTeachingHours extends Component {
     }
 
     changeTimeSlots = timeSlots => {
-        this.state.timeTables[this.state.selectedTimeTable].slots = timeSlots;
-        this.setState({});
+        const { timeTables } = this.state;
+        timeTables[this.state.selectedTimeTable].slots = timeSlots;
+        this.setState({ timeTables });
     }
 
     handleCheck = event => {

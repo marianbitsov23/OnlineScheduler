@@ -34,6 +34,10 @@ class ScheduleService {
         }, { headers: authHeader() });
     }
 
+    deleteSchedule(id) {
+        return axios.delete(API_URL + '/' + id, { headers: authHeader() });
+    }
+
     getCurrentSchedule() {
         return JSON.parse(localStorage.getItem("schedule"));
     }

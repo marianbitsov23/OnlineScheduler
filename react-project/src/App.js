@@ -12,7 +12,6 @@ import Profile from "./components/profile.component";
 import ScheduleBoard from "./components/board-schedules.component";
 import BoardAdmin from "./components/board-admin.component";
 import Navigation from "./components/shared/navbar.component";
-import { Container } from "react-bootstrap";
 import ForgotPassword from "./components/sign/forgot-password.component";
 import ResetPassword from "./components/sign/reset-password.component";
 import ManageSchedules from "./components/schedule/schedule-management.component";

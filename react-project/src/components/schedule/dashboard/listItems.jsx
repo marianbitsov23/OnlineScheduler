@@ -4,35 +4,35 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import PeopleIcon from '@material-ui/icons/People';
-import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import TableChartIcon from '@material-ui/icons/TableChart';
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import { Link } from 'react-router-dom';
 
 export const mainListItems = (
     <div>
-        <ListItem button>
+        <ListItem button component={Link} to="/subject-management">
             <ListItemIcon>
                 <LibraryBooksIcon />
             </ListItemIcon>
             <ListItemText primary="Subjects" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to="/teacher-management">
             <ListItemIcon>
                 <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Teachers" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to="/cabinet-management">
             <ListItemIcon>
                 <MeetingRoomIcon />
             </ListItemIcon>
             <ListItemText primary="Cabinets" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to="/time-table-management">
             <ListItemIcon>
                 <TableChartIcon />
             </ListItemIcon>
@@ -44,7 +44,7 @@ export const mainListItems = (
             </ListItemIcon>
             <ListItemText primary="Groups" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to="/teaching-hour-management">
             <ListItemIcon>
                 <ChromeReaderModeIcon />
             </ListItemIcon>

@@ -79,10 +79,6 @@ const useStyles = theme => ({
         height: '100vh',
         overflow: 'auto',
     },
-    container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
-    },
     paper: {
         padding: theme.spacing(2),
         display: 'flex',
@@ -104,10 +100,12 @@ class ScheduleDashboard extends Component {
         this.state = {
             schedule: scheduleService.getCurrentSchedule(),
             teachingHours: [],
-            open: true
+            open: true,
+            weekDays: []
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
+        this.deleteSchedule = this.deleteSchedule.bind(this);
     }
 
     componentDidMount() {
@@ -115,28 +113,88 @@ class ScheduleDashboard extends Component {
         .then(response => {
             this.setState({ teachingHours: response.data });
         })
+        .then(() => {
+            const weekDays = [];
+            const weekDaysTemplate = ['Teaching-Hours', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+            weekDays.push({
+                name: weekDaysTemplate[0],
+                items: this.state.teachingHours
+            });
+
+            for(let i = 1; i < 6; i++) {
+                weekDays.push({ 
+                    name: weekDaysTemplate[i],
+                    items: []
+                });
+            }
+
+            this.setState({ weekDays });
+        })
         .catch(error => {
             console.error(error);
-        })
+        });
     }
 
     handleOnDragEnd(result) {
-        if(!result.destination) return;
+        const { weekDays } = this.state;
+        const { source, destination } = result;
 
-        const teachingHours = Array.from(this.state.teachingHours);
-        const [reorderedItem] = teachingHours.splice(result.source.index, 1);
-        teachingHours.splice(result.destination.index, 0, reorderedItem);
+        if(!destination) return;
+        if (source.droppableId !== destination.droppableId) {
+            const sourceColumn = weekDays[source.droppableId];
+            const destColumn = weekDays[destination.droppableId];
+            const sourceItems = [...sourceColumn.items];
+            const destItems = [...destColumn.items];
+            const [recordedItem] = sourceItems.splice(source.index, 1);
+            destItems.splice(destination.index, 0, recordedItem);
 
-        this.setState({ teachingHours });
+            this.setState({ weekDays: {
+                ...weekDays,
+                [source.droppableId]: {
+                    ...sourceColumn,
+                    items: sourceItems
+                },
+                [destination.droppableId]: {
+                    ...destColumn,
+                    items: destItems
+                }
+            }});
+        } else {
+            const column = weekDays[source.droppableId];
+            const items = [...column.items];
+            const [reorderedItem] = items.splice(source.index, 1);
+            items.splice(destination.index, 0, reorderedItem);
+
+            this.setState({ weekDays: {
+                ...weekDays,
+                [source.droppableId]: {
+                    ...column,
+                    items: items
+                }
+            } });
+        }
     }
 
     handleDrawer() {
         this.setState({ open: !this.state.open})
     }
 
-    render() {
-        const { teachingHours, open } = this.state;
+    deleteSchedule = event => {
+        event.preventDefault();
+        const scheduleId = this.state.schedule.id;
 
+        scheduleService.deleteSchedule(scheduleId)
+        .then(() => {
+            this.props.history.push('/schedule-management');
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+
+    render() {
+        const { teachingHours, open, weekDays } = this.state;
         const { classes } = this.props;
 
         return(
@@ -156,7 +214,7 @@ class ScheduleDashboard extends Component {
                         <Typography component="h1" varinat="h6" color="inherit" noWrap className={classes.title}>
                             Dashboard
                         </Typography>
-                        <IconButton color="inherit">
+                        <IconButton onClick={this.deleteSchedule} color="inherit">
                             <DeleteIcon />
                         </IconButton>
                     </Toolbar>
@@ -175,12 +233,58 @@ class ScheduleDashboard extends Component {
                         <List>{secondaryListItems}</List>
                     </Drawer>
                     <div className={classes.content}>
-                        <Container maxWidth="lg" className={classes.container}>
+                        <Container maxWidth="lg" className="myDefaultPadding">
                             <Grid container spacing={3}>
                                 <Grid item xs={12} md={8} lg={9}>
-                                    <Paper className={clsx(classes.paper, classes.fixedHeight)}>
-                                        {/* 'time table here' */}
-                                    </Paper>
+                                    <div className="myDisplayFlex">
+                                    <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
+                                        {Object.entries(weekDays).map(([columnId, column], index) => (
+                                            <div key={columnId}>
+                                                <h2>{column.name}</h2>
+                                                <div className="myDefaultMargin">
+                                                    <Droppable droppableId={columnId} key={columnId}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                            {...provided.droppableProps}
+                                                            ref={provided.innerRef}
+                                                            style={{
+                                                                background: snapshot.isDraggingOver
+                                                                    ? 'lightblue'
+                                                                    : 'lightgrey'
+                                                            }}
+                                                            className="myDefaultPadding myDefaultMinHeight myDefaultMinWidth"
+                                                            >
+                                                                {column.items.map((teachingHour, index) => (
+                                                                    <Draggable key={teachingHour.id} draggableId={teachingHour.id.toString()} index={index}>
+                                                                    {provided => (
+                                                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                                                            <Card>
+                                                                                <Card.Content>
+                                                                                    <Card.Header>
+                                                                                        Предмет: {teachingHour.subject.name}
+                                                                                    </Card.Header>
+                                                                                    <Card.Meta>
+                                                                                        Кабинет: {teachingHour.cabinet.name}
+                                                                                    </Card.Meta>
+                                                                                    <Card.Description>
+                                                                                        През седмица: {teachingHour.overAWeek && <> Да</>}
+                                                                                        {!teachingHour.overAWeek && <> Не</>}
+                                                                                    </Card.Description>
+                                                                                </Card.Content>
+                                                                            </Card>
+                                                                        </div>
+                                                                    )}
+                                                                    </Draggable>
+                                                                ))}
+                                                            {provided.placeholder}
+                                                            </div>
+                                                        )}
+                                                    </Droppable>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </DragDropContext>
+                                    </div>
                                 </Grid>
                             </Grid>
                         </Container>

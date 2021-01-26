@@ -76,9 +76,9 @@ export default class TimeSlotSelect extends Component {
             : timeSlots = weekDays;
 
         if(timeSlots) {
-            this.props.weekDaysTemplate.map(weekDayTemplate => {
+            this.props.weekDaysTemplate.forEach(weekDayTemplate => {
                 let index = 0;
-                timeSlots.map(res => {
+                timeSlots.forEach(res => {
                     if(res.weekDay === weekDayTemplate.toUpperCase()) {
                         index++;
                         res.index = index;
