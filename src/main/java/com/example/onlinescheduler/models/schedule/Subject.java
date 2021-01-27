@@ -1,8 +1,11 @@
 package com.example.onlinescheduler.models.schedule;
 
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -23,6 +26,9 @@ public class Subject {
     @ManyToOne
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
+
+    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
+    Set<TeachingHour> teachingHours = new HashSet<>();
 
     public Subject() {}
 

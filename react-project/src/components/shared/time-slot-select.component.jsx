@@ -10,12 +10,14 @@ export default class TimeSlotSelect extends Component {
             weekDaysTemplate: [],
             timeSlotTemplateMorning: [],
             timeSlotTemplateEvening: [],
-            fetchedTimeSlots: this.props.timeSlots
+            ammount: 0,
+
         }
     }
 
     addTimeSlot(dayName) {
-        const { timeSlotTemplateMorning, timeSlotTemplateEvening, weekDays } = this.props;
+        const { timeSlotTemplateMorning, timeSlotTemplateEvening,
+                weekDays, setSlots } = this.props;
         const day = dayName[0];
         let timeSlotTemplate = [];
 
@@ -32,8 +34,7 @@ export default class TimeSlotSelect extends Component {
             });
         }
 
-        localStorage.setItem("weekDays", JSON.stringify(Array.from(weekDays)));
-        this.setState({ weekDays: weekDays });
+        setSlots(weekDays);
     }
 
     deleteSlot = event => {
@@ -43,7 +44,6 @@ export default class TimeSlotSelect extends Component {
 
         timeSlots.splice(event.target.value, 1);
 
-        localStorage.setItem("weekDays", JSON.stringify(Array.from(timeSlots)));
         this.setState({ weekDays: timeSlots });
     }
 
@@ -58,11 +58,14 @@ export default class TimeSlotSelect extends Component {
     selectSlot = event => {
         event.preventDefault();
 
-        const { timeSlots, changeTimeSlots } = this.props;
+        let { timeSlots, changeTimeSlots, ammount } = this.props;
 
         timeSlots[event.target.value].selected = !timeSlots[event.target.value].selected;
         
-        changeTimeSlots(timeSlots);
+        timeSlots[event.target.value].selected ? ammount++ : ammount--;
+
+        changeTimeSlots(timeSlots, ammount);
+
     }
 
     render() {

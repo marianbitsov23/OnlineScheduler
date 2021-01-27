@@ -29,6 +29,9 @@ public class Teacher {
     @Size(max = 10)
     private String initials;
 
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    Set<TeachingHour> teachingHours = new HashSet<>();
+
     public Teacher() {}
 
     public Teacher(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 10) String initials, @NotBlank Schedule schedule) {

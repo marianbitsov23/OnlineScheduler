@@ -83,8 +83,8 @@ export default class ManageTimeTables extends Component {
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
-    async saveAllTimeSlotsByDayInDb(dayName, tableId) {
-        const weekDays = JSON.parse(localStorage.getItem("weekDays"));
+    async saveAllTimeSlotsByDayInDb(tableId) {
+        const { weekDays } = this.state;
 
         for(let i = 0; i < weekDays.length; i++) {
             await timeSlotService.createTimeSlot(weekDays[i].weekDay, weekDays[i].timeStart, weekDays[i].timeEnd, tableId);
@@ -94,9 +94,7 @@ export default class ManageTimeTables extends Component {
     async saveAllSlotsInDb (tableId) {
         let days = this.state.weekDaysTemplate;
 
-        for(let i = 0; i < 5; i++) {
-            await this.saveAllTimeSlotsByDayInDb(days[i], tableId);
-        }
+        await this.saveAllTimeSlotsByDayInDb(tableId);
     }
 
     saveTimeTable = event => {
@@ -112,11 +110,14 @@ export default class ManageTimeTables extends Component {
             this.saveAllSlotsInDb(result.data.id)
             .then(() => {
                 this.initWeekDays();
-                localStorage.setItem("weekDays", JSON.stringify({}));
                 this.state.timeTables.push(result.data)
                 this.setState({ edit: true, timeTableName: "", loading: false });
             })
         });
+    }
+
+    setSlots = (weekDays) => {
+        this.setState({ weekDays });
     }
 
     render() {
@@ -189,6 +190,7 @@ export default class ManageTimeTables extends Component {
                         weekDaysTemplate={weekDaysTemplate}
                         timeSlotTemplateEvening={this.state.timeSlotTemplateEvening}
                         timeSlotTemplateMorning={this.state.timeSlotTemplateMorning}
+                        setSlots={this.setSlots}
                     />
                     <Button
                         variant="success"

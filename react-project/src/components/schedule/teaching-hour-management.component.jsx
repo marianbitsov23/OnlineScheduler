@@ -36,6 +36,8 @@ export default class ManageTeachingHours extends Component {
             fetchedTimeSlots: [],
             hoursPerWeek: 1,
             overAWeek: false,
+            ammount: 0,
+            checkAll: false,
             schedule: scheduleService.getCurrentSchedule()
         };
     }
@@ -92,19 +94,32 @@ export default class ManageTeachingHours extends Component {
 
     async fetchAllTimeTables() {
         timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
-        .then(timeTables => {
-            timeTables.data.forEach(timeTable => {
+        .then(result => {
+            result.data.forEach(timeTable => {
                 timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
                 .then(slots => {
-                    slots.data.forEach(res => { res.selected = false; })
                     timeTable.slots = slots.data;
-                })
-            })
-            this.setState({ timeTables: timeTables.data });
+                });
+            });
+            this.setState({ timeTables: result.data });
+        })
+        .then(() => {
+            this.resetSelected(this.state.timeTables, false);
         })
         .catch(error => {
             console.error(error);
         });
+    }
+
+    resetSelected = (timeTables, type) => {
+        timeTables.forEach(timeTable => {
+            timeTable.slots.forEach(res => { res.selected = type; })
+        });
+        let ammount;
+        type === true 
+            ? ammount = timeTables[this.state.selectedTimeTable].length 
+            : ammount = 0;
+        this.setState({ timeTables: timeTables, checkAll: type, ammount: ammount });
     }
 
     saveTeachingHour = event => {
@@ -126,7 +141,8 @@ export default class ManageTeachingHours extends Component {
         })
         .then(result => {
             this.state.teachingHours.push(result.data);
-            this.setState({ show: false, loading: false });
+            this.setState({ show: false, loading: false, ammount: 0, checkAll: false });
+            this.resetSelected(this.state.timeTables, false);
         })
         .catch(error => {
             console.error(error);
@@ -138,13 +154,16 @@ export default class ManageTeachingHours extends Component {
         this.setState({ [event.target.name] : event.target.value });
     }
 
-    changeTimeSlots = timeSlots => {
+    changeTimeSlots = (timeSlots, ammount) => {
         const { timeTables } = this.state;
         timeTables[this.state.selectedTimeTable].slots = timeSlots;
-        this.setState({ timeTables });
+        this.setState({ timeTables, ammount });
     }
 
     handleCheck = event => {
+        if([event.target.name][0] === 'checkAll') {
+            this.resetSelected(this.state.timeTables, event.target.checked);
+        }
         this.setState({ [event.target.name]: event.target.checked });
     }
 
@@ -156,7 +175,12 @@ export default class ManageTeachingHours extends Component {
             cabinets, 
             timeTables,
             hours,
+            hoursPerWeek,
+            ammount,
             show } = this.state;
+
+        const disabled = 
+            ammount < hoursPerWeek;
 
         return(
             <>
@@ -172,7 +196,11 @@ export default class ManageTeachingHours extends Component {
                 <Container>
                     <FormGroup>
                         <FormBootstrap.Label>Изберете предмет</FormBootstrap.Label>
-                        <FormBootstrap.Control as="select" name="selectedSubject" value={this.state.selectedSubject} onChange={this.onChange}>
+                        <FormBootstrap.Control 
+                        as="select" 
+                        name="selectedSubject" 
+                        value={this.state.selectedSubject} 
+                        onChange={this.onChange}>
                             {subjects && subjects.map((subject, index) => (
                                 <option key={subject.id} value={index}>{subject.name}</option>
                             ))}
@@ -180,7 +208,7 @@ export default class ManageTeachingHours extends Component {
                     </FormGroup>
 
                     <Button
-                        className="btn-block"
+                        className="btn-block myDefaultMarginTopBottom"
                         variant="success"
                         onClick={() => this.setState({ show: true })}
                     >
@@ -193,7 +221,7 @@ export default class ManageTeachingHours extends Component {
                         teachers={teachers} 
                         cabinets={cabinets}
                         timeTables={timeTables}
-                        elements={teachingHours}
+                        elements={teachingHours.filter(hour => hour.subject.id === subjects[this.state.selectedSubject].id)}
                         service={teachingHourService}
                     />
                 </Container>
@@ -207,12 +235,7 @@ export default class ManageTeachingHours extends Component {
                         <Modal.Title>Добавете нов час</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form
-                        onSubmit={this.saveTeachingHour}
-                        ref={c => {
-                            this.form = c;
-                        }}
-                        >
+                        <Form onSubmit={this.saveTeachingHour}>
                             <FormGroup>
                                 <FormBootstrap.Label>Изберете група</FormBootstrap.Label>
                                 <FormBootstrap.Control as="select">
@@ -221,7 +244,11 @@ export default class ManageTeachingHours extends Component {
 
                             <FormGroup>
                                 <FormBootstrap.Label>Изберете учител</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select" name="selectedTeacher" value={this.state.selectedTeacher} onChange={this.onChange}>
+                                <FormBootstrap.Control 
+                                as="select" 
+                                name="selectedTeacher" 
+                                value={this.state.selectedTeacher} 
+                                onChange={this.onChange}>
                                     {teachers && teachers.map((teacher, index) => (
                                         <option key={teacher.id} value={index}>{teacher.name}</option>
                                     ))}
@@ -239,6 +266,7 @@ export default class ManageTeachingHours extends Component {
                                     value={this.state.hoursPerWeek}
                                     onChange={this.onChange}
                                 />
+                            </FormGroup>
 
                             <FormGroup>
                                 <FormControlLabel
@@ -251,12 +279,15 @@ export default class ManageTeachingHours extends Component {
                                     />}
                                     label="През седмица"
                                 />
-                                </FormGroup>
                             </FormGroup>
 
                             <FormGroup>
                                 <FormBootstrap.Label>Изберете кабинет</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select" name="selectedCabinet" value={this.state.selectedCabinet} onChange={this.onChange}>
+                                <FormBootstrap.Control 
+                                as="select" 
+                                name="selectedCabinet" 
+                                value={this.state.selectedCabinet} 
+                                onChange={this.onChange}>
                                     {cabinets && cabinets.map((cabinet, index) => (
                                         <option key={cabinet.id} value={index}>{cabinet.name}</option>
                                     ))}
@@ -276,6 +307,7 @@ export default class ManageTeachingHours extends Component {
                                 <Button
                                     type="submit"
                                     variant="success"
+                                    disabled={disabled}
                                     className="btn-block">
                                         {this.state.loading &&
                                             <span className="spinner-border spinner-border-sm"></span>
@@ -304,10 +336,23 @@ export default class ManageTeachingHours extends Component {
                                 ))}
                             </FormBootstrap.Control>
                         </FormGroup>
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                <Checkbox 
+                                    checked={this.state.checkAll} 
+                                    onChange={this.handleCheck} 
+                                    name="checkAll" 
+                                    color="primary"
+                                />}
+                                label="Избери всички"
+                            />
+                        </FormGroup>
                         {timeTables[this.state.selectedTimeTable] &&
                         <TimeSlotSelect
                             timeSlots={timeTables[this.state.selectedTimeTable].slots}
                             weekDaysTemplate={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
+                            ammount={this.state.ammount}
                             type="select"
                             changeTimeSlots={this.changeTimeSlots}
                         />}
