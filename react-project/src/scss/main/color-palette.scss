@@ -1,0 +1,25 @@
+$base-color: #140762;
+$background-color: #f1f2f6;
+$primary-color: #ff8600;
+$secondary-color: #758bfd;
+$tertiary-color: #aeb8fe;
+
+.baseColor {
+    background-color: $base-color;
+}
+
+.backgroundColor {
+    background-color: $background-color!important;
+}
+
+.primaryColor {
+    color: $primary-color;
+}
+
+.secondaryBackground {
+    background-color: $secondary-color!important;
+}
+
+.tertiaryBackground {
+    background-color: $tertiary-color!important;
+}

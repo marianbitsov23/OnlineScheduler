@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
-import "../src/scss/common.scss";
+import "../src/scss/main/common.scss";
 import 'semantic-ui-css/semantic.min.css'
-import '../src/scss/color-palette.scss';
+import '../src/scss/main/color-palette.scss';
+import '../src/scss/main/footer.scss';
+import '../src/scss/schedule/dashboard/dashboard.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";
@@ -52,11 +54,12 @@ class App extends Component {
 
     render() {
         return (
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: '100vh'
-            }}>
+            <div className="
+            myDisplayFlexColumn 
+            footerMinHeight 
+            backgroundColor
+            clickBorder"
+            >
               <Navigation />
                   <Switch>
                       <Route exact path={["/", "/home"]} component={Home} />

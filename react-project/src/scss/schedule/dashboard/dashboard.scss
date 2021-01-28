@@ -1,0 +1,24 @@
+.menuButton {
+    margin-right: 2rem!important;
+}
+
+.title {
+    flex-grow: 1;
+}
+
+.paperRow {
+    padding: 1rem;
+    display: flex;
+    overflow: auto;
+    flex-direction: row;
+}
+
+.paperColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex-grow: 1;
+    overflow: auto;
+}

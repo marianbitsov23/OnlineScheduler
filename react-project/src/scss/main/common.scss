@@ -11,6 +11,10 @@
     flex-direction: column;
 }
 
+.justifyContentCenter {
+    justify-content: center;
+}
+
 .myDefaultMargin {
     margin: 1rem;
 }
@@ -24,11 +28,11 @@
 }
 
 .myDefaultMinHeight {
-    min-height: 500px;
+    min-height: 450px;
 }
 
 .myDefaultMinWidth {
-    min-width: 320px;
+    min-width: 232px;
 }
 
 .myMaxWidth {
@@ -37,4 +41,19 @@
 
 .myDefaultMarginTopBottom {
     margin: 1rem 0;
+}
+
+.cardMaxWidth {
+    max-width: 200px!important;
+}
+
+.myTextAlignCenter {
+    text-align: center;
+}
+
+.clickBorder {
+    button {
+        outline: none!important;
+        border: none!important;
+    }
 }
