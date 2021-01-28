@@ -4,6 +4,7 @@ import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Lesson;
 import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.Subject;
+import com.example.onlinescheduler.payload.schedule.LessonRequest;
 import com.example.onlinescheduler.payload.schedule.ScheduleRequest;
 import com.example.onlinescheduler.repositories.schedule.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,12 @@ public class LessonController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Lesson> craeteLesson(@RequestBody LessonRequst lessonRequst) {
+    public ResponseEntity<Lesson> createLesson(@RequestBody LessonRequest lessonRequest) {
         Lesson lesson = new Lesson(
-                lessonRequst.getName(),
-                lessonRequst.getTimeTable(),
-                lessonRequst.getSchedule(),
-                lessonRequst.getTeachingHours()
+                lessonRequest.getName(),
+                lessonRequest.getTimeTable(),
+                lessonRequest.getSchedule(),
+                lessonRequest.getTeachingHours()
         );
 
         lessonRepository.save(lesson);
