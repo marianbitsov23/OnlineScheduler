@@ -50,7 +50,7 @@ export default class ManageCabinets extends Component {
                 <Container>
                     <ModelInput type="cabinet" categories={categories} elements={cabinets} service={cabinetService}/>
                 </Container>
-                <Link to={"/create-teaching-hour"}>
+                <Link to={"/teaching-hour-management"}>
                     <Button
                         className="btn-block"
                     >

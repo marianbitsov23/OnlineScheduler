@@ -34,7 +34,7 @@ export default class ManageTeachers extends Component {
                 <Container>
                     <ModelInput type="teacher" elements={teachers} service={teacherService}/>
                 </Container>
-                <Link to={"/create-cabinet"}>
+                <Link to={"/cabinet-management"}>
                     <Button
                         className="btn-block"
                     >

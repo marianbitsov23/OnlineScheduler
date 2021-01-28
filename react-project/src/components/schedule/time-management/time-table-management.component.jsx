@@ -204,7 +204,7 @@ export default class ManageTimeTables extends Component {
                 <Container>
                     <TableList type="time-table" elements={timeTables} service={timeTableService} />
                 </Container>
-                <Link to={"/create-subject"}>
+                <Link to={"/subject-management"}>
                     <Button
                         className="btn-block"
                     >

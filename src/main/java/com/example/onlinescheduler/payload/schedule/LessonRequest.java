@@ -2,51 +2,42 @@ package com.example.onlinescheduler.payload.schedule;
 
 import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.TeachingHour;
-import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
-
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-import java.util.HashSet;
-import java.util.Set;
 
 public class LessonRequest {
-    @NotBlank
-    private String name;
-
-    @NotBlank
-    private TimeTable timeTable;
-
     @NotBlank
     private Schedule schedule;
 
     @NotBlank
-    private Set<TeachingHour> teachingHours = new HashSet<>();
+    private Integer weekDay;
+
+    @NotBlank
+    private Integer slotIndex;
+
+    @NotBlank
+    private TeachingHour teachingHour;
 
     public LessonRequest() {}
-    public LessonRequest(@NotBlank String name,
-                         @NotBlank TimeTable timeTable,
-                         @NotBlank Schedule schedule,
-                         @NotBlank Set<TeachingHour> teachingHours) {
-        this.name = name;
-        this.timeTable = timeTable;
+
+    public LessonRequest(@NotBlank Schedule schedule, @NotBlank Integer slotIndex, @NotBlank TeachingHour teachingHour) {
         this.schedule = schedule;
-        this.teachingHours = teachingHours;
+        this.slotIndex = slotIndex;
+        this.teachingHour = teachingHour;
     }
-
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public TimeTable getTimeTable() { return timeTable; }
-
-    public void setTimeTable(TimeTable timeTable) { this.timeTable = timeTable; }
 
     public Schedule getSchedule() { return schedule; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public Set<TeachingHour> getTeachingHours() { return teachingHours; }
+    public TeachingHour getTeachingHour() { return teachingHour; }
 
-    public void setTeachingHours(Set<TeachingHour> teachingHours) { this.teachingHours = teachingHours; }
+    public void setTeachingHour(TeachingHour teachingHour) { this.teachingHour = teachingHour; }
+
+    public Integer getWeekDay() { return weekDay; }
+
+    public void setWeekDay(Integer weekDay) { this.weekDay = weekDay; }
+
+    public Integer getSlotIndex() { return slotIndex; }
+
+    public void setSlotIndex(Integer slotIndex) { this.slotIndex = slotIndex; }
 }

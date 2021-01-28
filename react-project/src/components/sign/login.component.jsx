@@ -57,22 +57,19 @@ export default class Login extends Component {
             <>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
-                    <div style={{
-                        marginTop: '.5rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}>
-                        <Avatar style={{
-                            margin: '1rem',
-                            backgroundColor: 'red'
-                        }}>
+                    <div className="
+                    myDisplayFlexColumn 
+                    alignItemsCenter
+                    myDefaultMargin">
+                        <Avatar
+                            className="myDefaultMargin primaryBackground"
+                        >
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Login
                         </Typography>
-                        <Form style={{}} onSubmit={this.handleLogin}>
+                        <Form onSubmit={this.handleLogin}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -102,7 +99,7 @@ export default class Login extends Component {
                                 variant="contained"
                                 color="primary"
                                 disabled={disabled}
-                                style={{ marginBottom: '1rem'}}
+                                className="myDefaultMarginTopBottom"
                             >
                                 {this.state.loading &&
                                     <span className="spinner-border spinner-border-sm"></span>
@@ -118,12 +115,16 @@ export default class Login extends Component {
                             )}
                             <Grid container>
                                 <Grid item xs>
-                                    <Link to={"/forgot-password"} className="nav-link">
+                                    <Link to={"/forgot-password"} 
+                                    className="myDefaultMarginTopBottom
+                                    defaultFontSize secondaryColor">
                                         Forgot Password
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link to={"/register"} className="nav-link">
+                                    <Link to={"/register"} 
+                                    className="myDefaultMarginTopBottom
+                                    defaultFontSize secondaryColor">
                                         Don't have an account? Sign Up
                                     </Link>
                                 </Grid>

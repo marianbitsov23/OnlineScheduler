@@ -14,8 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { mainListItems, secondaryListItems } from './listItems';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
-
-const drawerWidth = 220;
+import lessonService from '../../../services/schedule/lesson.service';
 
 const useStyles = theme => ({
     appBar: {
@@ -36,7 +35,7 @@ const useStyles = theme => ({
         height: '100%',
         position: 'relative',
         whiteSpace: 'nowrap',
-        width: drawerWidth,
+        width: 220,
         transition: theme.transitions.create('width', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
@@ -70,32 +69,46 @@ class ScheduleDashboard extends Component {
     }
 
     componentDidMount() {
-        teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
-        .then(response => {
-            this.setState({ teachingHours: response.data });
-        })
-        .then(() => {
-            const lessons = [];
-            const { teachingHours } = this.state;
-            const weekDaysTemplate = ['Teaching-Hours', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const weekDaysTemplate = ['Lessons', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-            lessons.push({
-                name: weekDaysTemplate[0],
-                items: this.initializeAllLessons(teachingHours)
-            });
+        lessonService.getAllLessonsByScheduleId(this.state.schedule.id)
+        .then(result => {
+            if(result.data) {
+                const lessons = [];
+                for(let i = 0; i < 6; i++) {
+                    lessons.push({
+                        name: weekDaysTemplate[i],
+                        items: result.data.filter(lesson => lesson.weekDay === i),
+                        weekDay: i
+                    });
+                }
+                this.setState({ lessons });
+            } else {
+                teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
+                .then(response => {
+                    this.setState({ teachingHours: response.data });
+                })
+                .then(() => {
+                    const lessons = [];
+                    const { teachingHours } = this.state;
 
-            console.log(lessons);
+                    lessons.push({
+                        name: weekDaysTemplate[0],
+                        items: this.initializeAllLessons(teachingHours),
+                        weekDay: 0
+                    });
 
-            for(let i = 1; i < 6; i++) {
-                lessons.push({
-                    name: weekDaysTemplate[i],
-                    items: []
-                });
+                    for(let i = 1; i < 6; i++) {
+                        lessons.push({
+                            name: weekDaysTemplate[i],
+                            items: [],
+                            weekDay: i
+                        });
+                    }
+
+                    this.setState({ lessons });
+                })
             }
-
-            console.log(lessons)
-
-            this.setState({ lessons });
         })
         .catch(error => {
             console.error(error);
@@ -108,8 +121,6 @@ class ScheduleDashboard extends Component {
             for(let i = 0; i < teachingHour.hoursPerWeek; i++) {
                 lessons.push({
                     id: uuidv4(),
-                    timeTable: teachingHour.timeTable,
-                    schedule: teachingHour.schedule,
                     teachingHour: teachingHour
                 });
             }
@@ -133,11 +144,15 @@ class ScheduleDashboard extends Component {
             destItems.splice(destination.index, 0, recordedItem);
 
             
-            lessons.map(lesson => {
+            lessons.forEach((lesson, index) => {
                 if(lesson.name === destColumn.name) {
                     lesson.items = destItems;
+                    this.setIndexes(lesson.items);
+                    lesson.weekDay = index;
                 } else if(lesson.name === sourceColumn.name) {
                     lesson.items = sourceItems;
+                    this.setIndexes(lesson.items);
+                    lesson.weekDay = index;
                 }
             });
 
@@ -148,14 +163,22 @@ class ScheduleDashboard extends Component {
             const [reorderedItem] = items.splice(source.index, 1);
             items.splice(destination.index, 0, reorderedItem);
 
-            lessons.map(lesson => {
+            lessons.forEach((lesson, index) => {
                 if(lesson.name === column.name) {
                     lesson.items = items;
+                    this.setIndexes(lesson.items);
+                    lesson.weekDay = index;
                 }
             });
 
             this.setState({ lessons });
         }
+    }
+
+    setIndexes = items => {
+        items.forEach((item, index) => {
+            item.slotIndex = index;
+        });
     }
 
     handleDrawer() {
@@ -176,16 +199,30 @@ class ScheduleDashboard extends Component {
     }
 
     componentWillUnmount() {
-        
+        this.saveLessonsInDb(this.state.lessons);
     }
 
     saveLessonsInDb = lessons => {
-        
+        lessons.forEach(lesson => {
+            lesson.items.forEach(item => {
+                lessonService.create({
+                    schedule: this.state.schedule,
+                    weekDay: lesson.weekDay,
+                    slotIndex: lesson.slotNumber,
+                    teachingHour: item.teachingHour
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+            })
+        });
     }
 
     render() {
         const { open, lessons } = this.state;
         const { classes } = this.props;
+
+        console.log(lessons);
 
         return(
             <div className="myDisplayFlexColumn">
@@ -307,7 +344,7 @@ const CardSlot = ({column}) => (
                                 {lesson.teachingHour.subject.name}
                             </Card.Header>
                             <Card.Meta>
-                                Кабинет: {lesson.teachingHour.cabinet.name}
+                                Преподавател: {lesson.teachingHour.teacher.name}
                             </Card.Meta>
                             <Card.Description>
                                 През седмица: {lesson.teachingHour.overAWeek && <> Да</>}

@@ -34,7 +34,7 @@ export default class ManageSubjects extends Component {
                 <Container>
                     <ModelInput type="subject" elements={subjects} service={subjectService} />
                 </Container>
-                <Link to={"/create-teacher"}>
+                <Link to={"/teacher-management"}>
                     <Button
                         className="btn-block"
                     >

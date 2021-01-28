@@ -365,7 +365,7 @@ export default class ManageTeachingHours extends Component {
                     </Button>
                     </Modal.Body>
                 </Modal>
-                <Link to={"/"}>
+                <Link to={"/schedule-dashboard"}>
                     <Button
                         className="btn-block"
                     >

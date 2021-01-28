@@ -9,7 +9,7 @@ class LessonService {
     }
 
     getAllLessonsByScheduleId(scheduleId) {
-        return axios.get(API_URL + '/schedule/' + scheduleId + '/subjects', 
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/lessons', 
         {headers: authHeader()});
     }
 
@@ -20,10 +20,10 @@ class LessonService {
     create(lesson) {
         return axios.post(API_URL, 
             { 
-                name: lesson.name,
-                timeTable: lesson.timeTable,
-                schedule: lesson.schedule ,
-                teachingHours: lesson.teachingHours
+                schedule: lesson.schedule,
+                weekDay: lesson.weekDay,
+                slotIndex: lesson.slotIndex,
+                teachingHour: lesson.teachingHour
             },
             { headers: authHeader() });
     }
@@ -32,10 +32,10 @@ class LessonService {
         return axios.put(API_URL + '/' + lesson.id, 
             {
                 id: lesson.id, 
-                name: lesson.name,
-                timeTable: lesson.timeTable,
-                schedule: lesson.schedule ,
-                teachingHours: lesson.teachingHours
+                schedule: lesson.schedule,
+                weekDay: lesson.weekDay,
+                slotIndex: lesson.slotIndex,
+                teachingHour: lesson.teachingHour
             },
             {headers: authHeader()});
     }

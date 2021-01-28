@@ -16,6 +16,14 @@ $tertiary-color: #aeb8fe;
     color: $primary-color;
 }
 
+.secondaryColor {
+    color: $secondary-color;
+}
+
+.primaryBackground {
+    background-color: $primary-color!important;
+}
+
 .secondaryBackground {
     background-color: $secondary-color!important;
 }

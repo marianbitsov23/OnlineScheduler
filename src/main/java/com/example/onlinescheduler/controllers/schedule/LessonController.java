@@ -1,11 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule;
 
-import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Lesson;
-import com.example.onlinescheduler.models.schedule.Schedule;
-import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.payload.schedule.LessonRequest;
-import com.example.onlinescheduler.payload.schedule.ScheduleRequest;
 import com.example.onlinescheduler.repositories.schedule.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/public/lesson")
 public class LessonController {
+
     @Autowired
     LessonRepository lessonRepository;
 
@@ -27,10 +24,10 @@ public class LessonController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Lesson> createLesson(@RequestBody LessonRequest lessonRequest) {
         Lesson lesson = new Lesson(
-                lessonRequest.getName(),
-                lessonRequest.getTimeTable(),
                 lessonRequest.getSchedule(),
-                lessonRequest.getTeachingHours()
+                lessonRequest.getWeekDay(),
+                lessonRequest.getSlotIndex(),
+                lessonRequest.getTeachingHour()
         );
 
         lessonRepository.save(lesson);
@@ -75,10 +72,10 @@ public class LessonController {
 
         if(foundLesson.isPresent()) {
             Lesson newLesson = foundLesson.get();
-            newLesson.setName(lesson.getName());
-            newLesson.setTimeTable(lesson.getTimeTable());
             newLesson.setSchedule(lesson.getSchedule());
-            newLesson.setTeachingHours(lesson.getTeachingHours());
+            newLesson.setWeekDay(lesson.getWeekDay());
+            newLesson.setSlotIndex(lesson.getSlotIndex());
+            newLesson.setTeachingHour(lesson.getTeachingHour());
             return new ResponseEntity<>(lessonRepository.save(newLesson), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

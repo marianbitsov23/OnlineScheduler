@@ -99,22 +99,16 @@ export  default class Register extends Component {
             <>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
-                    <div style={{
-                        marginTop: '.5rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}>
-                        <Avatar style={{
-                            margin: '1rem',
-                            backgroundColor: 'red'
-                        }}>
+                    <div className="myDisplayFlexColumn 
+                    alignItemsCenter
+                    myDefaultMargin">
+                        <Avatar className="myDefaultMargin primaryBackground">
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Create account
                         </Typography>
-                        <Form style={{}} onSubmit={this.handleRegister}>
+                        <Form onSubmit={this.handleRegister}>
                             <TextField
                                 error={isInvalidUsername}
                                 variant="outlined"
@@ -161,7 +155,7 @@ export  default class Register extends Component {
                                 variant="contained"
                                 color="primary"
                                 disabled={disabled}
-                                style={{ marginBottom: '1rem'}}
+                                className="myDefaultMarginTopBottom"
                             >
                                 {this.state.loading &&
                                     <span className="spinner-border spinner-border-sm"></span>
@@ -177,7 +171,9 @@ export  default class Register extends Component {
                             )}
                             <Grid container justify="flex-end">
                                 <Grid item>
-                                    <Link to={"/login"} className="nav-link">
+                                    <Link to={"/login"}
+                                    className="myDefaultMarginTopBottom
+                                    defaultFontSize secondaryColor">
                                         Already have an account? Sign in
                                     </Link>
                                 </Grid>

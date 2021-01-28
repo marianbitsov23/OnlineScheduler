@@ -54,6 +54,9 @@ public class TeachingHour {
     @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
+    @OneToMany(mappedBy = "teachingHour")
+    private Set<Lesson> lessons;
+
     public TeachingHour() {}
 
     public TeachingHour(@NotBlank Subject subject,
