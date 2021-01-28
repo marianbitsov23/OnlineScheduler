@@ -18,7 +18,7 @@ import ManageSchedules from "./components/schedule/schedule-management.component
 import ManageCabinets from "./components/schedule/cabinet-management.component";
 import ManageSubjects from "./components/schedule/subject-management.compnent";
 import ManageTeachers from "./components/schedule/teacher-management.component";
-import ManageTimeTables from "./components/schedule/timeManegment/time-table-management.component";
+import ManageTimeTables from "./components/schedule/time-management/time-table-management.component";
 import ManageTeachingHours from "./components/schedule/teaching-hour-management.component";
 import ManageGroups from "./components/schedule/group-management.component";
 import Footer from "./components/shared/footer.component";

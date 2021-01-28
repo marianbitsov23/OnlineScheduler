@@ -8,6 +8,7 @@ import { AppBar, CssBaseline, IconButton,
          Drawer, Divider, Container,
          Grid, Paper, List} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
+import EditIcon from '@material-ui/icons/Edit';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 import { mainListItems, secondaryListItems } from './listItems';
@@ -103,7 +104,7 @@ class ScheduleDashboard extends Component {
         this.state = {
             schedule: scheduleService.getCurrentSchedule(),
             open: true,
-            weekDays: []
+            slots: []
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
@@ -116,22 +117,22 @@ class ScheduleDashboard extends Component {
             this.setState({ teachingHours: response.data });
         })
         .then(() => {
-            const weekDays = [];
+            const slots = [];
             const weekDaysTemplate = ['Teaching-Hours', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-            weekDays.push({
+            slots.push({
                 name: weekDaysTemplate[0],
                 items: this.state.teachingHours
             });
 
             for(let i = 1; i < 6; i++) {
-                weekDays.push({ 
+                slots.push({ 
                     name: weekDaysTemplate[i],
                     items: []
                 });
             }
 
-            this.setState({ weekDays });
+            this.setState({ slots });
         })
         .catch(error => {
             console.error(error);
@@ -139,23 +140,23 @@ class ScheduleDashboard extends Component {
     }
 
     handleOnDragEnd(result) {
-        const { weekDays } = this.state;
+        const { slots } = this.state;
         const { source, destination } = result;
 
         console.log(destination);
 
         if(!destination) return;
         if (source.droppableId !== destination.droppableId) {
-            const sourceColumn = weekDays[source.droppableId];
-            const destColumn = weekDays[destination.droppableId];
+            const sourceColumn = slots[source.droppableId];
+            const destColumn = slots[destination.droppableId];
             const sourceItems = [...sourceColumn.items];
             const destItems = [...destColumn.items];
             if(destItems.length === 8 && destination.droppableId !== "0") return;
             const [recordedItem] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, recordedItem);
 
-            this.setState({ weekDays: {
-                ...weekDays,
+            this.setState({ slots: {
+                ...slots,
                 [source.droppableId]: {
                     ...sourceColumn,
                     items: sourceItems
@@ -166,13 +167,13 @@ class ScheduleDashboard extends Component {
                 }
             }});
         } else {
-            const column = weekDays[source.droppableId];
+            const column = slots[source.droppableId];
             const items = [...column.items];
             const [reorderedItem] = items.splice(source.index, 1);
             items.splice(destination.index, 0, reorderedItem);
 
-            this.setState({ weekDays: {
-                ...weekDays,
+            this.setState({ slots: {
+                ...slots,
                 [source.droppableId]: {
                     ...column,
                     items: items
@@ -198,8 +199,12 @@ class ScheduleDashboard extends Component {
         });
     }
 
+    saveSlotsInDb = slots => {
+        
+    }
+
     render() {
-        const { open, weekDays } = this.state;
+        const { open, slots } = this.state;
         const { classes } = this.props;
 
         return(
@@ -219,6 +224,9 @@ class ScheduleDashboard extends Component {
                         <Typography component="h1" varinat="h6" color="inherit" noWrap className={classes.title}>
                             Dashboard
                         </Typography>
+                        <IconButton color="inherit">
+                            <EditIcon />
+                        </IconButton>
                         <IconButton onClick={this.deleteSchedule} color="inherit">
                             <DeleteIcon />
                         </IconButton>
@@ -249,15 +257,15 @@ class ScheduleDashboard extends Component {
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                             className={classes.paper}>
-                                                {weekDays[0] && weekDays[0].items.length === 0 && <h3>Nothing left here</h3>}
-                                                {weekDays[0] && <CardSlot column={weekDays[0]}/>}
+                                                {slots[0] && slots[0].items.length === 0 && <h3>Nothing left here</h3>}
+                                                {slots[0] && <CardSlot column={slots[0]}/>}
                                                 {provided.placeholder}
                                             </Paper>
                                         )}
                                         </Droppable>
                                         <div className="myDefaultMarginTopBottom">
                                             <Paper className={clsx(classes.paper)}>
-                                            {Object.entries(weekDays).slice(1).map(([columnId, column], index) => (
+                                            {Object.entries(slots).slice(1).map(([columnId, column], index) => (
                                                     <div key={columnId}>
                                                         <h2>{column.name}</h2>
                                                         <div className="myDefaultMargin">

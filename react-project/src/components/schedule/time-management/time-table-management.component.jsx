@@ -4,8 +4,8 @@ import { Container, Button, Jumbotron, FormGroup, } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
-import timeTableService from '../../../services/schedule/timeManegment/time-table.service';
-import timeSlotService from '../../../services/schedule/timeManegment/time-slot.service';
+import timeTableService from '../../../services/schedule/time-management/time-table.service';
+import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
 import { Link } from 'react-router-dom';
 import TimeSlotSelect from '../../shared/time-slot-select.component';
@@ -92,8 +92,6 @@ export default class ManageTimeTables extends Component {
     }
 
     async saveAllSlotsInDb (tableId) {
-        let days = this.state.weekDaysTemplate;
-
         await this.saveAllTimeSlotsByDayInDb(tableId);
     }
 
