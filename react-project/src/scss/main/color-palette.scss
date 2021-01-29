@@ -1,7 +1,7 @@
-$base-color: #140762;
-$background-color: #f1f2f6;
-$primary-color: #ff8600;
-$secondary-color: #758bfd;
+$base-color: white;
+$background-color: #fafafa;
+$primary-color: #2196F3;
+$secondary-color: rgb(18, 18, 18);
 $tertiary-color: #aeb8fe;
 
 .baseColor {
@@ -10,6 +10,14 @@ $tertiary-color: #aeb8fe;
 
 .backgroundColor {
     background-color: $background-color!important;
+}
+
+.blackColor {
+    color: black;
+}
+
+.whiteColor {
+    color: white!important;
 }
 
 .primaryColor {
@@ -36,4 +44,10 @@ $tertiary-color: #aeb8fe;
 //override the deafult MUI color with mine
 .MuiPaper-root {
     background-color: $background-color!important;
+    border: none;
+    box-shadow: 0px 0px 5px 1px rgba(218,218,218,1)!important;
+}
+
+.card {
+    background-color: $primary-color!important;
 }

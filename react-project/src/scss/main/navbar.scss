@@ -4,33 +4,39 @@
     font-size: 2rem;
 }
 
+.navbar-nav {
+    margin: 0!important;
+    justify-content: center;
+}
+
 .navTitle {
     margin-left: 10px;
     font-size: 2rem!important;
 }
 
 .navRoutes {
+    margin: 1rem 0;
     margin-right: 10px;
 }
 
 .navRoute {
-    color: white!important;
     font-size: 1rem!important;
-}
-
-.signRoutes {
-
 }
 
 .logOutRoute {
     margin: 0 1rem;
 
+    a {
+        color: white!important;
+    }
+
     button {
         padding: 0 1rem;
-        background-color: $primary-color;
+        background-color: rgba($color: white, $alpha: 0.4);
+        border-radius: 0.25rem;
 
         &:hover {
-            background-color: rgba($color: $primary-color, $alpha: 0.9);
+            background-color: rgba($color: white, $alpha: 0.3);
         }
     }
 }
@@ -44,4 +50,36 @@
     height: 32px;
     margin: 0 1rem;
     margin-top: 2px;
+}
+
+@media (max-width: 992px) {
+    .navbar-expand-lg .navbar-collapse {
+        .navbar-nav {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vertical{
+            border: none;
+        }
+
+        .nav-item {
+            margin: 1rem 0;
+        }
+
+        .verticalItem {
+            margin-top: 0;
+            border-bottom: 1px solid grey;
+            width: 200px;
+        }
+
+        .logOutRoute {
+            margin: 0;
+            margin-top: .5rem;
+            
+            button {
+                padding: 0 2rem;
+            }
+        }
+    }
 }

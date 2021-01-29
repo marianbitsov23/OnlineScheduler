@@ -45,16 +45,16 @@
     margin: 1rem 0!important;
 }
 
-.cardMaxWidth {
-    max-width: 200px!important;
-}
-
 .myTextAlignCenter {
-    text-align: center;
+    text-align: center!important;
 }
 
 .alignItemsCenter {
     align-items: center;
+}
+
+.alignSelfCenter {
+    align-self: center;
 }
 
 .defaultFontSize {

@@ -30,31 +30,31 @@ export default class Navigation extends Component {
 
         return (
             <>
-                <Navbar className="myDefaultPadding baseColor" variant="dark" expand="lg">
+                <Navbar className="myDefaultPadding primaryBackground" expand="lg">
                     <Link to={"/"}>
-                        <Navbar.Brand className="navTitle">
+                        <Navbar.Brand className="navTitle whiteColor">
                             OnlineScheduler
-                            <span className="primaryColor dotFontSize">.</span>
+                            <span className="blackColor dotFontSize">.</span>
                         </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ml-auto navRoutes">
                             <Nav.Item>
-                                <Link to={"/home"} className="nav-link navRoute">
+                                <Link to={"/home"} className="nav-link navRoute whiteColor">
                                     Home
                                 </Link>
                             </Nav.Item>
 
                             {currentUser && (
                             <Nav.Item>
-                                <Link to={"/schedules"} className="nav-link white navRoute">
+                                <Link to={"/schedules"} className="nav-link white navRoute whiteColor">
                                     Schedules
                                 </Link>
                             </Nav.Item>
                             )}
 
-                            <Nav.Item>
+                            <Nav.Item className="verticalItem">
                                 <div className="vertical">
                                 </div>
                             </Nav.Item>
@@ -62,14 +62,14 @@ export default class Navigation extends Component {
                             {currentUser ? (
                                 <>
                                     <Nav.Item>
-                                        <Link to={"/profile"} className="nav-link navRoute profileRoute">
+                                        <Link to={"/profile"} className="nav-link navRoute whiteColor profileRoute">
                                             { currentUser.username }
                                         </Link>
                                     </Nav.Item>
                         
                                     <Nav.Item className="logOutRoute">
                                         <button>
-                                            <a href="/login" className="nav-link navRoute" onClick={this.logOut}>
+                                            <a href="/login" className="nav-link navRoute" whiteColor onClick={this.logOut}>
                                                 Log Out
                                             </a>
                                         </button>

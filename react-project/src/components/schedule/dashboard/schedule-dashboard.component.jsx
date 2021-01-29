@@ -83,8 +83,11 @@ class ScheduleDashboard extends Component {
                     });
                 }
                 this.setState({ lessons });
-            } else {
-                teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
                 .then(response => {
                     this.setState({ teachingHours: response.data });
                 })
@@ -108,10 +111,6 @@ class ScheduleDashboard extends Component {
 
                     this.setState({ lessons });
                 })
-            }
-        })
-        .catch(error => {
-            console.error(error);
         });
     }
 
@@ -226,7 +225,7 @@ class ScheduleDashboard extends Component {
             <div className="myDisplayFlexColumn">
                 <CssBaseline />
                 <AppBar position="static" className={clsx(classes.appBar, open && classes.appBarShift)}>
-                    <Toolbar className="baseColor">
+                    <Toolbar className="baseColor blackColor">
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -248,7 +247,7 @@ class ScheduleDashboard extends Component {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <main className="myDisplayFlex secondaryBackground backgroundColorPaper">
+                <main className="myDisplayFlex ">
                     <Drawer
                         variant="permanent"
                         classes={{
@@ -273,18 +272,20 @@ class ScheduleDashboard extends Component {
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                             className="paperRow">
-                                                {lessons[0] && lessons[0].items.length === 0 && <h3>Nothing left here</h3>}
+                                                {lessons[0] && lessons[0].items.length === 0 && 
+                                                    <h3 className="myFontFamily">Nothing left here</h3>
+                                                }
                                                 {lessons[0] && <CardSlot column={lessons[0]}/>}
                                                 {provided.placeholder}
                                             </Paper>
                                         )}
                                         </Droppable>
                                         <div className="myDefaultMarginTopBottom">
-                                            <Paper className="paperRow justifyContentCenter">
+                                            <Paper className="paperRow">
                                             {Object.entries(lessons).slice(1).map(([columnId, column], index) => (
                                                 <div key={columnId}>
                                                     <div className="myTextAlignCenter">
-                                                        <h2>{column.name}</h2>
+                                                        <h2 className="myFontFamily">{column.name}</h2>
                                                     </div>
                                                     <div className="myDefaultMargin">
                                                         <Droppable droppableId={columnId} key={columnId}>
@@ -292,12 +293,8 @@ class ScheduleDashboard extends Component {
                                                                 <List
                                                                 {...provided.droppableProps}
                                                                 ref={provided.innerRef}
-                                                                style={{
-                                                                    background: snapshot.isDraggingOver
-                                                                        ? 'lightblue'
-                                                                        : 'lightgrey'
-                                                                }}
                                                                 className="
+                                                                boxShadow
                                                                 myDefaultPadding 
                                                                 myDefaultMinHeight
                                                                 myDefaultMinWidth"
@@ -329,27 +326,27 @@ const CardSlot = ({column}) => (
         {column.items.map((lesson, index) => (
             <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
             {provided => (
-                <ListItem
+                <div
                 className="myDefaultMarginTopAndBottom"
                 key={index} 
                 ref={provided.innerRef} 
                 {...provided.draggableProps} 
                 {...provided.dragHandleProps}>      
-                    <Card className="cardMaxWidth">
+                    <Card>
                         <Card.Content>
-                            <Card.Header>
+                            <Card.Header className="whiteColor">
                                 {lesson.teachingHour.subject.name}
                             </Card.Header>
-                            <Card.Meta>
+                            <Card.Meta className="whiteColor">
                                 Преподавател: {lesson.teachingHour.teacher.name}
                             </Card.Meta>
-                            <Card.Description>
+                            <Card.Description className="whiteColor">
                                 През седмица: {lesson.teachingHour.overAWeek && <> Да</>}
                                 {!lesson.teachingHour.overAWeek && <> Не</>}
                             </Card.Description>
                         </Card.Content>
                     </Card>
-                </ListItem>
+                </div>
             )}
             </Draggable>
         ))}
