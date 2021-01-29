@@ -1,0 +1,47 @@
+@import '../main/color-palette.scss';
+
+.dotFontSize {
+    font-size: 2rem;
+}
+
+.navTitle {
+    margin-left: 10px;
+    font-size: 2rem!important;
+}
+
+.navRoutes {
+    margin-right: 10px;
+}
+
+.navRoute {
+    color: white!important;
+    font-size: 1rem!important;
+}
+
+.signRoutes {
+
+}
+
+.logOutRoute {
+    margin: 0 1rem;
+
+    button {
+        padding: 0 1rem;
+        background-color: $primary-color;
+
+        &:hover {
+            background-color: rgba($color: $primary-color, $alpha: 0.9);
+        }
+    }
+}
+
+.profileRoute {
+    margin-right: .5rem;
+}
+
+.vertical {
+    border-left: 1px solid grey;
+    height: 32px;
+    margin: 0 1rem;
+    margin-top: 2px;
+}

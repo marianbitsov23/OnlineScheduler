@@ -1,7 +1,13 @@
 .footer {
     color: white;
     margin-top: auto;
-    padding: 2rem;
+    padding: 2rem 1rem;
+    
+
+    .MuiTypography-body2 {
+        font-family: 'Quantico', sans-serif!important;
+        font-size: 16px;
+    }
 }
 
 .footerMinHeight{

@@ -13,7 +13,7 @@ $tertiary-color: #aeb8fe;
 }
 
 .primaryColor {
-    color: $primary-color;
+    color: $primary-color!important;
 }
 
 .secondaryColor {
@@ -30,4 +30,10 @@ $tertiary-color: #aeb8fe;
 
 .tertiaryBackground {
     background-color: $tertiary-color!important;
+}
+
+
+//override the deafult MUI color with mine
+.MuiPaper-root {
+    background-color: $background-color!important;
 }

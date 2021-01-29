@@ -199,7 +199,7 @@ class ScheduleDashboard extends Component {
     }
 
     componentWillUnmount() {
-        this.saveLessonsInDb(this.state.lessons);
+        //this.saveLessonsInDb(this.state.lessons);
     }
 
     saveLessonsInDb = lessons => {
@@ -221,8 +221,6 @@ class ScheduleDashboard extends Component {
     render() {
         const { open, lessons } = this.state;
         const { classes } = this.props;
-
-        console.log(lessons);
 
         return(
             <div className="myDisplayFlexColumn">
@@ -250,13 +248,12 @@ class ScheduleDashboard extends Component {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <main className="myDisplayFlex secondaryBackground">
+                <main className="myDisplayFlex secondaryBackground backgroundColorPaper">
                     <Drawer
                         variant="permanent"
                         classes={{
                             paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
                         }}
-                        className="tertiaryBackground"
                         open={open}
                     >
                         <Divider />
@@ -330,7 +327,7 @@ class ScheduleDashboard extends Component {
 const CardSlot = ({column}) => (
         <>
         {column.items.map((lesson, index) => (
-            <Draggable key={lesson.id} draggableId={lesson.id} index={index}>
+            <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
             {provided => (
                 <ListItem
                 className="myDefaultMarginTopAndBottom"

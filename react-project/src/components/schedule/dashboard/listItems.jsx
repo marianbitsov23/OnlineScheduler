@@ -16,37 +16,37 @@ export const mainListItems = (
     <div>
         <ListItem button component={Link} to="/subject-management">
             <ListItemIcon>
-                <LibraryBooksIcon />
+                <LibraryBooksIcon className="primaryColor" />
             </ListItemIcon>
             <ListItemText primary="Subjects" />
         </ListItem>
         <ListItem button component={Link} to="/teacher-management">
             <ListItemIcon>
-                <PeopleIcon />
+                <PeopleIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Teachers" />
         </ListItem>
         <ListItem button component={Link} to="/cabinet-management">
             <ListItemIcon>
-                <MeetingRoomIcon />
+                <MeetingRoomIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Cabinets" />
         </ListItem>
         <ListItem button component={Link} to="/time-table-management">
             <ListItemIcon>
-                <TableChartIcon />
+                <TableChartIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Time Tables" />
         </ListItem>
         <ListItem button>
             <ListItemIcon>
-                <GroupWorkIcon />
+                <GroupWorkIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Groups" />
         </ListItem>
         <ListItem button component={Link} to="/teaching-hour-management">
             <ListItemIcon>
-                <ChromeReaderModeIcon />
+                <ChromeReaderModeIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Teaching Hours" />
         </ListItem>
@@ -58,19 +58,19 @@ export const secondaryListItems = (
       <ListSubheader inset>Previous schedules</ListSubheader>
       <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Schedule 1" />
       </ListItem>
       <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Schedule 2" />
       </ListItem>
         <ListItem button>
             <ListItemIcon>
-                <AssignmentIcon />
+                <AssignmentIcon className="primaryColor"/>
             </ListItemIcon>
             <ListItemText primary="Schedule 3" />
         </ListItem>

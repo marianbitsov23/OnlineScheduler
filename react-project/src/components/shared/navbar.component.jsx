@@ -32,55 +32,67 @@ export default class Navigation extends Component {
             <>
                 <Navbar className="myDefaultPadding baseColor" variant="dark" expand="lg">
                     <Link to={"/"}>
-                        <Navbar.Brand>OnlineScheduler</Navbar.Brand>
+                        <Navbar.Brand className="navTitle">
+                            OnlineScheduler
+                            <span className="primaryColor dotFontSize">.</span>
+                        </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mr-auto">
+                        <Nav className="ml-auto navRoutes">
                             <Nav.Item>
-                                <Link to={"/home"} className="nav-link">
+                                <Link to={"/home"} className="nav-link navRoute">
                                     Home
                                 </Link>
                             </Nav.Item>
 
                             {currentUser && (
                             <Nav.Item>
-                                <Link to={"/schedules"} className="nav-link white">
+                                <Link to={"/schedules"} className="nav-link white navRoute">
                                     Schedules
                                 </Link>
                             </Nav.Item>
                             )}
-                        </Nav>
 
-                    {currentUser ? (
-                        <Nav className="ml-auto">
                             <Nav.Item>
-                                <Link to={"/profile"} className="nav-link">
-                                    { currentUser.username }
-                                </Link>
+                                <div className="vertical">
+                                </div>
                             </Nav.Item>
-                
-                            <Nav.Item>
-                                <a href="/login" className="nav-link" onClick={this.logOut}>
-                                    Log Out
-                                </a>
-                            </Nav.Item>
+
+                            {currentUser ? (
+                                <>
+                                    <Nav.Item>
+                                        <Link to={"/profile"} className="nav-link navRoute profileRoute">
+                                            { currentUser.username }
+                                        </Link>
+                                    </Nav.Item>
+                        
+                                    <Nav.Item className="logOutRoute">
+                                        <button>
+                                            <a href="/login" className="nav-link navRoute" onClick={this.logOut}>
+                                                Log Out
+                                            </a>
+                                        </button>
+                                    </Nav.Item>
+                                </>
+                                ) : (
+                                <>
+                                <Nav.Item>
+                                    <Link to={"/login"} className="nav-link navRoute profileRoute">
+                                        Login
+                                    </Link>
+                                </Nav.Item>
+                    
+                                <Nav.Item className="logOutRoute">
+                                    <button>
+                                        <Link to={"/register"} className="nav-link navRoute">
+                                            Sign Up
+                                        </Link>
+                                    </button>
+                                </Nav.Item>
+                                </>
+                            )}
                         </Nav>
-                    ) : (
-                        <Nav className="ml-auto">
-                            <Nav.Item>
-                                <Link to={"/login"} className="nav-link">
-                                    Login
-                                </Link>
-                            </Nav.Item>
-                
-                            <Nav.Item>
-                                <Link to={"/register"} className="nav-link">
-                                    Sign Up
-                                </Link>
-                            </Nav.Item>
-                        </Nav>
-                    )}
                     </Navbar.Collapse>
                 </Navbar>
             </>

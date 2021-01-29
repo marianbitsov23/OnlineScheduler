@@ -7,7 +7,7 @@ function Copyright() {
     return (
         <Typography variant="body2" style={{ color: 'white' }} color="textSecondary">
             {'Copyright © '}
-            <Link color="inherit" href="/">
+            <Link color="inherit" href="/" className="primaryColor">
                 Online scheduler
             </Link>{' '}
             {new Date().getFullYear()}
@@ -19,7 +19,7 @@ function Copyright() {
 export default function Footer() {
     return (
         <footer className="footer baseColor">
-            <Container maxWidth="sm">
+            <Container maxWidth="xm">
                 <Copyright />
             </Container>
         </footer>

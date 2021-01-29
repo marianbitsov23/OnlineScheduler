@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Quantico&display=swap');
+
 .myFlexGrow {
     flex-grow: 1;
 }
@@ -20,7 +22,7 @@
 }
 
 .myDefaultPadding {
-    padding: 1rem !important;
+    padding: 16px!important;
 }
 
 .withoutDecoration {
@@ -64,4 +66,8 @@
         outline: none!important;
         border: none!important;
     }
+}
+
+.myFontFamily {
+    font-family: 'Quantico', sans-serif!important;
 }
