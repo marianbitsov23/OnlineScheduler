@@ -14,6 +14,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
+import { Modal, Form, FormControl } from 'react-bootstrap';
+import Button from '@material-ui/core/Button';
 
 const useStyles = theme => ({
     appBar: {
@@ -60,7 +62,9 @@ class ScheduleDashboard extends Component {
         this.state = {
             schedule: scheduleService.getCurrentSchedule(),
             open: true,
-            lessons: []
+            lessons: [],
+            show: false,
+            scheduleName: ""
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
@@ -184,17 +188,23 @@ class ScheduleDashboard extends Component {
         this.setState({ open: !this.state.open})
     }
 
+    onChange = event => {
+        this.setState({ [event.target.name] : event.target.value });
+    }
+
     deleteSchedule = event => {
         event.preventDefault();
-        const scheduleId = this.state.schedule.id;
-
-        scheduleService.deleteSchedule(scheduleId)
-        .then(() => {
-            this.props.history.push('/schedule-management');
-        })
-        .catch(error => {
-            console.error(error);
-        });
+        const schedule = this.state.schedule;
+        if(this.state.scheduleName === schedule.name) {
+            scheduleService.deleteSchedule(schedule.id)
+            .then(() => {
+                console.log('schedule deleted');
+                this.props.history.push('/schedules');
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -218,7 +228,7 @@ class ScheduleDashboard extends Component {
     }
 
     render() {
-        const { open, lessons } = this.state;
+        const { open, lessons, show } = this.state;
         const { classes } = this.props;
 
         return(
@@ -240,7 +250,7 @@ class ScheduleDashboard extends Component {
                             Dashboard
                         </Typography>
                             <SchedulePrint lessons={lessons} />
-                        <IconButton onClick={this.deleteSchedule} color="inherit">
+                        <IconButton onClick={() => this.setState({ show: true })} color="inherit">
                             <DeleteIcon />
                         </IconButton>
                     </Toolbar>
@@ -314,6 +324,41 @@ class ScheduleDashboard extends Component {
                         </Container>
                     </div>
                 </main>
+                <Modal 
+                size="lg"
+                show={show}
+                onHide={() => this.setState({ show: !show })}
+                centered
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Are you sure you want to delete this schedule?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <h4>Enter the schedule's name</h4>
+                        <h5>{this.state.schedule.name}</h5>
+                        <Form.Group controlId="formBasicCurrentPassword">
+                            <FormControl
+                                aria-describedby="basic-addon2"
+                                placeholder="Enter the schedule name"
+                                name="scheduleName"
+                                type="scheduleName"
+                                onChange={this.onChange}
+                            />
+                        </Form.Group>
+                        <p>
+                            Are you absolutely sure that you want to delete this schedule?
+                            This change is permanent and cannot be reverted. Press the Delete button to proceed.
+                        </p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                        onClick={this.deleteSchedule}
+                        variant="contained"
+                        color="secondary">
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }

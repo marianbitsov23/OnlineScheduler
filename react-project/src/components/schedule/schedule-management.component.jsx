@@ -63,7 +63,7 @@ export default class ManageSchedules extends Component {
         })
         .then(() => {
             // redirect to subject input
-            this.props.history.push('/tim-table-management');
+            this.props.history.push('/time-table-management');
         })
         .catch(error => {
             console.error(error);
