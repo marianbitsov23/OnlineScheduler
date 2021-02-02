@@ -145,11 +145,11 @@ class ScheduleDashboard extends Component {
             lessons.forEach((lesson, index) => {
                 if(lesson.name === destColumn.name) {
                     lesson.items = destItems;
-                    this.setIndexes(lesson.items);
+                    this.setIndexes(lesson.items, index);
                     lesson.weekDay = index;
                 } else if(lesson.name === sourceColumn.name) {
                     lesson.items = sourceItems;
-                    this.setIndexes(lesson.items);
+                    this.setIndexes(lesson.items, index);
                     lesson.weekDay = index;
                 }
             });
@@ -164,7 +164,7 @@ class ScheduleDashboard extends Component {
             lessons.forEach((lesson, index) => {
                 if(lesson.name === column.name) {
                     lesson.items = items;
-                    this.setIndexes(lesson.items);
+                    this.setIndexes(lesson.items, index);
                     lesson.weekDay = index;
                 }
             });
@@ -173,9 +173,10 @@ class ScheduleDashboard extends Component {
         }
     }
 
-    setIndexes = items => {
+    setIndexes = (items, weekDay) => {
         items.forEach((item, index) => {
             item.slotIndex = index;
+            item.weekDay = weekDay;
         });
     }
 

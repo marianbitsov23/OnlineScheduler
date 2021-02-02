@@ -5,13 +5,12 @@ import { IconButton } from '@material-ui/core';
 import { CardSlot } from './listItems';
 
 class ComponentToPrint extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const slots = [0, 1, 2, 3, 4, 5, 6, 7];
         const { lessons } = this.props;
+
+        console.log(lessons);
 
         return(
             <table>
@@ -23,10 +22,24 @@ class ComponentToPrint extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {Object.entries(lessons).slice(1).map(([columnId, column], index) => (
-                        <tr key={columnId}>
-                            {column.items.map(item => (
-                                <td>{item.id}</td>
+                    {slots.map(slot => (
+                        <tr key={slot}>
+                            {weekDays.map((weekDay, dayNumber) => (
+                                <td key={dayNumber}>
+                                    {Object.entries(lessons).slice(1).map(([columnId, column]) => (
+                                        <>
+                                            {column.items.map((item, index) => {
+                                                if(item.weekDay === dayNumber + 1 && item.slotIndex === slot) {
+                                                    return(
+                                                        <div key={index}>
+                                                            <p>{item.teachingHour.subject.name}</p>
+                                                        </div>
+                                                    )
+                                                }
+                                            })}
+                                        </>
+                                    ))}
+                                </td>
                             ))}
                         </tr>
                     ))}
@@ -37,10 +50,6 @@ class ComponentToPrint extends Component {
 }
 
 export default class SchedulePrint extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
 
         console.log(this.props.lessons);
