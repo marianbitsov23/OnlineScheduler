@@ -5,9 +5,9 @@ import Link from '@material-ui/core/Link';
 
 function Copyright() {
     return (
-        <Typography variant="body2" className="whiteColor" color="textSecondary">
+        <Typography variant="body2" className="myWhiteColor" color="textSecondary">
             {'Copyright © '}
-            <Link color="inherit" href="/" className="whiteColor">
+            <Link color="inherit" href="/" className="myWhiteColor">
                 Online scheduler
             </Link>{' '}
             {new Date().getFullYear()}
@@ -19,7 +19,7 @@ function Copyright() {
 export default function Footer() {
     return (
         <footer className="footer primaryBackground">
-            <Container maxWidth="xm">
+            <Container maxWidth="lg">
                 <Copyright />
             </Container>
         </footer>

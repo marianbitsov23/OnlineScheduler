@@ -11,6 +11,9 @@ import TableChartIcon from '@material-ui/icons/TableChart';
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import { Link } from 'react-router-dom';
+import { Card } from 'semantic-ui-react'
+import { Draggable } from 'react-beautiful-dnd';
+
 
 export const mainListItems = (
     <div>
@@ -76,3 +79,35 @@ export const secondaryListItems = (
         </ListItem>
     </div>
   );
+
+  export const CardSlot = ({column}) => (
+    <>
+    {column.items.map((lesson, index) => (
+        <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
+        {provided => (
+            <div
+            className="myDefaultMarginTopAndBottom"
+            key={index} 
+            ref={provided.innerRef} 
+            {...provided.draggableProps} 
+            {...provided.dragHandleProps}>      
+                <Card>
+                    <Card.Content>
+                        <Card.Header className="myWhiteColor">
+                            {lesson.teachingHour.subject.name}
+                        </Card.Header>
+                        <Card.Meta className="myWhiteColor">
+                            Преподавател: {lesson.teachingHour.teacher.name}
+                        </Card.Meta>
+                        <Card.Description className="myWhiteColor">
+                            През седмица: {lesson.teachingHour.overAWeek && <> Да</>}
+                            {!lesson.teachingHour.overAWeek && <> Не</>}
+                        </Card.Description>
+                    </Card.Content>
+                </Card>
+            </div>
+        )}
+        </Draggable>
+    ))}
+    </>
+);

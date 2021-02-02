@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import scheduleService from '../../../services/schedule/schedule.service';
 import teachingHourService from '../../../services/schedule/teaching-hour.service';
-import { Card } from 'semantic-ui-react'
 import { AppBar, CssBaseline, IconButton,
          Toolbar, Typography,
          Drawer, Divider, Container,
-         Grid, Paper, List, ListItem} from '@material-ui/core';
+         Grid, Paper, List} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
-import { mainListItems, secondaryListItems } from './listItems';
+import { mainListItems, secondaryListItems, CardSlot } from './listItems';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
+import SchedulePrint from './schedule-document.component';
 
 const useStyles = theme => ({
     appBar: {
@@ -239,9 +238,7 @@ class ScheduleDashboard extends Component {
                         noWrap className="title">
                             Dashboard
                         </Typography>
-                        <IconButton color="inherit">
-                            <EditIcon />
-                        </IconButton>
+                            <SchedulePrint lessons={lessons} />
                         <IconButton onClick={this.deleteSchedule} color="inherit">
                             <DeleteIcon />
                         </IconButton>
@@ -263,7 +260,7 @@ class ScheduleDashboard extends Component {
                     <div className="content">
                         <Container maxWidth="xl" className="myDefaultPadding">
                             <Grid container spacing={3}>
-                                <Grid item xs={12} md={12} lg={12}>
+                                <Grid item xs={6} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
                                     <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
                                         <Droppable droppableId="0" key="0">
@@ -320,37 +317,5 @@ class ScheduleDashboard extends Component {
         )
     }
 }
-
-const CardSlot = ({column}) => (
-        <>
-        {column.items.map((lesson, index) => (
-            <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
-            {provided => (
-                <div
-                className="myDefaultMarginTopAndBottom"
-                key={index} 
-                ref={provided.innerRef} 
-                {...provided.draggableProps} 
-                {...provided.dragHandleProps}>      
-                    <Card>
-                        <Card.Content>
-                            <Card.Header className="whiteColor">
-                                {lesson.teachingHour.subject.name}
-                            </Card.Header>
-                            <Card.Meta className="whiteColor">
-                                Преподавател: {lesson.teachingHour.teacher.name}
-                            </Card.Meta>
-                            <Card.Description className="whiteColor">
-                                През седмица: {lesson.teachingHour.overAWeek && <> Да</>}
-                                {!lesson.teachingHour.overAWeek && <> Не</>}
-                            </Card.Description>
-                        </Card.Content>
-                    </Card>
-                </div>
-            )}
-            </Draggable>
-        ))}
-        </>
-);
 
 export default withStyles(useStyles)(ScheduleDashboard)
