@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 import PrintIcon from '@material-ui/icons/Print';
 import { IconButton } from '@material-ui/core';
-import { CardSlot } from './listItems';
 
 class ComponentToPrint extends Component {
     render() {

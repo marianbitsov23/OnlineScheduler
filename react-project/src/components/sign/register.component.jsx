@@ -150,12 +150,12 @@ export  default class Register extends Component {
                                 helperText='The password must be between 6 and 40 characters!'
                             />
                             <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                disabled={disabled}
-                                className="myDefaultMarginTopBottom"
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            disabled={disabled}
+                            className="myDefaultMarginTopBottom"
                             >
                                 {this.state.loading &&
                                     <span className="spinner-border spinner-border-sm"></span>

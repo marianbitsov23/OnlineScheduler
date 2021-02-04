@@ -27,6 +27,8 @@ import ManageTeachingHours from "./components/schedule/teaching-hour-management.
 import ManageGroups from "./components/schedule/group-management.component";
 import Footer from "./components/shared/footer.component";
 import ScheduleDashboard from "./components/schedule/dashboard/schedule-dashboard.component";
+import { MuiThemeProvider } from "@material-ui/core";
+import { OnlineSchedulerTheme } from "./theme/theme";
 
 class App extends Component {
     constructor(props) {
@@ -63,26 +65,28 @@ class App extends Component {
             clickBorder
             myFontFamily"
             >
-              <Navigation />
-                  <Switch>
-                      <Route exact path={["/", "/home"]} component={Home} />
-                      <Route exact path="/forgot-password" component={ForgotPassword} />
-                      <Route exact path="/reset_password" component={ResetPassword} />
-                      <Route exact path="/login" component={Login} />
-                      <Route exact path = "/schedule-management" component={ManageSchedules} />
-                      <Route exact path = "/cabinet-management" component={ManageCabinets} />
-                      <Route exact path = "/subject-management" component={ManageSubjects} />
-                      <Route exact path = "/teacher-management" component={ManageTeachers} />
-                      <Route exact path = "/time-table-management" component={ManageTimeTables} />
-                      <Route exact path = "/teaching-hour-management" component={ManageTeachingHours} />
-                      <Route exact path = "/schedule-dashboard" component={ScheduleDashboard} />
-                      <Route exact path = "/group-management" component={ManageGroups} />
-                      <Route exact path="/register" component={Register} />
-                      <Route exact path="/profile" component={Profile} />
-                      <Route path="/schedules" component={ScheduleBoard} />
-                      <Route path="/admin" component={BoardAdmin} />
-                  </Switch>
-              <Footer />
+              <MuiThemeProvider theme={OnlineSchedulerTheme}>
+                <Navigation />
+                    <Switch>
+                        <Route exact path={["/", "/home"]} component={Home} />
+                        <Route exact path="/forgot-password" component={ForgotPassword} />
+                        <Route exact path="/reset_password" component={ResetPassword} />
+                        <Route exact path="/login" component={Login} />
+                        <Route exact path = "/schedule-management" component={ManageSchedules} />
+                        <Route exact path = "/cabinet-management" component={ManageCabinets} />
+                        <Route exact path = "/subject-management" component={ManageSubjects} />
+                        <Route exact path = "/teacher-management" component={ManageTeachers} />
+                        <Route exact path = "/time-table-management" component={ManageTimeTables} />
+                        <Route exact path = "/teaching-hour-management" component={ManageTeachingHours} />
+                        <Route exact path = "/schedule-dashboard" component={ScheduleDashboard} />
+                        <Route exact path = "/group-management" component={ManageGroups} />
+                        <Route exact path="/register" component={Register} />
+                        <Route exact path="/profile" component={Profile} />
+                        <Route path="/schedules" component={ScheduleBoard} />
+                        <Route path="/admin" component={BoardAdmin} />
+                    </Switch>
+                <Footer />
+              </MuiThemeProvider>
           </div>
         );
     }
