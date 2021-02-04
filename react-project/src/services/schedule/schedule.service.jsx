@@ -9,7 +9,7 @@ class ScheduleService {
     }
 
     getSchedulesByCreatorId(creatorId) {
-        return axios.get(API_URL + 'user/' + creatorId + '/schedules', 
+        return axios.get(API_URL + '/user/' + creatorId + '/schedules', 
         {headers: authHeader()});
     }
 

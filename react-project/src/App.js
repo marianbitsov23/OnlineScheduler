@@ -6,6 +6,7 @@ import '../src/scss/main/color-palette.scss';
 import '../src/scss/main/footer.scss';
 import '../src/scss/main/navbar.scss';
 import '../src/scss/schedule/dashboard/dashboard.scss';
+import '../src/scss/schedule/document/document.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";
