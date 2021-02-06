@@ -198,7 +198,6 @@ class ScheduleDashboard extends Component {
         if(this.state.scheduleName === schedule.name) {
             scheduleService.deleteSchedule(schedule.id)
             .then(() => {
-                console.log('schedule deleted');
                 this.props.history.push('/schedules');
             })
             .catch(error => {

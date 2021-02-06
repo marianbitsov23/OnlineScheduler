@@ -45,4 +45,7 @@ public class Subject {
 
     public void setName(String name) { this.name = name; }
 
+    public Schedule getSchedule() { return schedule; }
+
+    public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 }

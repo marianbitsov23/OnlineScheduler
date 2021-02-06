@@ -29,7 +29,7 @@ export default class ManageCabinets extends Component {
         cabinetCategoryService.getDefaultCabinetCategories()
         .then(result => {
             let categories = result.data;
-            this.setState({ categories: categories });
+            this.setState({ categories });
             cabinetCategoryService.getAllCabinetCategoriesByScheduleId(this.state.schedule.id)
             .then(result => {
                 this.setState({ categories: categories.concat(result.data) });

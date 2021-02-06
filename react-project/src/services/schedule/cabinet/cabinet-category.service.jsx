@@ -22,9 +22,9 @@ class CabinetCategoryService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createCabinetCategory(name, schedule) {
+    create(category) {
         return axios.post(API_URL, 
-            {name, schedule},
+            {name: category.name, schedule: category.schedule},
             {headers: authHeader()} );
     }
 

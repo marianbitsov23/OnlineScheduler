@@ -42,6 +42,10 @@ class AuthService {
         });
     }
 
+    setCurrentUser(user) {
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+
     getCurrentUser() {
         return JSON.parse(localStorage.getItem("user"));
     }

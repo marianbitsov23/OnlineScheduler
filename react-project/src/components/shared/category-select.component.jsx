@@ -22,7 +22,7 @@ export default class CategorySelect extends Component {
 
         const { categoryName } = this.state;
 
-        cabinetCategoryService.createCabinetCategory(categoryName, this.props.schedule)
+        cabinetCategoryService.create({name: categoryName, schedule: this.props.schedule})
         .then(result => {
             this.props.categories.push(result.data);
             this.setState({ categoryName: "", show: false });

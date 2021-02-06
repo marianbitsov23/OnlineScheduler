@@ -38,6 +38,7 @@ export default class ScheduleBoard extends Component {
                         <Link to={'/schedule-dashboard'} 
                         onClick={() => scheduleService.saveCurrentSchedule(schedule)} 
                         className="nav-link"
+                        key={schedule.id}
                         >
                             <Card bg="primary" text="white" 
                             className="myDefaultMargin"
@@ -55,7 +56,7 @@ export default class ScheduleBoard extends Component {
                         </Link>
                     ))}
                 </Grid>
-                <Grid container justify="center" className="myDefaultPadding" xs={12}>
+                <Grid container justify="center" className="myDefaultPadding" item xs={12}>
                     <Link to={"/schedule-management"}>
                         <Button variant="info">Create new schedule</Button>
                     </Link>

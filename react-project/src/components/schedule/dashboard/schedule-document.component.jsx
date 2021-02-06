@@ -25,9 +25,9 @@ class ComponentToPrint extends Component {
                                 <td key={dayNumber}>
                                     {Object.entries(lessons).slice(1).map(([columnId, column]) => (
                                         <>
-                                            {column.items.map((item, index) => {
-                                                if(item.weekDay === dayNumber + 1 && item.slotIndex === slot) {
-                                                    return(
+                                            {column.items.map((item, index) => (
+                                                <div key={index}>
+                                                {item.weekDay === dayNumber + 1 && item.slotIndex === slot && 
                                                         <div className="myDisplayFlex" key={index}>
                                                             <div className="space slotNumber">
                                                                 {index + 1}
@@ -50,10 +50,10 @@ class ComponentToPrint extends Component {
                                                             <div className="space initials">
                                                                 {item.teachingHour.teacher.initials}
                                                             </div>
-                                                        </div>
-                                                    )
-                                                }
-                                            })}
+                                                        </div>}
+                                                </div>
+                                                )
+                                            )}
                                         </>
                                     ))}
                                 </td>
