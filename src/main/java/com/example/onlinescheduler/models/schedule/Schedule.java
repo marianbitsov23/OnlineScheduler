@@ -1,10 +1,14 @@
 package com.example.onlinescheduler.models.schedule;
 
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.models.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -34,6 +38,27 @@ public class Schedule {
     @OneToOne
     @JoinColumn(name = "parent_group_id", referencedColumnName = "id")
     private Group parentGroup;
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<Subject> subjects = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<Teacher> teachers = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<Cabinet> cabinets = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<Group> groups = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<TeachingHour> teachingHours = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<TimeTable> timeTables = new HashSet<>();
+
+    @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
+    Set<Lesson> lessons = new HashSet<>();
 
     public Schedule() {}
 

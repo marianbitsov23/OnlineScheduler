@@ -2,6 +2,8 @@ package com.example.onlinescheduler.models.schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,22 +13,26 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    private Group parent;
-
     @NotBlank
     private String name;
 
-    @OneToOne(mappedBy = "parentGroup")
+    @NotBlank
+    @ManyToOne
+    @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @OneToMany(mappedBy = "parent")
-    private Set<Group> children;
+    @OneToMany
+    @OrderColumn
+    @JoinColumn(name = "parent_id")
+    private List<Group> children = new LinkedList<Group>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    private Group parent;
 
     public Group() {}
 
-    public Group(Group parent, @NotBlank String name, Set<Group> children, Schedule schedule) {
+    public Group(Group parent, @NotBlank String name, List<Group> children, Schedule schedule) {
         this.parent = parent;
         this.name = name;
         this.children = children;
@@ -46,9 +52,9 @@ public class Group {
 
     public void setParent(Group parent) { this.parent = parent; }
 
-    public Set<Group> getChildren() { return children; }
+    public List<Group> getChildren() { return children; }
 
-    public void setChildren(Set<Group> children) { this.children = children; }
+    public void setChildren(List<Group> children) { this.children = children; }
 
     public Schedule getSchedule() { return null; }
 

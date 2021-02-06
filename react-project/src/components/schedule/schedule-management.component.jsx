@@ -115,7 +115,7 @@ export default class ManageSchedules extends Component {
     } 
 
     copySubjects = (schedule, oldScheduleId) => {
-    subjectService.getAllSubjectsByScheduleId(oldScheduleId)
+        subjectService.getAllSubjectsByScheduleId(oldScheduleId)
         .then(result => {
             this.copyElements(subjectService, result.data, schedule);
         })
@@ -160,7 +160,7 @@ export default class ManageSchedules extends Component {
 
     render() {
 
-        const { show, selectedSchedule, schedules, newSchedule } = this.state;
+        const { show, selectedSchedule, schedules } = this.state;
 
         const isInvalid = 
             this.state.scheduleName === "" ||

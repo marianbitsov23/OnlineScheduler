@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.models.user;
 
+import com.example.onlinescheduler.models.schedule.Lesson;
 import com.example.onlinescheduler.models.schedule.Schedule;
 
 import javax.persistence.*;
@@ -41,6 +42,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
 
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy="creator", cascade = CascadeType.ALL)
+    Set<Schedule> schedules = new HashSet<>();
 
     private String resetPasswordToken;
 
