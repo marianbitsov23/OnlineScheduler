@@ -7,6 +7,7 @@ import '../src/scss/main/footer.scss';
 import '../src/scss/main/navbar.scss';
 import '../src/scss/schedule/dashboard/dashboard.scss';
 import '../src/scss/schedule/document/document.scss';
+import '../src/scss/sign/sign.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";
@@ -70,7 +71,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path={["/", "/home"]} component={Home} />
                         <Route exact path="/forgot-password" component={ForgotPassword} />
-                        <Route exact path="/reset_password" component={ResetPassword} />
+                        <Route exact path="/reset-password" component={ResetPassword} />
                         <Route exact path="/login" component={Login} />
                         <Route exact path = "/schedule-management" component={ManageSchedules} />
                         <Route exact path = "/cabinet-management" component={ManageCabinets} />

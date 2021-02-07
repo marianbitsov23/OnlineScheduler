@@ -19,6 +19,7 @@ class AuthService {
 
     logout() {
         localStorage.removeItem("user");
+        localStorage.setItem("previousSchedules", JSON.stringify([]));
     }
 
     register(username, email, password) {

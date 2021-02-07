@@ -63,7 +63,7 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse(response));
         }
-        sendEmail(email, "http://localhost:8081/reset_password", token);
+        sendEmail(email, "http://localhost:8081/reset-password", token);
         return ResponseEntity
                 .ok()
                 .body(new MessageResponse("We have sent a reset password link to your email. Please check!"));

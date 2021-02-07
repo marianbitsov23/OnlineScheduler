@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import FormBootstrap from 'react-bootstrap/Form';
-import { Card, Button, Row, Col, FormGroup, Alert } from "react-bootstrap";
+import { FormGroup, Alert } from 'react-bootstrap';
+import { Avatar, CssBaseline, Container, 
+    Typography, TextField, Button, Paper } from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import authService from "../../services/user-auth/auth.service";
 
 const required = value => {
@@ -62,65 +62,81 @@ export default class ResetPassword extends Component {
             password !== confirmPassword;
 
         return(
-            <Col className="md-6">
-                    <Row className="justify-content-md-center">
-                        <Card style={{ width: '36em', padding: '2rem' }} className="mx-auto my-4">
-                            <Card.Title style={{ textAlign: 'center', fontSize: '2rem' }} >
+            <div className="
+            myDisplayFlex 
+            justifyContentCenter 
+            alignItemsCenter 
+            setFlexOne">
+                <Paper className="backgroundPaper myDefaultPadding">
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+                        <div 
+                        className="myDisplayFlexColumn 
+                        alignItemsCenter
+                        myDefaultMargin">
+                            <Avatar className="myDefaultMargin primaryBackground">
+                                <LockOutlinedIcon />
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
                                 Reset your password
-                            </Card.Title>
-                            <Form
-                                onSubmit={this.resetPassword}
-                                ref={c => {
-                                    this.form = c;
-                                }}
-                            >
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="token">Security key</FormBootstrap.Label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="token"
-                                        value={this.state.token}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="password">New password</FormBootstrap.Label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="password"
-                                        value={this.state.password}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
-                                </FormGroup>
-                                
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="confirmPassword">Confirm password</FormBootstrap.Label>
-                                    <Input
-                                        type="password"
-                                        className="form-control"
-                                        name="confirmPassword"
-                                        value={this.state.confirmPassword}
-                                        onChange={this.onChange}
-                                        validattions={[required]}
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        className="btn-block"
-                                        disabled={isInvalid}>
-                                            {this.state.loading &&
-                                                <span className="spinner-border spinner-border-sm"></span>
-                                            }
-                                            <span>Save password</span>
-                                        </Button>
-                                </FormGroup>
+                            </Typography>
+                            <Form onSubmit={this.resetPassword}>
+                                <TextField
+                                type="text"
+                                name="token"
+                                value={token}
+                                onChange={this.onChange}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Security key"
+                                onChange={this.onChange}
+                                autoComplete="text"
+                                helperText='Enter the token that was sent to your email'
+                                />
 
+                                <TextField
+                                type="password"
+                                name="password"
+                                value={password}
+                                onChange={this.onChange}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="New Password"
+                                onChange={this.onChange}
+                                autoComplete="password"
+                                helperText='Enter your new secure password'
+                                />
+
+                                <TextField
+                                type="password"
+                                name="confirmPassword"
+                                value={confirmPassword}
+                                onChange={this.onChange}
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Confirm New Password"
+                                onChange={this.onChange}
+                                autoComplete="password"
+                                helperText='Confirm your new secure password'
+                                />
+                                <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                disabled={isInvalid}
+                                className="myDefaultMarginTopBottom">
+                                    {this.state.loading &&
+                                        <span className="spinner-border spinner-border-sm"></span>
+                                    }
+                                    <span>Save Password</span>
+                                </Button>
                                 {this.state.message && alert && (
                                 <FormGroup>
                                     <Alert variant="danger" role="alert">
@@ -135,16 +151,11 @@ export default class ResetPassword extends Component {
                                     </Alert>
                                 </FormGroup>
                                 )}
-                                <CheckButton
-                                    style={{ display: "none" }}
-                                    ref={c => {
-                                        this.checkBtn = c;
-                                    }}
-                                />
-                                </Form>
-                        </Card>
-                    </Row>
-                </Col>
+                            </Form>
+                        </div>
+                    </Container>
+                </Paper>
+            </div>
         )
     }
 }

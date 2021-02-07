@@ -4,7 +4,7 @@ import { FormGroup, Alert } from 'react-bootstrap';
 import { isEmail } from "validator";
 import Form from "react-validation/build/form";
 import { Avatar, CssBaseline, Container, 
-    Typography, TextField, Button, Grid } from '@material-ui/core';
+    Typography, TextField, Button, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
 
@@ -96,7 +96,12 @@ export  default class Register extends Component {
                 isInvalidEmail ||
                 isInvalidPassword;
         return (
-            <>
+            <div className="
+            myDisplayFlex 
+            justifyContentCenter 
+            alignItemsCenter 
+            setFlexOne">
+            <Paper className="backgroundPaper myDefaultPadding">
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
                     <div className="myDisplayFlexColumn 
@@ -181,7 +186,8 @@ export  default class Register extends Component {
                         </Form>
                     </div>
                 </Container>
-            </>
+                </Paper>
+            </div>
         );
     }
 }
