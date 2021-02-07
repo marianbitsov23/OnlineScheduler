@@ -24,7 +24,7 @@ class ComponentToPrint extends Component {
                             {weekDays.map((weekDay, dayNumber) => (
                                 <td key={dayNumber}>
                                     {Object.entries(lessons).slice(1).map(([columnId, column]) => (
-                                        <>
+                                        <div key={columnId}>
                                             {column.items.map((item, index) => (
                                                 <div key={index}>
                                                 {item.weekDay === dayNumber + 1 && item.slotIndex === slot && 
@@ -54,7 +54,7 @@ class ComponentToPrint extends Component {
                                                 </div>
                                                 )
                                             )}
-                                        </>
+                                        </div>
                                     ))}
                                 </td>
                             ))}

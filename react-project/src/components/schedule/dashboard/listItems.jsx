@@ -13,9 +13,9 @@ import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react'
 import { Draggable } from 'react-beautiful-dnd';
+import scheduleService from '../../../services/schedule/schedule.service';
 
-
-export const mainListItems = (
+export const MainListItems = (
     <div>
         <ListItem button component={Link} to="/subject-management">
             <ListItemIcon>
@@ -56,28 +56,26 @@ export const mainListItems = (
     </div>
 );
 
-export const secondaryListItems = (
-    <div>
+export const SecondaryListItems = ({schedules}) => (
+    <>
       <ListSubheader inset>Previous schedules</ListSubheader>
-      <ListItem button>
-            <ListItemIcon>
-                <AssignmentIcon className="primaryColor"/>
-            </ListItemIcon>
-            <ListItemText primary="Schedule 1" />
-      </ListItem>
-      <ListItem button>
-            <ListItemIcon>
-                <AssignmentIcon className="primaryColor"/>
-            </ListItemIcon>
-            <ListItemText primary="Schedule 2" />
-      </ListItem>
-        <ListItem button>
-            <ListItemIcon>
-                <AssignmentIcon className="primaryColor"/>
-            </ListItemIcon>
-            <ListItemText primary="Schedule 3" />
-        </ListItem>
-    </div>
+      {schedules && schedules.slice(1).map((schedule, index) => 
+        <Link to={'/schedule-dashboard'} 
+        onClick={() => {
+            scheduleService.saveCurrentSchedule(schedule);
+            window.location.reload();
+        }} 
+        className="nav-link"
+        key={index}>
+            <ListItem>
+                <ListItemIcon>
+                    <AssignmentIcon className="primaryColor"/>
+                </ListItemIcon>
+                <ListItemText primary={schedule.name}/>
+            </ListItem>
+        </Link>
+      )}
+    </>
   );
 
   export const CardSlot = ({column}) => (

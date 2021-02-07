@@ -9,7 +9,7 @@ import { AppBar, CssBaseline, IconButton,
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
-import { mainListItems, secondaryListItems, CardSlot } from './listItems';
+import { MainListItems, SecondaryListItems, CardSlot } from './listItems';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
@@ -64,7 +64,8 @@ class ScheduleDashboard extends Component {
             open: true,
             lessons: [],
             show: false,
-            scheduleName: ""
+            scheduleName: "",
+            previousSchedules: []
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
@@ -73,6 +74,8 @@ class ScheduleDashboard extends Component {
 
     componentDidMount() {
         const weekDaysTemplate = ['Lessons', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+        this.loadPreviousSchedules();
 
         lessonService.getAllLessonsByScheduleId(this.state.schedule.id)
         .then(result => {
@@ -115,6 +118,37 @@ class ScheduleDashboard extends Component {
                     this.setState({ lessons });
                 })
         });
+    }
+
+    loadPreviousSchedules() {
+        let { previousSchedules, schedule } = this.state;
+
+        previousSchedules = scheduleService.getPreviousSchedules();
+
+        scheduleService.getScheduleById(schedule.id)
+        .then(result => {
+            let index;
+            previousSchedules.forEach((prev, i) => {
+                if(prev.id === schedule.id) {
+                    index = i;
+                }
+            })
+    
+            if(previousSchedules) {
+                if(index !== undefined && previousSchedules[index].id === schedule.id) {
+                    previousSchedules.splice(index, 1);
+                }
+                previousSchedules.unshift(result.data);
+            } else {
+                previousSchedules = [];
+                previousSchedules.push(result.data);
+            }
+    
+            scheduleService.addPreviousSchedules(previousSchedules);
+    
+            this.setState({ previousSchedules });
+        })
+        .catch(error => console.error(error));
     }
 
     initializeAllLessons = teachingHours => {
@@ -227,7 +261,7 @@ class ScheduleDashboard extends Component {
     }
 
     render() {
-        const { open, lessons, show } = this.state;
+        const { open, lessons, show, previousSchedules } = this.state;
         const { classes } = this.props;
 
         return(
@@ -256,16 +290,15 @@ class ScheduleDashboard extends Component {
                 </AppBar>
                 <main className="myDisplayFlex ">
                     <Drawer
-                        variant="permanent"
-                        classes={{
-                            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-                        }}
-                        open={open}
-                    >
+                    variant="permanent"
+                    classes={{
+                        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                    }}
+                    open={open}>
                         <Divider />
-                        <List>{mainListItems}</List>
+                        <List>{MainListItems}</List>
                         <Divider />
-                        <List>{secondaryListItems}</List>
+                        <List><SecondaryListItems schedules={previousSchedules} /></List>
                     </Drawer>
                     <div className="content">
                         <Container maxWidth="xl" className="myDefaultPadding">

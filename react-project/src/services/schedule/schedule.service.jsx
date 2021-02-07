@@ -41,6 +41,14 @@ class ScheduleService {
     getCurrentSchedule() {
         return JSON.parse(localStorage.getItem("schedule"));
     }
+
+    addPreviousSchedules(schedules) {
+        localStorage.setItem("previousSchedules", JSON.stringify(schedules));
+    }
+
+    getPreviousSchedules() {
+        return JSON.parse(localStorage.getItem("previousSchedules"));
+    }
 }
 
 export default new ScheduleService();

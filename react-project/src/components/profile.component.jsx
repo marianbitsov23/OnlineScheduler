@@ -21,19 +21,11 @@ export default class Profile extends Component {
 
     componentDidMount() {
         scheduleService.getSchedulesByCreatorId(this.state.currentUser.id)
-        .then(result => {
-            this.setState({ schedules: result.data });
-        })
-        .catch(error => {
-            console.error(error);
-        });
+        .then(result => this.setState({ schedules: result.data }))
+        .catch(error => console.error(error));
     }
 
-    onChange = event => {
-        event.preventDefault();
-
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     deleteProfile = event => {
         event.preventDefault();
