@@ -30,7 +30,15 @@ public class LessonController {
                 lessonRequest.getTeachingHour()
         );
 
-        lessonRepository.save(lesson);
+        if(!lessonRepository.existsBySlotIndexAndWeekDayAndTeachingHour(
+                lesson.getSlotIndex(),
+                lesson.getWeekDay(),
+                lesson.getTeachingHour()
+        )) {
+            lessonRepository.save(lesson);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(lesson, HttpStatus.CREATED);
     }

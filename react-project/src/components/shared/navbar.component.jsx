@@ -34,7 +34,6 @@ export default class Navigation extends Component {
                     <Link to={"/"}>
                         <Navbar.Brand className="navTitle myWhiteColor">
                             OnlineScheduler
-                            <span className="blackColor dotFontSize">.</span>
                         </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />

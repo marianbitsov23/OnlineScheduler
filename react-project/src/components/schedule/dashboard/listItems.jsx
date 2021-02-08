@@ -89,7 +89,7 @@ export const SecondaryListItems = ({schedules}) => (
             ref={provided.innerRef} 
             {...provided.draggableProps} 
             {...provided.dragHandleProps}>      
-                <Card>
+                <Card className="cardSlot">
                     <Card.Content>
                         <Card.Header className="myWhiteColor">
                             {lesson.teachingHour.subject.name}

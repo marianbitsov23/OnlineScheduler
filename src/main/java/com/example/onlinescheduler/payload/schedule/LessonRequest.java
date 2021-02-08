@@ -19,11 +19,17 @@ public class LessonRequest {
 
     public LessonRequest() {}
 
-    public LessonRequest(@NotBlank Schedule schedule, @NotBlank Integer slotIndex, @NotBlank TeachingHour teachingHour) {
+    public LessonRequest(
+            @NotBlank Schedule schedule,
+            @NotBlank Integer weekDay,
+            @NotBlank Integer slotIndex,
+            @NotBlank TeachingHour teachingHour) {
         this.schedule = schedule;
+        this.weekDay = weekDay;
         this.slotIndex = slotIndex;
         this.teachingHour = teachingHour;
     }
+
 
     public Schedule getSchedule() { return schedule; }
 

@@ -234,28 +234,35 @@ class ScheduleDashboard extends Component {
             .then(() => {
                 this.props.history.push('/schedules');
             })
-            .catch(error => {
-                console.error(error);
-            });
+            .catch(error => console.error(error));
         }
     }
 
     componentWillUnmount() {
-        //this.saveLessonsInDb(this.state.lessons);
+        this.saveLessonsInDb(this.state.lessons);
     }
 
     saveLessonsInDb = lessons => {
         lessons.forEach(lesson => {
             lesson.items.forEach(item => {
-                lessonService.create({
-                    schedule: this.state.schedule,
-                    weekDay: lesson.weekDay,
-                    slotIndex: lesson.slotNumber,
-                    teachingHour: item.teachingHour
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+                if(typeof item.id === 'string') {
+                    lessonService.create({
+                        schedule: this.state.schedule,
+                        weekDay: lesson.weekDay,
+                        slotIndex: item.slotIndex,
+                        teachingHour: item.teachingHour
+                    })
+                    .catch(error => console.error(error));
+                } else {
+                    lessonService.update({
+                        id: item.id,
+                        schedule: this.state.schedule,
+                        weekDay: lesson.weekDay,
+                        slotIndex: item.slotIndex,
+                        teachingHour: item.teachingHour
+                    })
+                    .catch(error => console.error(error));
+                }
             })
         });
     }
