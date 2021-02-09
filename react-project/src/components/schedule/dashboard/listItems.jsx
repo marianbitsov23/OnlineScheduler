@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react'
 import { Draggable } from 'react-beautiful-dnd';
 import scheduleService from '../../../services/schedule/schedule.service';
+import HistoryIcon from '@material-ui/icons/History';
 
 export const MainListItems = (
     <div>
@@ -56,10 +57,12 @@ export const MainListItems = (
     </div>
 );
 
-export const SecondaryListItems = ({schedules}) => (
+export const SecondaryListItems = ({open, schedules}) => (
     <>
-      <ListSubheader inset>Previous schedules</ListSubheader>
-      {schedules && schedules.slice(1).map((schedule, index) => 
+        {open &&<ListSubheader className="myTextAlignCenter">
+          Previous schedules
+        </ListSubheader>}
+        {schedules.slice(1).map((schedule, index) => 
         <Link to={'/schedule-dashboard'} 
         onClick={() => {
             scheduleService.saveCurrentSchedule(schedule);
@@ -74,38 +77,71 @@ export const SecondaryListItems = ({schedules}) => (
                 <ListItemText primary={schedule.name}/>
             </ListItem>
         </Link>
-      )}
+        )}
+        {schedules.length === 1 && open &&
+        <ListItem>
+            <ListItemText primary="Nothing here" secondary="You havent edited recently"/>
+        </ListItem>}
     </>
   );
 
-  export const CardSlot = ({column}) => (
+  export const CardSlot = ({column, slots, weekDay}) => (
     <>
-    {column.items.map((lesson, index) => (
-        <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
+    {slots.map((slot, index) => (
+        <div key={slot}>
+        {column.items[index] && column.items[index].teachingHour &&
+        <Draggable key={column.items[index].id} draggableId={column.items[index].id.toString()} index={index}>
         {provided => (
             <div
-            className="myDefaultMarginTopAndBottom"
+            className="myDefaultMarginTopAndBottom myDisplayFlex"
             key={index} 
             ref={provided.innerRef} 
             {...provided.draggableProps} 
             {...provided.dragHandleProps}>      
+                <div className="myDisplayFlex alignItemsCenter">
+                    <h4>{index + 1}.</h4>
+                </div>
                 <Card className="cardSlot">
                     <Card.Content>
                         <Card.Header className="myWhiteColor">
-                            {lesson.teachingHour.subject.name}
+                            {column.items[index].teachingHour.subject.name}
                         </Card.Header>
                         <Card.Meta className="myWhiteColor">
-                            Преподавател: {lesson.teachingHour.teacher.name}
+                            Преподавател: {column.items[index].teachingHour.teacher.name}
                         </Card.Meta>
                         <Card.Description className="myWhiteColor">
-                            През седмица: {lesson.teachingHour.overAWeek && <> Да</>}
-                            {!lesson.teachingHour.overAWeek && <> Не</>}
+                            През седмица: {column.items[index].teachingHour.overAWeek && <> Да</>}
+                            {!column.items[index].teachingHour.overAWeek && <> Не</>}
                         </Card.Description>
                     </Card.Content>
                 </Card>
             </div>
         )}
-        </Draggable>
+        </Draggable>}
+        {!column.items[index].teachingHour && weekDay !== 0 &&
+            <Draggable 
+                key={column.items[index].id} 
+                draggableId={column.items[index].id.toString()}
+                index={index}
+                isDragDisabled={true}
+            >
+            {provided => (
+                <div
+                className="myDefaultMarginTopAndBottom myDisplayFlex emptyCardSlot"
+                key={index} 
+                ref={provided.innerRef} 
+                {...provided.draggableProps} 
+                {...provided.dragHandleProps}>      
+                    <div className="myDisplayFlex alignItemsCenter">
+                        <h4>{index + 1}.</h4>
+                    </div>
+                    <div className="lightgrayBackground boxShadow emptyCard">
+                    </div>
+                </div>
+            )}
+            </Draggable>
+        }
+        </div>
     ))}
     </>
 );

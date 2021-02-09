@@ -3,6 +3,7 @@ $background-color: #fafafa;
 $primary-color: #2196F3;
 $secondary-color: rgb(18, 18, 18);
 $tertiary-color: #aeb8fe;
+$lightgray-color: #d3d3d3;
 
 .baseColor {
     background-color: $base-color;
@@ -40,6 +41,9 @@ $tertiary-color: #aeb8fe;
     background-color: $tertiary-color!important;
 }
 
+.lightgrayBackground {
+    background-color: $lightgray-color;
+}
 
 //override the deafult MUI color with mine
 .MuiPaper-root {

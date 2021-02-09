@@ -51,3 +51,25 @@
 .horizontal {
     border-top: 1px solid black;
 }
+
+.emptyCardSlot {
+    min-width: 250px;
+    min-height: 178px;
+}
+
+.emptyCard {
+    min-width: 200px;
+    min-height: 150px;
+    margin: 14px;
+}
+
+@media (max-width: 1000px) {
+    .paperRow {
+        flex-direction: column;
+    }
+
+    .listPaper {
+        display: flex;
+        justify-content: center;
+    }
+}

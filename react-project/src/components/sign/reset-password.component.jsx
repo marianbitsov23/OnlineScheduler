@@ -6,17 +6,6 @@ import { Avatar, CssBaseline, Container,
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import authService from "../../services/user-auth/auth.service";
 
-const required = value => {
-    if (!value) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                This field is required!
-            </div>
-        );
-    }
-};
-
-
 export default class ResetPassword extends Component {
     constructor(props) {
         super(props);

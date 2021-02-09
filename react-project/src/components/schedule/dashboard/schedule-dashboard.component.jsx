@@ -65,7 +65,8 @@ class ScheduleDashboard extends Component {
             lessons: [],
             show: false,
             scheduleName: "",
-            previousSchedules: []
+            previousSchedules: [],
+            hoursTemplate: [0, 1, 2, 3, 4, 5, 6]
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
@@ -79,12 +80,21 @@ class ScheduleDashboard extends Component {
 
         lessonService.getAllLessonsByScheduleId(this.state.schedule.id)
         .then(result => {
-            if(result.data) {
+            if(result.data.length !== 0) {
                 const lessons = [];
+                
                 for(let i = 0; i < 6; i++) {
+                    const items = this.initalizeEmptyLessons();
+                    result.data.forEach(lesson => {
+                        for(let j = 0; j < 7; j++) {
+                            if(lesson.weekDay === i && lesson.slotIndex === j) {
+                                items[j] = lesson;
+                            }
+                        }
+                    });
                     lessons.push({
                         name: weekDaysTemplate[i],
-                        items: result.data.filter(lesson => lesson.weekDay === i),
+                        items: items,
                         weekDay: i
                     });
                 }
@@ -94,8 +104,8 @@ class ScheduleDashboard extends Component {
         .catch(error => {
             console.error(error);
             teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
-                .then(response => {
-                    this.setState({ teachingHours: response.data });
+                .then(result => {
+                    this.setState({ teachingHours: result.data });
                 })
                 .then(() => {
                     const lessons = [];
@@ -117,7 +127,19 @@ class ScheduleDashboard extends Component {
 
                     this.setState({ lessons });
                 })
+                .catch(error => console.error(error));
         });
+    }
+
+    initalizeEmptyLessons() {
+        let items = [];
+        for(let i = 0; i < 7; i++) {
+            items.push({
+                id: uuidv4(),
+                teachingHour: undefined
+            });
+        }
+        return items;
     }
 
     loadPreviousSchedules() {
@@ -167,7 +189,10 @@ class ScheduleDashboard extends Component {
     handleOnDragEnd(result) {
         const { lessons } = this.state;
         const { source, destination } = result;
-
+        const emptyLesson = {
+            id: uuidv4(),
+            teachingHour: undefined
+        };
 
         if(!destination) return;
         if (source.droppableId !== destination.droppableId) {
@@ -175,40 +200,40 @@ class ScheduleDashboard extends Component {
             const destColumn = lessons[destination.droppableId];
             const sourceItems = [...sourceColumn.items];
             const destItems = [...destColumn.items];
-            if(destItems.length === 8 && destination.droppableId !== "0") return;
-            const [recordedItem] = sourceItems.splice(source.index, 1);
-            destItems.splice(destination.index, 0, recordedItem);
+            const destItem = destItems[destination.index];
+            destItems[destination.index] = sourceItems[source.index];
+            sourceItems[source.index] = destItem;
 
-            
             lessons.forEach((lesson, index) => {
-                if(lesson.name === destColumn.name) {
-                    lesson.items = destItems;
-                    this.setIndexes(lesson.items, index);
-                    lesson.weekDay = index;
-                } else if(lesson.name === sourceColumn.name) {
-                    lesson.items = sourceItems;
-                    this.setIndexes(lesson.items, index);
-                    lesson.weekDay = index;
-                }
+                lesson = this.updateLesson(lesson, destItems, destColumn.name, index);
+
+                lesson = this.updateLesson(lesson, sourceItems, sourceColumn.name, index);
             });
 
             this.setState({ lessons });
         } else {
             const column = lessons[source.droppableId];
             const items = [...column.items];
-            const [reorderedItem] = items.splice(source.index, 1);
-            items.splice(destination.index, 0, reorderedItem);
+            const destItem = items[destination.index];
+            items[destination.index] = items[source.index];
+            items[source.index] = destItem;
 
             lessons.forEach((lesson, index) => {
-                if(lesson.name === column.name) {
-                    lesson.items = items;
-                    this.setIndexes(lesson.items, index);
-                    lesson.weekDay = index;
-                }
+                lesson = this.updateLesson(lesson, items, column.name, index);
             });
 
             this.setState({ lessons });
         }
+    }
+
+    updateLesson = (lesson, items, name, index) => {
+        if(lesson.name === name) {
+            lesson.items = items;
+            this.setIndexes(lesson.items, index);
+            lesson.weekDay = index;
+        }
+
+        return lesson;
     }
 
     setIndexes = (items, weekDay) => {
@@ -238,10 +263,6 @@ class ScheduleDashboard extends Component {
         }
     }
 
-    componentWillUnmount() {
-        this.saveLessonsInDb(this.state.lessons);
-    }
-
     saveLessonsInDb = lessons => {
         lessons.forEach(lesson => {
             lesson.items.forEach(item => {
@@ -267,9 +288,16 @@ class ScheduleDashboard extends Component {
         });
     }
 
+    componentWillUnmount() {
+        //this.saveLessonsInDb(this.state.lessons);
+    }
+
+
     render() {
-        const { open, lessons, show, previousSchedules } = this.state;
+        const { open, lessons, show, previousSchedules, hoursTemplate } = this.state;
         const { classes } = this.props;
+
+        console.log(lessons);
 
         return(
             <div className="myDisplayFlexColumn">
@@ -305,12 +333,12 @@ class ScheduleDashboard extends Component {
                         <Divider />
                         <List>{MainListItems}</List>
                         <Divider />
-                        <List><SecondaryListItems schedules={previousSchedules} /></List>
+                        <List><SecondaryListItems open={open} schedules={previousSchedules} /></List>
                     </Drawer>
                     <div className="content">
                         <Container maxWidth="xl" className="myDefaultPadding">
                             <Grid container spacing={3}>
-                                <Grid item xs={6} md={12} lg={12}>
+                                <Grid item xs={12} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
                                     <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
                                         <Droppable droppableId="0" key="0">
@@ -322,7 +350,12 @@ class ScheduleDashboard extends Component {
                                                 {lessons[0] && lessons[0].items.length === 0 && 
                                                     <h3 className="myFontFamily">Nothing left here</h3>
                                                 }
-                                                {lessons[0] && <CardSlot column={lessons[0]}/>}
+                                                {lessons[0] && 
+                                                <CardSlot 
+                                                    column={lessons[0]} 
+                                                    slots={hoursTemplate}
+                                                    weekDay={0}
+                                                />}
                                                 {provided.placeholder}
                                             </Paper>
                                         )}
@@ -334,7 +367,7 @@ class ScheduleDashboard extends Component {
                                                     <div className="myTextAlignCenter">
                                                         <h2 className="myFontFamily">{column.name}</h2>
                                                     </div>
-                                                    <div className="myDefaultMargin">
+                                                    <div className="myDefaultMargin listPaper">
                                                         <Droppable droppableId={columnId} key={columnId}>
                                                             {(provided, snapshot) => (
                                                                 <List
@@ -346,7 +379,11 @@ class ScheduleDashboard extends Component {
                                                                 myDefaultMinHeight
                                                                 myDefaultMinWidth"
                                                                 >
-                                                                    <CardSlot column={column}/>
+                                                                    <CardSlot 
+                                                                        column={column} 
+                                                                        slots={hoursTemplate}
+                                                                        weekDay={index + 1}
+                                                                    />
                                                                     {provided.placeholder}
                                                                 </List>
                                                             )}
