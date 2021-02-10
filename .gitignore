@@ -105,4 +105,4 @@ react-project/*.swp
 react-project/*.swo
 
 ## Secrets ##
-Src/main/resources/application.properties
+src/main/resources/application.properties
