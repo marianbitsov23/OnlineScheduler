@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import scheduleService from '../../../services/schedule/schedule.service';
 import teachingHourService from '../../../services/schedule/teaching-hour.service';
 import { AppBar, CssBaseline, IconButton,
          Toolbar, Typography,
          Drawer, Divider, Container,
-         Grid, Paper, List} from '@material-ui/core';
+         Grid, List} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -16,6 +15,7 @@ import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
 import { Modal, Form, FormControl } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
+import WeekDays from './week-days.component';
 
 const useStyles = theme => ({
     appBar: {
@@ -89,12 +89,20 @@ class ScheduleDashboard extends Component {
                         for(let j = 0; j < 7; j++) {
                             if(lesson.weekDay === i && lesson.slotIndex === j) {
                                 items[j] = lesson;
+                                items[j].subItems = lesson.teachingHour.overAWeek 
+                                    ? [{
+                                        id: uuidv4(),
+                                        teachingHour: lesson.teachingHour
+                                    }, {id: uuidv4(),
+                                        teachingHour: undefined}]
+                                    : new Array(2);
+
                             }
                         }
                     });
                     lessons.push({
                         name: weekDaysTemplate[i],
-                        items: items,
+                        items: i !== 0 ? items : [],
                         weekDay: i
                     });
                 }
@@ -131,12 +139,15 @@ class ScheduleDashboard extends Component {
         });
     }
 
+    setLessons = lessons => this.setState({ lessons });
+
     initalizeEmptyLessons() {
         let items = [];
         for(let i = 0; i < 7; i++) {
             items.push({
                 id: uuidv4(),
-                teachingHour: undefined
+                teachingHour: undefined,
+                subItems: new Array(2)
             });
         }
         return items;
@@ -179,68 +190,16 @@ class ScheduleDashboard extends Component {
             for(let i = 0; i < teachingHour.hoursPerWeek; i++) {
                 lessons.push({
                     id: uuidv4(),
-                    teachingHour: teachingHour
+                    teachingHour: teachingHour,
+                    subItems: teachingHour.overAWeek ? [{
+                        id: uuidv4(),
+                        teachingHour: teachingHour
+                    }, {id: uuidv4(),
+                        teachingHour: undefined}] : new Array(2)
                 });
             }
         });
         return lessons;
-    }
-
-    handleOnDragEnd(result) {
-        const { lessons } = this.state;
-        const { source, destination } = result;
-        const emptyLesson = {
-            id: uuidv4(),
-            teachingHour: undefined
-        };
-
-        if(!destination) return;
-        if (source.droppableId !== destination.droppableId) {
-            const sourceColumn = lessons[source.droppableId];
-            const destColumn = lessons[destination.droppableId];
-            const sourceItems = [...sourceColumn.items];
-            const destItems = [...destColumn.items];
-            const destItem = destItems[destination.index];
-            destItems[destination.index] = sourceItems[source.index];
-            sourceItems[source.index] = destItem;
-
-            lessons.forEach((lesson, index) => {
-                lesson = this.updateLesson(lesson, destItems, destColumn.name, index);
-
-                lesson = this.updateLesson(lesson, sourceItems, sourceColumn.name, index);
-            });
-
-            this.setState({ lessons });
-        } else {
-            const column = lessons[source.droppableId];
-            const items = [...column.items];
-            const destItem = items[destination.index];
-            items[destination.index] = items[source.index];
-            items[source.index] = destItem;
-
-            lessons.forEach((lesson, index) => {
-                lesson = this.updateLesson(lesson, items, column.name, index);
-            });
-
-            this.setState({ lessons });
-        }
-    }
-
-    updateLesson = (lesson, items, name, index) => {
-        if(lesson.name === name) {
-            lesson.items = items;
-            this.setIndexes(lesson.items, index);
-            lesson.weekDay = index;
-        }
-
-        return lesson;
-    }
-
-    setIndexes = (items, weekDay) => {
-        items.forEach((item, index) => {
-            item.slotIndex = index;
-            item.weekDay = weekDay;
-        });
     }
 
     handleDrawer() {
@@ -297,8 +256,6 @@ class ScheduleDashboard extends Component {
         const { open, lessons, show, previousSchedules, hoursTemplate } = this.state;
         const { classes } = this.props;
 
-        console.log(lessons);
-
         return(
             <div className="myDisplayFlexColumn">
                 <CssBaseline />
@@ -340,60 +297,11 @@ class ScheduleDashboard extends Component {
                             <Grid container spacing={3}>
                                 <Grid item xs={12} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
-                                    <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
-                                        <Droppable droppableId="0" key="0">
-                                        {(provided, snapshot) => (
-                                            <Paper 
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
-                                            className="paperRow">
-                                                {lessons[0] && lessons[0].items.length === 0 && 
-                                                    <h3 className="myFontFamily">Nothing left here</h3>
-                                                }
-                                                {lessons[0] && 
-                                                <CardSlot 
-                                                    column={lessons[0]} 
-                                                    slots={hoursTemplate}
-                                                    weekDay={0}
-                                                />}
-                                                {provided.placeholder}
-                                            </Paper>
-                                        )}
-                                        </Droppable>
-                                        <div className="myDefaultMarginTopBottom">
-                                            <Paper className="paperRow">
-                                            {Object.entries(lessons).slice(1).map(([columnId, column], index) => (
-                                                <div key={columnId}>
-                                                    <div className="myTextAlignCenter">
-                                                        <h2 className="myFontFamily">{column.name}</h2>
-                                                    </div>
-                                                    <div className="myDefaultMargin listPaper">
-                                                        <Droppable droppableId={columnId} key={columnId}>
-                                                            {(provided, snapshot) => (
-                                                                <List
-                                                                {...provided.droppableProps}
-                                                                ref={provided.innerRef}
-                                                                className="
-                                                                boxShadow
-                                                                myDefaultPadding 
-                                                                myDefaultMinHeight
-                                                                myDefaultMinWidth"
-                                                                >
-                                                                    <CardSlot 
-                                                                        column={column} 
-                                                                        slots={hoursTemplate}
-                                                                        weekDay={index + 1}
-                                                                    />
-                                                                    {provided.placeholder}
-                                                                </List>
-                                                            )}
-                                                        </Droppable>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            </Paper>
-                                        </div>
-                                    </DragDropContext>
+                                        <WeekDays 
+                                            lessons={lessons} 
+                                            setLessons={this.setLessons} 
+                                            hoursTemplate={hoursTemplate}
+                                        />
                                     </div>
                                 </Grid>
                             </Grid>

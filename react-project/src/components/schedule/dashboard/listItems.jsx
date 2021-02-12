@@ -11,8 +11,9 @@ import TableChartIcon from '@material-ui/icons/TableChart';
 import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import { Link } from 'react-router-dom';
-import { Card } from 'semantic-ui-react'
-import { Draggable } from 'react-beautiful-dnd';
+import { Card } from 'semantic-ui-react';
+import { Paper, List } from '@material-ui/core';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
 import scheduleService from '../../../services/schedule/schedule.service';
 import HistoryIcon from '@material-ui/icons/History';
 
@@ -85,63 +86,175 @@ export const SecondaryListItems = ({open, schedules}) => (
     </>
   );
 
-  export const CardSlot = ({column, slots, weekDay}) => (
+  export const LessonSlot = ({day, slots, weekDay}) => (
     <>
     {slots.map((slot, index) => (
         <div key={slot}>
-        {column.items[index] && column.items[index].teachingHour &&
-        <Draggable key={column.items[index].id} draggableId={column.items[index].id.toString()} index={index}>
-        {provided => (
-            <div
-            className="myDefaultMarginTopAndBottom myDisplayFlex"
-            key={index} 
-            ref={provided.innerRef} 
-            {...provided.draggableProps} 
-            {...provided.dragHandleProps}>      
-                <div className="myDisplayFlex alignItemsCenter">
-                    <h4>{index + 1}.</h4>
+            {day && day.items[index] &&
+                <div>
+                    <LessonItem
+                        type={day.items[index].id.toString()}
+                        subItems={day.items[index].subItems}
+                        lesson={day.items[index]}
+                        weekDay={weekDay}
+                        index={index}
+                    />
                 </div>
-                <Card className="cardSlot">
-                    <Card.Content>
-                        <Card.Header className="myWhiteColor">
-                            {column.items[index].teachingHour.subject.name}
-                        </Card.Header>
-                        <Card.Meta className="myWhiteColor">
-                            Преподавател: {column.items[index].teachingHour.teacher.name}
-                        </Card.Meta>
-                        <Card.Description className="myWhiteColor">
-                            През седмица: {column.items[index].teachingHour.overAWeek && <> Да</>}
-                            {!column.items[index].teachingHour.overAWeek && <> Не</>}
-                        </Card.Description>
-                    </Card.Content>
-                </Card>
-            </div>
-        )}
-        </Draggable>}
-        {!column.items[index].teachingHour && weekDay !== 0 &&
-            <Draggable 
-                key={column.items[index].id} 
-                draggableId={column.items[index].id.toString()}
-                index={index}
-                isDragDisabled={true}
-            >
-            {provided => (
-                <div
-                className="myDefaultMarginTopAndBottom myDisplayFlex emptyCardSlot"
-                key={index} 
-                ref={provided.innerRef} 
-                {...provided.draggableProps} 
-                {...provided.dragHandleProps}>      
-                    <div className="myDisplayFlex alignItemsCenter">
-                        <h4>{index + 1}.</h4>
-                    </div>
-                    <div className="lightgrayBackground boxShadow emptyCard">
-                    </div>
-                </div>
-            )}
-            </Draggable>
-        }
+            }
         </div>
     ))}
     </>
+);
+
+export const SubItem = ({item, helperText, subIndex, index, droppableId}) => (
+    <>
+        <Droppable
+            droppableId={droppableId + " " + index}
+            type="droppableSubItem"
+        >
+            {(provided, snapshot) => (
+                <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                >
+                    {item &&
+                        <Draggable
+                            key={item.id}
+                            draggableId={index + " " + item.id}
+                            index={subIndex}
+                        >
+                            {(provided, snapshot) => (
+                            <>
+                                <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                >
+                                    {item.teachingHour &&
+                                        <LessonSubCard lesson={item} helperText={helperText} />
+                                    }
+                                    {!item.teachingHour &&
+                                        <div className="emptySubCard myDisplayFlex justifyContentCenter alignItemsCenter">
+                                            <p>Empty</p>
+                                        </div>
+                                    }
+                                </div>
+                                {provided.placeholder}
+                            </>
+                            )}
+                        </Draggable>
+                    }
+                    {provided.placeholder}
+                </div>
+            )}
+        </Droppable>
+    </>
+);
+
+export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
+    if(lesson.teachingHour && lesson.teachingHour.overAWeek) {
+    return(
+        <Draggable
+            key={lesson.id}
+            draggableId={lesson.id.toString()}
+            index={index}
+        >
+            {(provided, snapshot) => (
+                <>
+                    <div 
+                        className="lessonItem myDisplayFlexColumn secondaryBackground"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                    >
+                        <SubItem 
+                            item={subItems[0]} 
+                            type={type} 
+                            heplerText={0} 
+                            subIndex={0}
+                            index={index.toString()}
+                            droppableId={(weekDay).toString()}
+                        />
+                        <SubItem 
+                            item={subItems[1]} 
+                            type={type} 
+                            helperText={1} 
+                            subIndex={1} 
+                            index={index.toString()}
+                            droppableId={(weekDay).toString()}
+                        />
+                    </div>
+                    {provided.placeholder}
+                </>
+        )}
+        </Draggable>
+    )} else {
+        return (
+            <>
+                {lesson && lesson.teachingHour &&
+                    <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
+                        {provided => (
+                            <div
+                                className="myDefaultMarginTopAndBottom myDisplayFlex"
+                                ref={provided.innerRef} 
+                                {...provided.draggableProps} 
+                                {...provided.dragHandleProps}
+                            >
+                                <LessonCard lesson={lesson} />
+                            </div>
+                        )}
+                    </Draggable>
+                }
+                {lesson.teachingHour === undefined && weekDay !== 0 &&
+                    <Draggable 
+                        key={lesson.id} 
+                        draggableId={lesson.id.toString()}
+                        isDragDisabled={true}
+                        index={index}
+                    >
+                    {provided => (
+                        <div
+                            ref={provided.innerRef} 
+                            {...provided.draggableProps} 
+                            {...provided.dragHandleProps}
+                            
+                        >
+                            <div className="emptyCard myDisplayFlex justifyContentCenter alignItemsCenter">
+                                <p className="myTextAlignCenter">Empty</p>
+                            </div>
+                        </div>
+                    )}
+                    </Draggable>
+                }
+            </>
+        )
+
+    }
+};
+
+const LessonCard = ({lesson}) => (
+    <Card className="lessonCard myDefaultMarginTopAndBottom">
+        <Card.Content>
+            <Card.Header className="myWhiteColor">
+                {lesson.teachingHour.subject.name}
+            </Card.Header>
+            <Card.Meta className="myWhiteColor">
+                Преподавател: {lesson.teachingHour.teacher.name}
+            </Card.Meta>
+        </Card.Content>
+    </Card>
+);
+
+const LessonSubCard = ({lesson, helperText}) => (
+    <Card className="lessonSubCard">
+        <Card.Content>
+            <Card.Header className="myWhiteColor">
+                {lesson.teachingHour.subject.name}
+            </Card.Header>
+            <Card.Meta className="myWhiteColor">
+                {!helperText && <> четна седмица </>}
+                {helperText && <> нечетна седмица </>}
+            </Card.Meta>
+        </Card.Content>
+    </Card>
 );
