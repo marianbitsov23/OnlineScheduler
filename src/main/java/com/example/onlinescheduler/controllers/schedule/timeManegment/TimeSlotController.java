@@ -114,8 +114,6 @@ public class TimeSlotController {
     public ResponseEntity<TimeSlot> deleteAllTimeSlotsByTimeTableId(@PathVariable Long timeTableId) {
         Optional<List<TimeSlot>> timeSlots = timeSlotRepository.findAllByTimeTable_Id(timeTableId);
 
-        System.out.println(timeTableId);
-
         if(timeSlots.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

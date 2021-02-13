@@ -13,9 +13,9 @@ class ScheduleService {
         {headers: authHeader()});
     }
 
-    createSchedule(name, description, creator, groupName) {
+    createSchedule(name, description, creator, groupName, schoolType) {
         return axios.post(API_URL,
-            {name, description, creator, groupName} , 
+            {name, description, creator, groupName, schoolType} , 
             {headers: authHeader()});
     }
 

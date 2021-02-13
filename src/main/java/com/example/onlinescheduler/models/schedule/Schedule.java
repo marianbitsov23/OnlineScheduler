@@ -30,6 +30,11 @@ public class Schedule {
     private String description;
 
     @NotBlank
+    @Enumerated(EnumType.STRING)
+    @Column(length = 30)
+    private SchoolType schoolType;
+
+    @NotBlank
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
@@ -62,12 +67,15 @@ public class Schedule {
 
     public Schedule() {}
 
-
-    public Schedule(@NotBlank @Size(max = 100) String name, @NotBlank @Size(max = 300) String description, @NotBlank User creator, @NotBlank Group parentGroup) {
+    public Schedule(@NotBlank @Size(max = 100) String name,
+                    @NotBlank @Size(max = 300) String description,
+                    @NotBlank User creator, @NotBlank Group parentGroup,
+                    @NotBlank SchoolType schoolType) {
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.parentGroup = parentGroup;
+        this.schoolType = schoolType;
     }
 
     public Long getId() { return id; }
@@ -89,4 +97,8 @@ public class Schedule {
     public Group getParentGroup() { return parentGroup; }
 
     public void setParentGroup(Group parentGroup) { this.parentGroup = parentGroup; }
+
+    public SchoolType getSchoolType() { return schoolType; }
+
+    public void setSchoolType(SchoolType schoolType) { this.schoolType = schoolType; }
 }

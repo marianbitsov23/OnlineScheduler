@@ -2,6 +2,8 @@ package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Schedule;
+import com.example.onlinescheduler.models.schedule.SchoolType;
+import com.example.onlinescheduler.models.schedule.timeMangement.WeekDay;
 import com.example.onlinescheduler.payload.schedule.ScheduleRequest;
 import com.example.onlinescheduler.repositories.schedule.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,8 @@ public class ScheduleController {
                 scheduleRequest.getName(),
                 scheduleRequest.getDescription(),
                 scheduleRequest.getCreator(),
-                parentGroup
+                parentGroup,
+                SchoolType.valueOf(scheduleRequest.getSchoolType())
         );
 
         scheduleRepository.save(schedule);

@@ -10,6 +10,10 @@ import teacherService from '../../services/schedule/teacher.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -19,6 +23,7 @@ export default class ManageSchedules extends Component {
             scheduleName: "",
             description: "",
             schoolName: "",
+            schoolType: "middleSchool",
             creator: authService.getCurrentUser(),
             message: "",
             loading: false,
@@ -48,17 +53,16 @@ export default class ManageSchedules extends Component {
 
     saveSchedule = (event, existing) => {
         event.preventDefault();
-        const { scheduleName, description, creator, schoolName } = this.state;
+        const { scheduleName, description, creator, schoolName, schoolType } = this.state;
         creator.roles = [];
         
         this.setState({ message: "", loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName);
-        this.props.history.push('/time-table-management');
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType);
     }
 
-    saveScheduleInDb = (scheduleName, description, creator, schoolName) => {
-        scheduleService.createSchedule(scheduleName, description, creator, schoolName)
+    saveScheduleInDb = (scheduleName, description, creator, schoolName, schoolType) => {
+        scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.toUpperCase())
         .then(result => {
             //add schedule to the current user
             let schedules = creator.schedules;
@@ -73,6 +77,8 @@ export default class ManageSchedules extends Component {
             authService.setCurrentUser(creator);
 
             this.setState({ newSchedule: result.data });
+
+            this.props.history.push('/time-table-management');
         })
         .catch(error => {
             console.error(error);
@@ -86,13 +92,14 @@ export default class ManageSchedules extends Component {
             scheduleName,
             description,
             schoolName,
+            schoolType,
             creator } = this.state;
 
         const schedule = schedules[selectedSchedule];
 
         this.setState({ loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName);
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType);
         const newSchedule = scheduleService.getCurrentSchedule();
 
         //copy the information in the newSchedule
@@ -172,84 +179,108 @@ export default class ManageSchedules extends Component {
                 <Container>
                     <Jumbotron fluid>
                         <Container>
-                            <h1>Create your schedule</h1>
-                            <p>Enter the schedule name, small description 
-                            and then proceed to enter the information about it!</p>
+                            <h1>Създайте своя график</h1>
+                            <p>Въведете името на граика, малко описание за него
+                            и послете продължетете с въвъеждането на информацията за училищетп!</p>
                         </Container>
                     </Jumbotron>
 
                     <Form onSubmit={this.saveSchedule}>
                         <FormGroup>
-                        <TextField
-                        label="Schedule Name"
-                        placeholder="Enter the schedule name"
-                        helperText="Example: ScheduleName_1_Morning"
-                        fullWidth
-                        className="myFontFamily"
-                        margin="normal"
-                        name="scheduleName"
-                        value={this.state.scheduleName}
-                        onChange={this.onChange}
-                        InputLabelProps={{ shrink: true }}/>
+                            <TextField
+                                label="Име на графика"
+                                placeholder="Въвъедете името на графика"
+                                helperText="Example: ScheduleName_1_Morning"
+                                fullWidth
+                                className="myFontFamily"
+                                margin="normal"
+                                name="scheduleName"
+                                value={this.state.scheduleName}
+                                onChange={this.onChange}
+                                InputLabelProps={{ shrink: true }}
+                            />
                         </FormGroup>
 
                         <FormGroup>
-                        <TextField
-                        label="Description"
-                        placeholder="Enter small description for the schedule"
-                        fullWidth
-                        margin="normal"
-                        name="description"
-                        value={this.state.description}
-                        onChange={this.onChange}
-                        InputLabelProps={{ shrink: true }}/>
+                            <TextField
+                                label="Описание"
+                                placeholder="Въведете малко описание за графика"
+                                fullWidth
+                                margin="normal"
+                                name="description"
+                                value={this.state.description}
+                                onChange={this.onChange}
+                                InputLabelProps={{ shrink: true }}
+                            />
                         </FormGroup>
 
                         <FormGroup>
-                        <TextField
-                        label="School Name"
-                        placeholder="Enter the school this schedule is for"
-                        fullWidth
-                        margin="normal"
-                        name="schoolName"
-                        value={this.state.schoolName}
-                        onChange={this.onChange}
-                        InputLabelProps={{ shrink: true }}/>
+                            <TextField
+                                label="Име на училище"
+                                placeholder="Напишете името на училището, за което се отнася графика"
+                                fullWidth
+                                margin="normal"
+                                name="schoolName"
+                                value={this.state.schoolName}
+                                onChange={this.onChange}
+                                InputLabelProps={{ shrink: true }}
+                            />
+                        </FormGroup>
+
+                        <FormGroup>
+                            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                                Тип
+                            </InputLabel>
+                            <Select
+                                labelId="demo-simple-select-placeholder-label-label"
+                                id="demo-simple-select-placeholder-label"
+                                name="schoolType"
+                                fullWidth
+                                labelId="demo-simple-select-helper-label"
+                                value={this.state.schoolType}
+                                onChange={this.onChange}
+                            >
+                                <MenuItem value={"middleSchool"}>Средно</MenuItem>0
+                                <MenuItem value={"highSchool"}>Гимназиално</MenuItem>
+                            </Select>
+                            <FormHelperText>
+                                Изберете типа на училището, за да се генерират определения брой випуски
+                            </FormHelperText>
                         </FormGroup>
 
                         <FormGroup>
                             <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            className="btn-block"
-                            disabled={isInvalid}>
-                                {this.state.loading &&
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                }
-                                <span>Continue</span>
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                className="btn-block"
+                                disabled={isInvalid}>
+                                    {this.state.loading &&
+                                        <span className="spinner-border spinner-border-sm"></span>
+                                    }
+                                    <span>Създаване</span>
                             </Button>
                         </FormGroup>
 
                         <div className="myDisplayFlex">
                             <hr/>
                             <div>
-                                OR
+                                ИЛИ
                             </div>
                             <hr/>
                         </div>
 
                         <Button
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        className="myDefaultMarginTopBottom"
-                        onClick={() => this.setState({ show: true })}
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            className="myDefaultMarginTopBottom"
+                            onClick={() => this.setState({ show: true })}
                         >
                             {this.state.loading &&
                                 <span className="spinner-border spinner-border-sm"></span>
                             }
-                            <span>Create from existing</span>
+                            <span>Създаване от вече съществуващ</span>
                         </Button>
 
                         {this.state.message && (
@@ -261,68 +292,70 @@ export default class ManageSchedules extends Component {
                         )}
                     </Form>
                     <Modal 
-                    size="lg"
-                    show={show}
-                    onHide={() => this.setState({ show: !show })}
-                    centered
+                        size="lg"
+                        show={show}
+                        onHide={() => this.setState({ show: !show })}
+                        centered
                     >
                         <Modal.Header closeButton>
-                            <Modal.Title>Create from existing schedule</Modal.Title>
+                            <Modal.Title>Създаване от вече съществуващ</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <FormGroup>
-                                <FormBootstrap.Label>Choose schedule</FormBootstrap.Label>
+                                <FormBootstrap.Label>Изберете график</FormBootstrap.Label>
                                 <FormBootstrap.Control 
-                                as="select" 
-                                name="selectedSchedule" 
-                                value={selectedSchedule} 
-                                onChange={this.onChange}>
-                                    {schedules && schedules.map((schedule, index) => (
-                                        <option key={schedule.id} value={index}>{schedule.name}</option>
-                                    ))}
+                                    as="select" 
+                                    name="selectedSchedule" 
+                                    value={selectedSchedule} 
+                                    onChange={this.onChange}>
+                                        {schedules && schedules.map((schedule, index) => (
+                                            <option key={schedule.id} value={index}>{schedule.name}</option>
+                                        ))}
                                 </FormBootstrap.Control>
                             </FormGroup>
 
                             <FormGroup>
-                            <TextField
-                            label="Schedule Name"
-                            placeholder="Enter the schedule name"
-                            helperText="Example: ScheduleName_1_Morning"
-                            fullWidth
-                            className="myFontFamily"
-                            margin="normal"
-                            name="scheduleName"
-                            value={this.state.scheduleName}
-                            onChange={this.onChange}
-                            InputLabelProps={{ shrink: true }}/>
+                                <TextField
+                                    label="Schedule Name"
+                                    placeholder="Enter the schedule name"
+                                    helperText="Example: ScheduleName_1_Morning"
+                                    fullWidth
+                                    margin="normal"
+                                    name="scheduleName"
+                                    value={this.state.scheduleName}
+                                    onChange={this.onChange}
+                                    InputLabelProps={{ shrink: true }}
+                                />
                             </FormGroup>
 
                             <FormGroup>
-                            <TextField
-                            label="Description"
-                            placeholder="Enter small description for the schedule"
-                            fullWidth
-                            margin="normal"
-                            name="description"
-                            value={this.state.description}
-                            onChange={this.onChange}
-                            InputLabelProps={{ shrink: true }}/>
+                                <TextField
+                                    label="Description"
+                                    placeholder="Enter small description for the schedule"
+                                    fullWidth
+                                    margin="normal"
+                                    name="description"
+                                    value={this.state.description}
+                                    onChange={this.onChange}
+                                    InputLabelProps={{ shrink: true }}
+                                />
                             </FormGroup>
 
                             <FormGroup>
-                            <TextField
-                            label="School Name"
-                            placeholder="Enter the school this schedule is for"
-                            fullWidth
-                            margin="normal"
-                            name="schoolName"
-                            value={this.state.schoolName}
-                            onChange={this.onChange}
-                            InputLabelProps={{ shrink: true }}/>
+                                <TextField
+                                    label="School Name"
+                                    placeholder="Enter the school this schedule is for"
+                                    fullWidth
+                                    margin="normal"
+                                    name="schoolName"
+                                    value={this.state.schoolName}
+                                    onChange={this.onChange}
+                                    InputLabelProps={{ shrink: true }}
+                                />
                             </FormGroup>
                             <p>
-                                This will copy all the information about the selected schedule.
-                                Without the name and the description.
+                                Цялата информация от избрания графи ще бъде копирана.
+                                Без името и описанието.
                             </p>
                         </Modal.Body>
                         <Modal.Footer>
@@ -331,7 +364,7 @@ export default class ManageSchedules extends Component {
                             variant="contained"
                             //disabled={isInvalid}
                             color="primary">
-                                Create
+                                Създаване
                             </Button>
                         </Modal.Footer>
                     </Modal>                    

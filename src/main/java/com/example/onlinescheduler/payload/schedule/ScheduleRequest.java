@@ -19,13 +19,21 @@ public class ScheduleRequest {
     @NotBlank
     private String groupName;
 
+    @NotBlank
+    private String schoolType;
+
     public ScheduleRequest() {}
 
-    public ScheduleRequest(@NotBlank String name, @NotBlank String description, @NotBlank User creator, @NotBlank String groupName) {
+    public ScheduleRequest(@NotBlank String name,
+                           @NotBlank String description,
+                           @NotBlank User creator,
+                           @NotBlank String groupName,
+                           @NotBlank String schoolType) {
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.groupName = groupName;
+        this.schoolType = schoolType;
     }
 
     public String getDescription() { return description; }
@@ -43,4 +51,9 @@ public class ScheduleRequest {
     public String getGroupName() { return groupName; }
 
     public void setGroupName(String groupName) { this.groupName = groupName; }
+
+    public String getSchoolType() { return schoolType; }
+
+    public void setSchoolType(String schoolType) { this.schoolType = schoolType; }
+
 }

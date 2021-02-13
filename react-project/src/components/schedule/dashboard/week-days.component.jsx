@@ -1,21 +1,7 @@
 import React, { Component } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Paper, List } from '@material-ui/core';
-import { v4 as uuidv4 } from 'uuid';
 import { LessonSlot } from './listItems';
-
-const emptyLesson = {
-    id: uuidv4(),
-    teachingHour: undefined
-};
-
-const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-  
-    return result;
-}
 
 const primaryColor = "#2196F3";
 const whiteColor = "#fafafa";
@@ -37,7 +23,6 @@ export default class WeekDays extends Component {
         const destDay = parseInt(destination.droppableId.split(" ", 2)[0]);
         const destIndex = parseInt(destination.droppableId.split(" ", 2)[1]);
         const sourceDay = parseInt(source.droppableId.split(" ", 2)[0]);
-        const sourceIndex = parseInt(source.droppableId.split(" ", 2)[1]);
         const subIndex = parseInt(draggableId.split(" ", 1));
         
         if (destDay === sourceDay
@@ -47,6 +32,7 @@ export default class WeekDays extends Component {
       
         if (destDay === sourceDay) {
             if (result.type === "droppableSubItem") {
+                if(destination.index > 1) return;
                 const items = [...lessons[destDay].items];
                 const subItems = [...items[subIndex].subItems];
                 const removedItem = subItems[destination.index];
@@ -90,8 +76,6 @@ export default class WeekDays extends Component {
                 lessons[destDay].items = destItems;
                 lessons[sourceDay].items = sourceItems;
 
-                console.log(lessons);
-
                 setLessons(lessons);
             } else if (result.type === "droppableItem") {
                 const removedItem = destItems[destination.index];
@@ -110,8 +94,6 @@ export default class WeekDays extends Component {
     render() {
 
         const { lessons, hoursTemplate } = this.props;
-
-        console.log(lessons);
 
         return(
             <>

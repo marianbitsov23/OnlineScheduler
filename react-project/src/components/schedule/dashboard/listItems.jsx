@@ -23,37 +23,37 @@ export const MainListItems = (
             <ListItemIcon>
                 <LibraryBooksIcon className="primaryColor" />
             </ListItemIcon>
-            <ListItemText primary="Subjects" />
+            <ListItemText primary="Предмети" />
         </ListItem>
         <ListItem button component={Link} to="/teacher-management">
             <ListItemIcon>
                 <PeopleIcon className="primaryColor"/>
             </ListItemIcon>
-            <ListItemText primary="Teachers" />
+            <ListItemText primary="Учители" />
         </ListItem>
         <ListItem button component={Link} to="/cabinet-management">
             <ListItemIcon>
                 <MeetingRoomIcon className="primaryColor"/>
             </ListItemIcon>
-            <ListItemText primary="Cabinets" />
+            <ListItemText primary="Кабинети" />
         </ListItem>
         <ListItem button component={Link} to="/time-table-management">
             <ListItemIcon>
                 <TableChartIcon className="primaryColor"/>
             </ListItemIcon>
-            <ListItemText primary="Time Tables" />
+            <ListItemText primary="Времеви Таблици" />
         </ListItem>
-        <ListItem button>
+        <ListItem button component={Link} to="/group-management">
             <ListItemIcon>
                 <GroupWorkIcon className="primaryColor"/>
             </ListItemIcon>
-            <ListItemText primary="Groups" />
+            <ListItemText primary="Групи" />
         </ListItem>
         <ListItem button component={Link} to="/teaching-hour-management">
             <ListItemIcon>
                 <ChromeReaderModeIcon className="primaryColor"/>
             </ListItemIcon>
-            <ListItemText primary="Teaching Hours" />
+            <ListItemText primary="Хорариуми" />
         </ListItem>
     </div>
 );
@@ -61,7 +61,7 @@ export const MainListItems = (
 export const SecondaryListItems = ({open, schedules}) => (
     <>
         {open &&<ListSubheader className="myTextAlignCenter">
-          Previous schedules
+            Предишни графици
         </ListSubheader>}
         {schedules.slice(1).map((schedule, index) => 
         <Link to={'/schedule-dashboard'} 
@@ -81,7 +81,7 @@ export const SecondaryListItems = ({open, schedules}) => (
         )}
         {schedules.length === 1 && open &&
         <ListItem>
-            <ListItemText primary="Nothing here" secondary="You havent edited recently"/>
+            <ListItemText primary="Няма нищо тук" secondary="Не сте редактирали нищо напоследък"/>
         </ListItem>}
     </>
   );
