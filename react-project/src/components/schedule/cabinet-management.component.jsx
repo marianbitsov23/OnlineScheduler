@@ -18,7 +18,7 @@ export default class ManageCabinets extends Component {
     }
 
     componentDidMount() {
-        cabinetService.getAllCabinetsByScheduleId(this.state.schedule.id)
+        cabinetService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ cabinets: result.data });
         })
@@ -30,7 +30,7 @@ export default class ManageCabinets extends Component {
         .then(result => {
             let categories = result.data;
             this.setState({ categories });
-            cabinetCategoryService.getAllCabinetCategoriesByScheduleId(this.state.schedule.id)
+            cabinetCategoryService.getAllByScheduleId(this.state.schedule.id)
             .then(result => {
                 this.setState({ categories: categories.concat(result.data) });
             });

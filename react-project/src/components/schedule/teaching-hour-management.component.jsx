@@ -43,7 +43,7 @@ export default class ManageTeachingHours extends Component {
     }
 
     async componentDidMount() {
-        teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
+        teachingHourService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ teachingHours: result.data });
         })
@@ -63,7 +63,7 @@ export default class ManageTeachingHours extends Component {
     async fetchAllGroups() {}
 
     async fetchAllSubjects() {
-        subjectService.getAllSubjectsByScheduleId(this.state.schedule.id)
+        subjectService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ subjects: result.data });
         })
@@ -73,7 +73,7 @@ export default class ManageTeachingHours extends Component {
     }
 
     async fetchAllTeachers() {
-        teacherService.getAllTeachersByScheduleId(this.state.schedule.id)
+        teacherService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ teachers: result.data });
         })
@@ -83,7 +83,7 @@ export default class ManageTeachingHours extends Component {
     }    
 
     async fetchAllCabinets() {
-        cabinetService.getAllCabinetsByScheduleId(this.state.schedule.id)
+        cabinetService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ cabinets: result.data });
         })
@@ -93,7 +93,7 @@ export default class ManageTeachingHours extends Component {
     }
 
     async fetchAllTimeTables() {
-        timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
+        timeTableService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             result.data.forEach(timeTable => {
                 timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)

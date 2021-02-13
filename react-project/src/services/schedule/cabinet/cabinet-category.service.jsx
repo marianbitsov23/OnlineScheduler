@@ -13,7 +13,7 @@ class CabinetCategoryService {
         {headers: authHeader()});
     }
 
-    getAllCabinetCategoriesByScheduleId(scheduleId) {
+    getAllByScheduleId(scheduleId) {
         return axios.get(API_URL + '/schedule/' + scheduleId + '/categories', 
         {headers: authHeader()});
     }

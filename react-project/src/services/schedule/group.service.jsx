@@ -8,6 +8,11 @@ class GroupService {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
+    getAllByScheduleId(scheduleId) {
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/groups', 
+        {headers: authHeader()});
+    }
+
     getGroupById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }

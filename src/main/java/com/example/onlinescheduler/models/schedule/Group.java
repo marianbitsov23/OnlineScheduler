@@ -21,27 +21,18 @@ public class Group {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @OneToMany
-    @OrderColumn
-    @JoinColumn(name = "parent_id")
-    private List<Group> children = new LinkedList<Group>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Group parent;
+
+    @OneToMany(mappedBy = "parent")
+    private Set<Group> children;
 
     public Group() {}
 
-    public Group(Group parent, @NotBlank String name, List<Group> children, Schedule schedule) {
+    public Group(Group parent, @NotBlank String name, Schedule schedule) {
         this.parent = parent;
         this.name = name;
-        this.children = children;
         this.schedule = schedule;
-    }
-
-    public Group(Group parent, @NotBlank String name) {
-        this.parent = parent;
-        this.name = name;
     }
 
     public Long getId() { return id; }
@@ -52,9 +43,9 @@ public class Group {
 
     public void setParent(Group parent) { this.parent = parent; }
 
-    public List<Group> getChildren() { return children; }
+    public Set<Group> getChildren() { return children; }
 
-    public void setChildren(List<Group> children) { this.children = children; }
+    public void setChildren(Set<Group> children) { this.children = children; }
 
     public Schedule getSchedule() { return null; }
 

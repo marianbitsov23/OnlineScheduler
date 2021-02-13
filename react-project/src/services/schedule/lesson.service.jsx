@@ -8,7 +8,7 @@ class LessonService {
         return axios.get(API_URL, { headers: authHeader() });
     }
 
-    getAllLessonsByScheduleId(scheduleId) {
+    getAllByScheduleId(scheduleId) {
         return axios.get(API_URL + '/schedule/' + scheduleId + '/lessons', 
         {headers: authHeader()});
     }

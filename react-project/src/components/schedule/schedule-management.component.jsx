@@ -10,10 +10,13 @@ import teacherService from '../../services/schedule/teacher.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
+import teachingHourService from '../../services/schedule/teaching-hour.service';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import groupService from '../../services/schedule/group.service';
+import lessonService from '../../services/schedule/lesson.service';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -30,13 +33,6 @@ export default class ManageSchedules extends Component {
             show: false,
             schedules: [],
             selectedSchedule: 0,
-            subjects: [],
-            categories: [],
-            teachers: [],
-            cabinets: [],
-            timeTables: [],
-            teachingHours: [],
-            groups: [],
             newSchedule: undefined
         };
 
@@ -51,21 +47,23 @@ export default class ManageSchedules extends Component {
         .catch(error => console.error(error));
     }
 
-    saveSchedule = (event, existing) => {
+    saveSchedule = (event) => {
         event.preventDefault();
         const { scheduleName, description, creator, schoolName, schoolType } = this.state;
         creator.roles = [];
         
         this.setState({ message: "", loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType);
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, function(newSchedule, oldScheduleId) {
+            this.props.history.push('/time-table-management');
+        });
     }
 
-    saveScheduleInDb = (scheduleName, description, creator, schoolName, schoolType) => {
+    saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolType, onCreatedSchedule) => {
         scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.toUpperCase())
         .then(result => {
             //add schedule to the current user
-            let schedules = creator.schedules;
+            let schedules = creator.schedules ? creator.schedules : [];
             schedules.push(result.data);
 
             //saves current schedule in the local storage
@@ -76,94 +74,61 @@ export default class ManageSchedules extends Component {
             //saves current user in the local storage
             authService.setCurrentUser(creator);
 
+            const oldScheduleId = this.state.schedules[this.state.selectedSchedule].id;
+            onCreatedSchedule(result.data, oldScheduleId);
+
             this.setState({ newSchedule: result.data });
 
-            this.props.history.push('/time-table-management');
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     saveFromExistingSchedule = event => {
         const { 
-            selectedSchedule, 
-            schedules,
             scheduleName,
             description,
             schoolName,
             schoolType,
             creator } = this.state;
 
-        const schedule = schedules[selectedSchedule];
-
         this.setState({ loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType);
-        const newSchedule = scheduleService.getCurrentSchedule();
+        creator.roles = [];
 
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, this.copyExistingSchedule);
         //copy the information in the newSchedule
-        this.copySubjects(newSchedule, schedule.id);
-        this.copyTeachers(newSchedule, schedule.id);
-        this.copyCabinets(newSchedule, schedule.id);
-        this.copyCabinetCategories(newSchedule, schedule.id);
-        this.copyTimeTables(newSchedule, schedule.id);
+    }
 
-        this.setState({ loading: false });
-            
+    copyExistingSchedule = (newSchedule, oldScheduleId) => {
+        this.fetchAndSaveElements(subjectService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(cabinetService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(groupService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(cabinetCategoryService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(timeTableService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(teachingHourService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(lessonService, newSchedule, oldScheduleId);
+        
         this.props.history.push('/time-table-management');
     }
 
     copyElements = (service, elements, schedule) => {
         elements.forEach(element => {
             element.schedule = schedule;
-            service.create(element);
+            service.create(element)
+            .catch(error => console.error(error));
         });
-    } 
+    }
 
-    copySubjects = (schedule, oldScheduleId) => {
-        subjectService.getAllSubjectsByScheduleId(oldScheduleId)
+    fetchAndSaveElements = (service, schedule, oldScheduleId) => {
+        service.getAllByScheduleId(oldScheduleId)
         .then(result => {
-            this.copyElements(subjectService, result.data, schedule);
+            this.copyElements(service, result.data, schedule);
         })
         .catch(error => console.error(error));
     }
 
-    copyTeachers(schedule, oldScheduleId) {
-        teacherService.getAllTeachersByScheduleId(oldScheduleId)
-        .then(result => {
-            this.copyElements(teacherService, result.data, schedule);
-        })
-        .catch(error => console.error(error));
-    }
-
-    copyCabinets(schedule, oldScheduleId) {
-        cabinetService.getAllCabinetsByScheduleId(oldScheduleId)
-        .then(result => {
-            this.copyElements(cabinetService, result.data, schedule);
-        })
-        .catch(error => console.error(error));
-    }
-
-    copyCabinetCategories(schedule, oldScheduleId) {
-        cabinetCategoryService.getAllCabinetCategoriesByScheduleId(oldScheduleId)
-        .then(result => {
-            this.copyElements(cabinetCategoryService, result.data, schedule);
-        })
-        .catch(error => console.error(error));
-    }
-
-    copyTimeTables(schedule, oldScheduleId) {
-        timeTableService.getAllTimeTablesByScheduleId(oldScheduleId)
-        .then(result => {
-            this.copyElements(timeTableService, result.data, schedule);
-        })
-        .catch(error => console.error(error));
-    }
-
-    onChange = event => {
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     render() {
 

@@ -8,7 +8,7 @@ class CabinetService {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
-    getAllCabinetsByScheduleId(scheduleId) {
+    getAllByScheduleId(scheduleId) {
         return axios.get(API_URL + '/schedule/' + scheduleId + '/cabinets', 
         {headers: authHeader()});
     }

@@ -8,7 +8,7 @@ class SubjectService {
         return axios.get(API_URL, { headers: authHeader() });
     }
 
-    getAllSubjectsByScheduleId(scheduleId) {
+    getAllByScheduleId(scheduleId) {
         return axios.get(API_URL + '/schedule/' + scheduleId + '/subjects', 
         {headers: authHeader()});
     }

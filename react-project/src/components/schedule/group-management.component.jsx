@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, FormGroup, Row, Col, Modal } from 'react-bootstrap';
+import { Container, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
 import FormBootstrap from 'react-bootstrap/Form';
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import groupService from '../../services/schedule/group.service';
 import scheduleService from '../../services/schedule/schedule.service';
-import { AiOutlinePlus } from 'react-icons/ai';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import GroupIcon from '@material-ui/icons/Group';
@@ -36,7 +34,7 @@ export default class ManageGroups extends Component {
 
     componentDidMount() {
         // load already created groups for this schedule
-        groupService.getGroupById(this.state.schedule.parentGroup.id)
+        groupService.getAllGroupsByScheduleId(this.state.schedule.id)
         .then(result => {
             console.log(result.data);
 
@@ -58,9 +56,7 @@ export default class ManageGroups extends Component {
 
             this.setState({ classNames, yearClasses, openBoxes, groups });
         })
-        .catch(error => {
-            console.error(error);
-        })
+        .catch(error => console.error(error));
     }
 
     addGroup = event => {
@@ -71,13 +67,20 @@ export default class ManageGroups extends Component {
         .then(result => {
             groups.set(selectedClass, result.data);
         })
-        .catch(error => {
-            console.error(error);
-        })
+        .catch(error => console.error(error));
     }
 
     saveGroups = event => {
         event.preventDefault();
+        const { parent, classNames, schedule } = this.state;
+
+        classNames.forEach(className => {
+            groupService.createGroup(parent, className, null, schedule)
+            .then(() => {
+                this.setState({ edit: false });
+            })
+            .catch(error => console.error(error));
+        }); 
     }
 
     classChange = event => {
@@ -89,8 +92,6 @@ export default class ManageGroups extends Component {
     }
 
     onChange = event => this.setState({ [event.target.name]: event.target.value }); 
-
-    editClasses = () => this.setState({ edit: !this.state.edit });
 
     handleOpen = (index) => {
         let openBoxes = this.state.openBoxes;
@@ -112,8 +113,6 @@ export default class ManageGroups extends Component {
 
         const isInvalid = groupName === "";
  
-        console.log(groups);
-
         return(
             <>
                 <Container>
@@ -142,7 +141,7 @@ export default class ManageGroups extends Component {
                                     variant="contained"
                                     color="primary"
                                     className="btn-block"
-                                    onClick={this.editClasses}
+                                    onClick={this.saveGroups}
                                 >
                                     {this.state.loading &&
                                         <span className="spinner-border spinner-border-sm"></span>
@@ -183,7 +182,7 @@ export default class ManageGroups extends Component {
                                         variant="contained"
                                         color="primary"
                                         className="btn-block"
-                                        onClick={this.editClasses}
+                                        onClick={() => this.setState({ edit: true })}
                                     >
                                         {this.state.loading &&
                                             <span className="spinner-border spinner-border-sm"></span>

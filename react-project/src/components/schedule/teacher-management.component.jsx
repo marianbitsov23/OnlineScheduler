@@ -16,7 +16,7 @@ export default class ManageTeachers extends Component {
     }
 
     componentDidMount() {
-        teacherService.getAllTeachersByScheduleId(this.state.schedule.id)
+        teacherService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ teachers: result.data });
         })

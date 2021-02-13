@@ -1,6 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Group;
+import com.example.onlinescheduler.models.schedule.Lesson;
 import com.example.onlinescheduler.payload.schedule.GroupRequest;
 import com.example.onlinescheduler.repositories.schedule.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,15 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/schedule/{scheduleId}/groups")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getGroupsByScheduleId(@PathVariable Long scheduleId) {
+        Optional<List<Group>> groups = groupRepository.findAllByScheduleId(scheduleId);
+
+        return groups.map(groupList -> new ResponseEntity<>(groupList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
@@ -52,7 +62,9 @@ public class GroupController {
     public ResponseEntity<Group> createGroup(@RequestBody GroupRequest groupRequest) {
         Group group = new Group(
                 groupRequest.getParent(),
-                groupRequest.getGroupName());
+                groupRequest.getGroupName(),
+                groupRequest.getSchedule()
+        );
         groupRepository.save(group);
 
         return new ResponseEntity<>(group, HttpStatus.CREATED);

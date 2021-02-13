@@ -39,11 +39,6 @@ public class Schedule {
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
 
-    @NotBlank
-    @OneToOne
-    @JoinColumn(name = "parent_group_id", referencedColumnName = "id")
-    private Group parentGroup;
-
     @OneToMany(mappedBy="schedule", cascade = CascadeType.ALL)
     Set<Subject> subjects = new HashSet<>();
 
@@ -69,12 +64,11 @@ public class Schedule {
 
     public Schedule(@NotBlank @Size(max = 100) String name,
                     @NotBlank @Size(max = 300) String description,
-                    @NotBlank User creator, @NotBlank Group parentGroup,
+                    @NotBlank User creator,
                     @NotBlank SchoolType schoolType) {
         this.name = name;
         this.description = description;
         this.creator = creator;
-        this.parentGroup = parentGroup;
         this.schoolType = schoolType;
     }
 
@@ -93,10 +87,6 @@ public class Schedule {
     public User getCreator() { return creator; }
 
     public void setCreator(User creator) { this.creator = creator; }
-
-    public Group getParentGroup() { return parentGroup; }
-
-    public void setParentGroup(Group parentGroup) { this.parentGroup = parentGroup; }
 
     public SchoolType getSchoolType() { return schoolType; }
 

@@ -34,7 +34,7 @@ export default class ManageTimeTables extends Component {
     componentDidMount() {
         this.initWeekDays();
 
-        timeTableService.getAllTimeTablesByScheduleId(this.state.schedule.id)
+        timeTableService.getAllByScheduleId(this.state.schedule.id)
         .then(timeTables => {
             this.setState({ timeTables: timeTables.data });
         })
@@ -103,7 +103,7 @@ export default class ManageTimeTables extends Component {
 
         this.setState({ loading: true });
 
-        timeTableService.createTimeTable(schedule, timeTableName)
+        timeTableService.create({schedule, timeTableName})
         .then(result => {
             this.saveAllSlotsInDb(result.data.id)
             .then(() => {

@@ -47,7 +47,6 @@ export default class ScheduleBoard extends Component {
                                     <Card.Header>{schedule.name}</Card.Header>
                                 }
                                 <Card.Body>
-                                    <Card.Title>{schedule.parentGroup.name}</Card.Title>
                                     <Card.Text>
                                         {schedule.description}
                                     </Card.Text>

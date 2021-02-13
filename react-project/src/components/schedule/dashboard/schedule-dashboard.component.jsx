@@ -78,7 +78,7 @@ class ScheduleDashboard extends Component {
 
         this.loadPreviousSchedules();
 
-        lessonService.getAllLessonsByScheduleId(this.state.schedule.id)
+        lessonService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             if(result.data.length !== 0) {
                 const lessons = [];
@@ -111,7 +111,7 @@ class ScheduleDashboard extends Component {
         })
         .catch(error => {
             console.error(error);
-            teachingHourService.getAllTeachingHoursByScheduleId(this.state.schedule.id)
+            teachingHourService.getAllByScheduleId(this.state.schedule.id)
                 .then(result => {
                     this.setState({ teachingHours: result.data });
                 })

@@ -29,19 +29,18 @@ public class ScheduleController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Schedule> createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-        Group parentGroup = new Group(null, scheduleRequest.getGroupName());
-
-        groupRepository.save(parentGroup);
-
         Schedule schedule = new Schedule(
                 scheduleRequest.getName(),
                 scheduleRequest.getDescription(),
                 scheduleRequest.getCreator(),
-                parentGroup,
                 SchoolType.valueOf(scheduleRequest.getSchoolType())
         );
 
         scheduleRepository.save(schedule);
+
+        Group parentGroup = new Group(null, scheduleRequest.getGroupName(), schedule);
+
+        groupRepository.save(parentGroup);
 
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
     }

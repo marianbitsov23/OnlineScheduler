@@ -16,7 +16,7 @@ export default class ManageSubjects extends Component {
     }
 
     componentDidMount() {
-        subjectService.getAllSubjectsByScheduleId(this.state.schedule.id)
+        subjectService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             this.setState({ subjects: result.data });
         })
