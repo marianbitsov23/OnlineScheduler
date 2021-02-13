@@ -1,7 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Group;
-import com.example.onlinescheduler.models.schedule.Lesson;
 import com.example.onlinescheduler.payload.schedule.GroupRequest;
 import com.example.onlinescheduler.repositories.schedule.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,17 +43,19 @@ public class GroupController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Group> getGroupById(@PathVariable Long id) {
-        Optional<Group> foundGroup = groupRepository.findById(id);
+        Optional<Group> group = groupRepository.findById(id);
 
-        if(foundGroup.isPresent()) {
-            Group group = new Group();
-            group.setId(foundGroup.get().getId());
-            group.setChildren(foundGroup.get().getChildren());
-            group.setName(foundGroup.get().getName());
-            return new ResponseEntity<>(group, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return group.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/parent/{parentId}/children")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getAllGroupsByParentId(@PathVariable Long parentId) {
+        Optional<List<Group>> groups = groupRepository.findAllByParentId(parentId);
+
+        return groups.map(groupList -> new ResponseEntity<>(groupList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping

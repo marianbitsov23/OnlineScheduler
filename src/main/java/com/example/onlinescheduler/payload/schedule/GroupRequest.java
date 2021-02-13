@@ -14,27 +14,19 @@ public class GroupRequest {
     private String groupName;
 
     @NotBlank
-    private Set<Group> children;
-
-    @NotBlank
     private Schedule schedule;
 
     public GroupRequest() {}
 
-    public GroupRequest(@NotBlank Group parent, @NotBlank String groupName, @NotBlank Set<Group> children, @NotBlank Schedule schedule) {
+    public GroupRequest(@NotBlank Group parent, @NotBlank String groupName, @NotBlank Schedule schedule) {
         this.parent = parent;
         this.groupName = groupName;
-        this.children = children;
         this.schedule = schedule;
     }
 
     public Group getParent() { return parent; }
 
     public void setParent(Group parent) { this.parent = parent; }
-
-    public Set<Group> getChildren() { return children; }
-
-    public void setChildren(Set<Group> children) { this.children = children; }
 
     public Schedule getSchedule() { return schedule; }
 

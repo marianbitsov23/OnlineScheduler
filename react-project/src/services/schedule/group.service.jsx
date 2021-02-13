@@ -13,17 +13,27 @@ class GroupService {
         {headers: authHeader()});
     }
 
+    getAllByParentId(parentId) {
+        return axios.get(API_URL + '/parent/' + parentId + '/children', 
+        {headers: authHeader()});
+    }
+
     getGroupById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
-    createGroup(parent, name, children, schedule) {
+    create(group) {
         return axios.post(API_URL, 
-            {parent, name, children, schedule},
+            {
+                parent: group.parent,
+                groupName: group.groupName, 
+                children: group.children, 
+                schedule: group.schedule
+            },
             {headers: authHeader()} );
     }
 
-    updateGroupInformation(group) {
+    update(group) {
         return axios.put(API_URL + '/' + group.id, 
             //{group info},
             {headers: authHeader()});

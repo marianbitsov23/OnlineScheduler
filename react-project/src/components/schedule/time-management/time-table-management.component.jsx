@@ -15,7 +15,7 @@ export default class ManageTimeTables extends Component {
         super(props);
 
         this.state = {
-            timeTableName: "",
+            name: "",
             weekDays: undefined,
             weekDaysTemplate: [],
             timeSlotTemplateMorning: [],
@@ -99,17 +99,17 @@ export default class ManageTimeTables extends Component {
         event.preventDefault();
 
         const schedule = scheduleService.getCurrentSchedule();
-        const { timeTableName } = this.state;
+        const { name } = this.state;
 
         this.setState({ loading: true });
 
-        timeTableService.create({schedule, timeTableName})
+        timeTableService.create({schedule, name})
         .then(result => {
             this.saveAllSlotsInDb(result.data.id)
             .then(() => {
                 this.initWeekDays();
                 this.state.timeTables.push(result.data)
-                this.setState({ edit: true, timeTableName: "", loading: false });
+                this.setState({ edit: true, name: "", loading: false });
             })
         });
     }
@@ -119,9 +119,9 @@ export default class ManageTimeTables extends Component {
     }
 
     render() {
-        const { timeTableName, weekDays, weekDaysTemplate, edit, timeTables } = this.state;
+        const { name, weekDays, weekDaysTemplate, edit, timeTables } = this.state;
 
-        const isInvalid = timeTableName === "";
+        const isInvalid = name === "";
 
         return(
             <>
@@ -129,7 +129,7 @@ export default class ManageTimeTables extends Component {
                     <Jumbotron>
                         {!edit &&
                             <>
-                                <h1>{timeTableName}</h1>
+                                <h1>{name}</h1>
 
                                 <Button
                                 variant="outline-secondary"
@@ -154,8 +154,8 @@ export default class ManageTimeTables extends Component {
                                 <Input
                                     type="text"
                                     className="form-control"
-                                    name="timeTableName"
-                                    value={this.state.timeTableName}
+                                    name="name"
+                                    value={this.state.name}
                                     onChange={this.onChange}
                                 />
                             </FormGroup>

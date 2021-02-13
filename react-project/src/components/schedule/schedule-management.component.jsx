@@ -54,9 +54,7 @@ export default class ManageSchedules extends Component {
         
         this.setState({ message: "", loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, function(newSchedule, oldScheduleId) {
-            this.props.history.push('/time-table-management');
-        });
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, this.redirectToNextPage);
     }
 
     saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolType, onCreatedSchedule) => {
@@ -74,7 +72,9 @@ export default class ManageSchedules extends Component {
             //saves current user in the local storage
             authService.setCurrentUser(creator);
 
-            const oldScheduleId = this.state.schedules[this.state.selectedSchedule].id;
+            const oldScheduleId = this.state.scheduls 
+                ? this.state.schedules[this.state.selectedSchedule].id
+                : undefined;
             onCreatedSchedule(result.data, oldScheduleId);
 
             this.setState({ newSchedule: result.data });
@@ -109,8 +109,10 @@ export default class ManageSchedules extends Component {
         this.fetchAndSaveElements(teachingHourService, newSchedule, oldScheduleId);
         this.fetchAndSaveElements(lessonService, newSchedule, oldScheduleId);
         
-        this.props.history.push('/time-table-management');
+        this.redirectToNextPage();
     }
+
+    redirectToNextPage = () => this.props.history.push('/time-table-management');
 
     copyElements = (service, elements, schedule) => {
         elements.forEach(element => {

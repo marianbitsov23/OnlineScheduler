@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
-import FormBootstrap from 'react-bootstrap/Form';
-import Form from "react-validation/build/form";
+import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import groupService from '../../services/schedule/group.service';
 import scheduleService from '../../services/schedule/schedule.service';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -17,11 +16,9 @@ export default class ManageGroups extends Component {
 
         this.state = {
             groupName: "",
-            groups: undefined,
             parent: {},
-            groupRows: 2,
+            groups: [],
             classNames: [],
-            openBoxes: [],
             selectedClass: 0,
             schedule: scheduleService.getCurrentSchedule(),
             show: false,
@@ -34,51 +31,118 @@ export default class ManageGroups extends Component {
 
     componentDidMount() {
         // load already created groups for this schedule
-        groupService.getAllGroupsByScheduleId(this.state.schedule.id)
+        groupService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
-            console.log(result.data);
-
             const schoolType = this.state.schedule.schoolType;
 
-            const yearClasses = schoolType === "MIDDLESCHOOL" 
-                ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-                : [0, 1, 2, 3, 4];
+            const parent = result.data.find(group => group.parent === null);
 
-            let classNames = [];
-            let openBoxes = [];
-            let groups = new Map();
+            console.log(parent)
 
-            yearClasses.forEach(yearClass => {
-                classNames.push(" ");
-                openBoxes.push(false);
-                groups.set(yearClass, []);
-            });
+            if(result.data.length > 1) {
+                this.fetchGroupsByType(parent)
+                .then(groups => {
+                    this.setState({ groups: groups });
+                });
 
-            this.setState({ classNames, yearClasses, openBoxes, groups });
+                this.setState({ edit: false });
+            } else {
+                const yearGroupsAmmount = schoolType === "MIDDLESCHOOL" 
+                    ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    : [0, 1, 2, 3, 4];
+    
+                const groups = this.state.groups;
+
+                const classNames = [];
+    
+                yearGroupsAmmount.forEach(() => {
+                    classNames.push(" ");
+                    groups.set('yearGroup', []);
+                });
+    
+                this.setState({ classNames, yearGroupsAmmount, parent, groups });
+            }
         })
         .catch(error => console.error(error));
     }
 
-    addGroup = event => {
-        event.preventDefault();
-        const { groupName, parent, schedule, groups, selectedClass } = this.state; 
+    fetchGroupsByType = async (parent) => {
 
-        groupService.createGroup(parent, groupName, null, schedule)
+        return groupService.getAllByParentId(parent.id)
         .then(result => {
-            groups.set(selectedClass, result.data);
+            result.data = this.mapOpenBoxes(result.data);
+            result.data = this.fetchChildren(result.data);
+            return result.data;
         })
         .catch(error => console.error(error));
+    }
+
+    fetchChildren = groups => {
+        groups.forEach(group => {
+            this.getGroupByParentId(group.id)
+            .then(children => {
+                if(children) {
+                    group.children = children;
+                    this.fetchChildren(children);
+                } else {
+                    group.children = [];
+                }
+            })
+        });
+
+        return groups;
+    }
+
+    getGroupByParentId = async (parentId) => {
+        return groupService.getAllByParentId(parentId)
+        .then(result => {
+            return result.data;
+        })
+        .catch(error => {
+            console.error(error); 
+            return undefined;
+        });
+
+    }
+
+    addGroup = event => {
+        const { groupName, schedule, groups, selectedClass } = this.state; 
+
+        const selectedGroup = groups[selectedClass];
+
+        groupService.create({ parent: selectedGroup, groupName: groupName, schedule: schedule })
+        .then(result => {
+            groups[selectedClass].children.push(result.data);
+
+            this.setState({ groups, groupName: '', show: false });
+        })
+        .catch(error => console.error(error));
+    }
+
+    mapOpenBoxes = groups => {
+        groups.forEach(group =>{
+            group.open = false;
+        })
+
+        return groups;
     }
 
     saveGroups = event => {
         event.preventDefault();
-        const { parent, classNames, schedule } = this.state;
+        const { parent, classNames, schedule, groups } = this.state;
 
+        let yearGroups = []
         classNames.forEach(className => {
-            groupService.createGroup(parent, className, null, schedule)
-            .then(() => {
-                this.setState({ edit: false });
+            groupService.create({ parent: parent, groupName: className, schedule: schedule })
+            .then(result => {
+                yearGroups.push(result.data);
             })
+            .then(() => {
+                if(yearGroups) yearGroups = this.mapOpenBoxes(yearGroups);
+                groups.set('yearGroup', yearGroups);
+
+                this.setState({ edit: false, groups });
+            }) 
             .catch(error => console.error(error));
         }); 
     }
@@ -93,26 +157,28 @@ export default class ManageGroups extends Component {
 
     onChange = event => this.setState({ [event.target.name]: event.target.value }); 
 
-    handleOpen = (index) => {
-        let openBoxes = this.state.openBoxes;
-        openBoxes[index] = !openBoxes[index];
-
-        this.setState({ openBoxes });
+    handleOpen = (index, type) => {
+        const { groups } = this.state;
+        if(type === 'yearGroup') {
+            groups[index].open = !groups[index].open;
+        }
+        this.setState({ groups });
     }
 
     render() {
         const { 
             groupName, 
-            yearClasses, 
+            yearGroupsAmmount, 
             show, 
-            openBoxes, 
             classNames,
             edit,
-            groups
+            groups,
         } = this.state;
 
         const isInvalid = groupName === "";
- 
+
+        console.log(groups);
+
         return(
             <>
                 <Container>
@@ -122,7 +188,7 @@ export default class ManageGroups extends Component {
                             <h1 className="myTextAlignCenter myFontFamily">
                                 Въведете имената на випуските
                             </h1>
-                            {yearClasses && yearClasses.map(yearClass => (
+                            {yearGroupsAmmount && yearGroupsAmmount.map(yearClass => (
                                 <FormGroup key={yearClass}>
                                     <TextField
                                         label="Име на випуска"
@@ -156,16 +222,27 @@ export default class ManageGroups extends Component {
                                     Запазване на випуски
                                 </h1>
                                 <List>
-                                    {classNames.map((className, index) => (
+                                    {groups && groups.map((group, index) => (
                                         <div key={index}>
-                                            <ListItem button onClick={this.handleOpen.bind(this, index)}>
+                                            <ListItem button onClick={this.handleOpen.bind(this, index, 'yearGroup')}>
                                                 <ListItemIcon>
                                                     <GroupIcon />
                                                 </ListItemIcon>
-                                                <ListItemText primary={"Випуск: " + className} />
-                                                {openBoxes[index] ? <ExpandLess /> : <ExpandMore />}
+                                                <ListItemText primary={"Випуск: " + group.name} />
+                                                {group.open ? <ExpandLess /> : <ExpandMore />}
                                             </ListItem>
-                                            <Collapse in={openBoxes[index]} timeout="auto" unmountOnExit>
+                                            <Collapse in={group.open} timeout="auto" unmountOnExit>
+                                                <List>
+                                                    {group.children && group.children.map((classGroup, index) => (
+                                                        <ListItem key={index} button onClick={this.handleOpen.bind(this, index, 'classGroup')}>
+                                                            <ListItemIcon>
+                                                                <GroupWorkIcon />
+                                                            </ListItemIcon>
+                                                            <ListItemText primary={"Клас: " + classGroup.name} />
+                                                            {classGroup.open ? <ExpandLess /> : <ExpandMore />}
+                                                        </ListItem>
+                                                    ))}
+                                                </List>
                                                 <Button
                                                     variant="contained"
                                                     color="secondary"
@@ -203,35 +280,32 @@ export default class ManageGroups extends Component {
                         <Modal.Title>Въведете името на класа</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Form
-                            onSubmit={this.addGroup}
-                        >
-                            <FormGroup>
-                                <TextField
-                                    label="Име на групата"
-                                    placeholder="Въведете името на групата"
-                                    fullWidth
-                                    name="groupName"
-                                    margin="normal"
-                                    value={groupName}
-                                    onChange={this.onChange}
-                                    InputLabelProps={{ shrink: true }}
-                                />
-                            </FormGroup>   
-                            <FormGroup>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="secondary"
-                                    disabled={isInvalid}
-                                >
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Добави група</span>
-                                </Button>
-                            </FormGroup>
-                        </Form>
+                        <FormGroup>
+                            <TextField
+                                label="Име на групата"
+                                placeholder="Въведете името на групата"
+                                fullWidth
+                                name="groupName"
+                                margin="normal"
+                                value={groupName}
+                                onChange={this.onChange}
+                                InputLabelProps={{ shrink: true }}
+                            />
+                        </FormGroup>   
+                        <FormGroup>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="secondary"
+                                onClick={this.addGroup}
+                                disabled={isInvalid}
+                            >
+                                {this.state.loading &&
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                }
+                                <span>Добави група</span>
+                            </Button>
+                        </FormGroup>
                     </Modal.Body>
                 </Modal>
             </>

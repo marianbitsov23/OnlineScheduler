@@ -127,18 +127,18 @@ export default class ResetPassword extends Component {
                                     <span>Save Password</span>
                                 </Button>
                                 {this.state.message && alert && (
-                                <FormGroup>
-                                    <Alert variant="danger" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
+                                    <FormGroup>
+                                        <Alert variant="success" role="alert">
+                                            {this.state.message}
+                                        </Alert>
+                                    </FormGroup>
                                 )}
                                 {this.state.message && !alert && (
-                                <FormGroup>
-                                    <Alert variant="success" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
+                                    <FormGroup>
+                                        <Alert variant="danger" role="alert">
+                                            {this.state.message}
+                                        </Alert>
+                                    </FormGroup>
                                 )}
                             </Form>
                         </div>

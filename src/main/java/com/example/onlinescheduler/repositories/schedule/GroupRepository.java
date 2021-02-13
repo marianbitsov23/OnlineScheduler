@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<List<Group>> findAllByScheduleId(Long scheduleId);
+
+    Optional<List<Group>> findAllByParentId(Long parentId);
 }

@@ -21,7 +21,7 @@ public class Group {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     private Group parent;
 
     @OneToMany(mappedBy = "parent")
@@ -39,13 +39,9 @@ public class Group {
 
     public void setId(Long id) { this.id = id; }
 
-    public Long getParent() { return null; }
+    public Group getParent() { return this.parent; }
 
     public void setParent(Group parent) { this.parent = parent; }
-
-    public Set<Group> getChildren() { return children; }
-
-    public void setChildren(Set<Group> children) { this.children = children; }
 
     public Schedule getSchedule() { return null; }
 

@@ -81,6 +81,7 @@ public class AuthController {
                     .body(new MessageResponse("Invalid token!"));
         } else {
             user.get().setPassword(encoder.encode(password));
+            user.get().setResetPasswordToken("");
             userRepository.save(user.get());
             return ResponseEntity
                     .ok()
