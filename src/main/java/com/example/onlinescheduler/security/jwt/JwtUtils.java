@@ -23,9 +23,9 @@ public class JwtUtils {
     @Value("${mariyan.app.jwtExpirationMs}")
     private int jwtExpirationMS;
 
-    public String generateJwtToken(Authentication authenctication) {
+    public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authenctication.getPrincipal();
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))

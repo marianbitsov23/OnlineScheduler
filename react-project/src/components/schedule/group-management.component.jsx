@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
+import SchoolIcon from '@material-ui/icons/School';
 import groupService from '../../services/schedule/group.service';
 import scheduleService from '../../services/schedule/schedule.service';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -20,6 +21,7 @@ export default class ManageGroups extends Component {
             groups: [],
             classNames: [],
             selectedClass: 0,
+            selectedSubClass: undefined,
             schedule: scheduleService.getCurrentSchedule(),
             show: false,
             edit: true
@@ -37,7 +39,9 @@ export default class ManageGroups extends Component {
 
             const parent = result.data.find(group => group.parent === null);
 
-            console.log(parent)
+            const yearGroupsAmmount = schoolType === "MIDDLESCHOOL" 
+                    ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    : [0, 1, 2, 3, 4];
 
             if(result.data.length > 1) {
                 this.fetchGroupsByType(parent)
@@ -45,12 +49,8 @@ export default class ManageGroups extends Component {
                     this.setState({ groups: groups });
                 });
 
-                this.setState({ edit: false });
-            } else {
-                const yearGroupsAmmount = schoolType === "MIDDLESCHOOL" 
-                    ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-                    : [0, 1, 2, 3, 4];
-    
+                this.setState({ edit: false, yearGroupsAmmount });
+            } else { 
                 const groups = this.state.groups;
 
                 const classNames = [];
@@ -67,7 +67,6 @@ export default class ManageGroups extends Component {
     }
 
     fetchGroupsByType = async (parent) => {
-
         return groupService.getAllByParentId(parent.id)
         .then(result => {
             result.data = this.mapOpenBoxes(result.data);
@@ -82,7 +81,7 @@ export default class ManageGroups extends Component {
             this.getGroupByParentId(group.id)
             .then(children => {
                 if(children) {
-                    group.children = children;
+                    group.children = this.mapOpenBoxes(children);
                     this.fetchChildren(children);
                 } else {
                     group.children = [];
@@ -102,17 +101,30 @@ export default class ManageGroups extends Component {
             console.error(error); 
             return undefined;
         });
-
     }
 
     addGroup = event => {
-        const { groupName, schedule, groups, selectedClass } = this.state; 
+        const { groupName, schedule, groups, selectedClass, selectedSubClass } = this.state; 
 
         const selectedGroup = groups[selectedClass];
+        let selectedSubGroup = undefined;
+        if(selectedSubClass !== undefined) selectedSubGroup = selectedGroup.children[selectedSubClass];
 
-        groupService.create({ parent: selectedGroup, groupName: groupName, schedule: schedule })
+        console.log(selectedSubClass);
+        console.log(selectedSubGroup);
+        console.log(selectedGroup.children);
+
+        groupService.create({ 
+            parent: selectedSubGroup !== undefined ? selectedSubGroup : selectedGroup, 
+            groupName: groupName, 
+            schedule: schedule 
+        })
         .then(result => {
-            groups[selectedClass].children.push(result.data);
+            if(selectedSubGroup) {
+                groups[selectedClass].children[selectedSubClass].children.push(result.data);
+            } else {
+                groups[selectedClass].children.push(result.data);
+            }
 
             this.setState({ groups, groupName: '', show: false });
         })
@@ -129,39 +141,45 @@ export default class ManageGroups extends Component {
 
     saveGroups = event => {
         event.preventDefault();
-        const { parent, classNames, schedule, groups } = this.state;
+        const { parent, groups, schedule } = this.state;
 
-        let yearGroups = []
-        classNames.forEach(className => {
-            groupService.create({ parent: parent, groupName: className, schedule: schedule })
+        groups.forEach(group => {
+            groupService.create({ parent: parent, groupName: group.name, schedule: schedule })
             .then(result => {
-                yearGroups.push(result.data);
+                group.id = result.data.id;
+                group.parent = parent;
+                group.schedule = schedule;
             })
             .then(() => {
-                if(yearGroups) yearGroups = this.mapOpenBoxes(yearGroups);
-                groups.set('yearGroup', yearGroups);
-
                 this.setState({ edit: false, groups });
             }) 
             .catch(error => console.error(error));
         }); 
     }
 
-    classChange = event => {
-        const { classNames } = this.state;
+    groupChange = event => {
+        const { groups } = this.state;
 
-        classNames[parseInt(event.target.name)] = event.target.value;
+        groups[parseInt(event.target.name)].name = event.target.value;
 
-        this.setState({ classNames });
+        this.setState({ groups });
     }
 
     onChange = event => this.setState({ [event.target.name]: event.target.value }); 
 
-    handleOpen = (index, type) => {
+    handleOpen = (indexes, type) => {
         const { groups } = this.state;
-        if(type === 'yearGroup') {
-            groups[index].open = !groups[index].open;
+        switch(type) {
+            case'yearGroup':
+                groups[indexes].open = !groups[indexes].open;
+                break;
+            case 'classGroup':
+                const { groupIndex, classIndex, subIndex } = indexes;
+                groups[groupIndex].children[classIndex].open = 
+                !groups[groupIndex].children[classIndex].open;
+                break;
         }
+        
         this.setState({ groups });
     }
 
@@ -170,14 +188,13 @@ export default class ManageGroups extends Component {
             groupName, 
             yearGroupsAmmount, 
             show, 
-            classNames,
             edit,
             groups,
         } = this.state;
 
         const isInvalid = groupName === "";
 
-        console.log(groups);
+        console.log(this.state.selectedSubClass);
 
         return(
             <>
@@ -196,8 +213,8 @@ export default class ManageGroups extends Component {
                                         fullWidth
                                         name={yearClass.toString()}
                                         margin="normal"
-                                        value={classNames[yearClass]}
-                                        onChange={this.classChange}
+                                        value={groups[yearClass].name}
+                                        onChange={this.groupChange}
                                         InputLabelProps={{ shrink: true }}
                                     />
                                 </FormGroup>
@@ -222,31 +239,67 @@ export default class ManageGroups extends Component {
                                     Запазване на випуски
                                 </h1>
                                 <List>
-                                    {groups && groups.map((group, index) => (
-                                        <div key={index}>
-                                            <ListItem button onClick={this.handleOpen.bind(this, index, 'yearGroup')}>
+                                    {groups && groups.map((group, groupIndex) => (
+                                        <div key={groupIndex}>
+                                            <ListItem button onClick={this.handleOpen.bind(this, groupIndex, 'yearGroup')}>
                                                 <ListItemIcon>
-                                                    <GroupIcon />
+                                                    <SchoolIcon />
                                                 </ListItemIcon>
                                                 <ListItemText primary={"Випуск: " + group.name} />
                                                 {group.open ? <ExpandLess /> : <ExpandMore />}
                                             </ListItem>
                                             <Collapse in={group.open} timeout="auto" unmountOnExit>
-                                                <List>
-                                                    {group.children && group.children.map((classGroup, index) => (
-                                                        <ListItem key={index} button onClick={this.handleOpen.bind(this, index, 'classGroup')}>
+                                                <List className="myDisplayFlex">
+                                                    {group.children && group.children.map((classGroup, classIndex) => (
+                                                        <div key={classIndex}>
+                                                        <ListItem 
+                                                            button 
+                                                            onClick={this.handleOpen.bind(this, {groupIndex, classIndex}, 'classGroup')}
+                                                        >
                                                             <ListItemIcon>
                                                                 <GroupWorkIcon />
                                                             </ListItemIcon>
                                                             <ListItemText primary={"Клас: " + classGroup.name} />
                                                             {classGroup.open ? <ExpandLess /> : <ExpandMore />}
                                                         </ListItem>
+                                                        <Collapse in={classGroup.open} timeout="auto" unmountOnExit>
+                                                            <List>
+                                                                {classGroup.children && classGroup.children.map((subGroup, subIndex) => (
+                                                                    <ListItem 
+                                                                        button 
+                                                                        key={subIndex}
+                                                                        onClick={this.handleOpen.bind(
+                                                                            this,
+                                                                            {groupIndex, classIndex, subIndex}, 
+                                                                            'subGroup')}
+                                                                    >
+                                                                        <ListItemIcon>
+                                                                            <GroupIcon />
+                                                                        </ListItemIcon>
+                                                                    <ListItemText primary={"Подгрупа: " + subGroup.name} />
+                                                                    </ListItem>
+                                                                ))}
+                                                            </List>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="secondary"
+                                                                onClick={() => 
+                                                                    this.setState({ 
+                                                                        show: !show, 
+                                                                        selectedClass: groupIndex,
+                                                                        selectedSubClass: classIndex
+                                                                    })}
+                                                            >
+                                                                Добави подгрупа
+                                                            </Button>
+                                                        </Collapse>
+                                                        </div>
                                                     ))}
                                                 </List>
                                                 <Button
                                                     variant="contained"
                                                     color="secondary"
-                                                    onClick={() => this.setState({ show: !show, selectedClass: index })}
+                                                    onClick={() => this.setState({ show: !show, selectedClass: groupIndex })}
                                                 >
                                                     Добави клас
                                                 </Button>

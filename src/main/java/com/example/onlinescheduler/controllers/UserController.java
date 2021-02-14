@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
+//TODO: change this to @RequestMapping("/api/user") and sync it with web !
 @RequestMapping("/api/auth")
 public class UserController {
 

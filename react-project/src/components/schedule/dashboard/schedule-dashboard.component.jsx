@@ -96,7 +96,6 @@ class ScheduleDashboard extends Component {
                                     }, {id: uuidv4(),
                                         teachingHour: undefined}]
                                     : new Array(2);
-
                             }
                         }
                     });

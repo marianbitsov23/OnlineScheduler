@@ -103,7 +103,9 @@ export default class WeekDays extends Component {
                         <Paper 
                         {...provided.droppableProps}
                         ref={provided.innerRef}
-                        className="paperRow"
+                        className="
+                        myDefaultMinWidth
+                        paperRow"
                         style={getListStyle(snapshot.isDraggingOver)}
                         >
                             {lessons[0] && lessons[0].items.length === 0 && 

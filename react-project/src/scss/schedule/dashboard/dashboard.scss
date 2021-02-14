@@ -9,6 +9,7 @@
 }
 
 .paperRow {
+    min-width: 100%;
     padding: 1rem;
     display: flex;
     overflow: auto;
@@ -47,7 +48,7 @@
 }
 
 .lessonCard {
-    margin: 1rem 0!important;
+    margin: 1rem!important;
 }
 
 .emptyCard {
