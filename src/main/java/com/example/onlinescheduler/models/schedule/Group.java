@@ -43,7 +43,7 @@ public class Group {
 
     public void setParent(Group parent) { this.parent = parent; }
 
-    public Schedule getSchedule() { return null; }
+    public Schedule getSchedule() { return this.schedule; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 

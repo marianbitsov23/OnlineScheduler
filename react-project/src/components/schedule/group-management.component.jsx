@@ -19,7 +19,6 @@ export default class ManageGroups extends Component {
             groupName: "",
             parent: {},
             groups: [],
-            classNames: [],
             selectedClass: 0,
             selectedSubClass: undefined,
             schedule: scheduleService.getCurrentSchedule(),
@@ -53,14 +52,16 @@ export default class ManageGroups extends Component {
             } else { 
                 const groups = this.state.groups;
 
-                const classNames = [];
-    
                 yearGroupsAmmount.forEach(() => {
-                    classNames.push(" ");
-                    groups.set('yearGroup', []);
+                    groups.push({
+                        name: "",
+                        schedule: this.state.schedule,
+                        parent: undefined,
+                        children: []
+                    });
                 });
     
-                this.setState({ classNames, yearGroupsAmmount, parent, groups });
+                this.setState({ yearGroupsAmmount, parent, groups });
             }
         })
         .catch(error => console.error(error));
@@ -110,10 +111,7 @@ export default class ManageGroups extends Component {
         let selectedSubGroup = undefined;
         if(selectedSubClass !== undefined) selectedSubGroup = selectedGroup.children[selectedSubClass];
 
-        console.log(selectedSubClass);
-        console.log(selectedSubGroup);
-        console.log(selectedGroup.children);
-
+        
         groupService.create({ 
             parent: selectedSubGroup !== undefined ? selectedSubGroup : selectedGroup, 
             groupName: groupName, 
@@ -121,12 +119,15 @@ export default class ManageGroups extends Component {
         })
         .then(result => {
             if(selectedSubGroup) {
+                if(!groups[selectedClass].children[selectedSubClass].children) {
+                    groups[selectedClass].children[selectedSubClass].children = [];
+                }
                 groups[selectedClass].children[selectedSubClass].children.push(result.data);
             } else {
                 groups[selectedClass].children.push(result.data);
             }
 
-            this.setState({ groups, groupName: '', show: false });
+            this.setState({ groups, groupName: '', show: false, selectedSubGroup: undefined });
         })
         .catch(error => console.error(error));
     }
@@ -144,16 +145,23 @@ export default class ManageGroups extends Component {
         const { parent, groups, schedule } = this.state;
 
         groups.forEach(group => {
-            groupService.create({ parent: parent, groupName: group.name, schedule: schedule })
-            .then(result => {
-                group.id = result.data.id;
-                group.parent = parent;
-                group.schedule = schedule;
-            })
-            .then(() => {
-                this.setState({ edit: false, groups });
-            }) 
-            .catch(error => console.error(error));
+            if(group.parent === undefined) {
+                groupService.create({ parent: parent, groupName: group.name, schedule: schedule })
+                .then(result => {
+                    group.id = result.data.id;
+                    group.parent = parent;
+                    group.schedule = schedule;
+                    group.children = [];
+                })
+                .then(() => {
+                    this.setState({ edit: false, groups });
+                }) 
+                .catch(error => console.error(error));
+            } else {
+                groupService.update(group)
+                .then(this.setState({ edit: false }))
+                .catch(error => console.error(error));
+            }
         }); 
     }
 
@@ -194,7 +202,7 @@ export default class ManageGroups extends Component {
 
         const isInvalid = groupName === "";
 
-        console.log(this.state.selectedSubClass);
+        console.log(groups);
 
         return(
             <>

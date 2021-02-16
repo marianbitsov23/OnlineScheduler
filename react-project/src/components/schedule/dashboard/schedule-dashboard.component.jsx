@@ -13,9 +13,15 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
-import { Modal, Form, FormControl } from 'react-bootstrap';
+import { Form, FormControl } from 'react-bootstrap';
 import Button from '@material-ui/core/Button';
 import WeekDays from './week-days.component';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = theme => ({
     appBar: {
@@ -164,7 +170,7 @@ class ScheduleDashboard extends Component {
                 if(prev.id === schedule.id) {
                     index = i;
                 }
-            })
+            });
     
             if(previousSchedules) {
                 if(index !== undefined && previousSchedules[index].id === schedule.id) {
@@ -176,7 +182,7 @@ class ScheduleDashboard extends Component {
                 previousSchedules.push(result.data);
             }
     
-            scheduleService.addPreviousSchedules(previousSchedules);
+            scheduleService.setPreviousSchedules(previousSchedules);
     
             this.setState({ previousSchedules });
         })
@@ -212,9 +218,13 @@ class ScheduleDashboard extends Component {
     deleteSchedule = event => {
         event.preventDefault();
         const schedule = this.state.schedule;
+        console.log(schedule.name)
         if(this.state.scheduleName === schedule.name) {
             scheduleService.deleteSchedule(schedule.id)
             .then(() => {
+                this.state.previousSchedules.splice(
+                    this.state.previousSchedules.indexOf(this.state.schedule), 1);
+                scheduleService.setPreviousSchedules(this.state.previousSchedules);
                 this.props.history.push('/schedules');
             })
             .catch(error => console.error(error));
@@ -307,41 +317,35 @@ class ScheduleDashboard extends Component {
                         </Container>
                     </div>
                 </main>
-                <Modal 
-                size="lg"
-                show={show}
-                onHide={() => this.setState({ show: !show })}
-                centered
+                <Dialog
+                    open={show}
+                    onClose={() => this.setState({ show: !show })}
                 >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Are you sure you want to delete this schedule?</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <h4>Enter the schedule's name</h4>
-                        <h5>{this.state.schedule.name}</h5>
-                        <Form.Group controlId="formBasicCurrentPassword">
-                            <FormControl
-                                aria-describedby="basic-addon2"
-                                placeholder="Enter the schedule name"
-                                name="scheduleName"
-                                type="scheduleName"
-                                onChange={this.onChange}
-                            />
-                        </Form.Group>
-                        <p>
+                    <DialogTitle>{"Are you sure you want to delete this schedule?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
                             Are you absolutely sure that you want to delete this schedule?
-                            This change is permanent and cannot be reverted. Press the Delete button to proceed.
-                        </p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                        onClick={this.deleteSchedule}
-                        variant="contained"
-                        color="secondary">
+                            This change is permanent and cannot be reverted.
+                            Type in <div className="scheduleName">{this.state.schedule.name}</div> 
+                            and press the <span className="deleteButtonText">DELETE</span> button to proceed.
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            name="scheduleName"
+                            label="Enter the schedule name"
+                            type="scheduleName"
+                            onChange={this.onChange}
+                            value={this.state.scheduleName}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.deleteSchedule} color="secondary" variant="contained">
                             Delete
                         </Button>
-                    </Modal.Footer>
-                </Modal>
+                    </DialogActions>
+                </Dialog>
             </div>
         )
     }

@@ -42,7 +42,7 @@ class ScheduleService {
         return JSON.parse(localStorage.getItem("schedule"));
     }
 
-    addPreviousSchedules(schedules) {
+    setPreviousSchedules(schedules) {
         localStorage.setItem("previousSchedules", JSON.stringify(schedules));
     }
 

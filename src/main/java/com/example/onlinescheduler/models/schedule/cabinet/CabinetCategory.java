@@ -4,6 +4,7 @@ import com.example.onlinescheduler.models.schedule.Schedule;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Entity
 @Table(name = "categories")
@@ -19,6 +20,9 @@ public class CabinetCategory {
     @ManyToOne
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
+
+    @ManyToMany(mappedBy = "cabinetCategories")
+    Set<Cabinet> cabinets;
 
     public CabinetCategory() {}
 

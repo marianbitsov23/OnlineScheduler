@@ -35,7 +35,11 @@ class GroupService {
 
     update(group) {
         return axios.put(API_URL + '/' + group.id, 
-            //{group info},
+            {
+                parent: group.parent,
+                name: group.name, 
+                schedule: group.schedule
+            },
             {headers: authHeader()});
     }
 

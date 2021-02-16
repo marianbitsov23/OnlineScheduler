@@ -76,18 +76,14 @@ public class GroupController {
     public ResponseEntity<Group> updateGroupInformation(@PathVariable Long id, @RequestBody Group group) {
         Optional<Group> foundGroup = groupRepository.findById(id);
 
-        /*
         if(foundGroup.isPresent()) {
             Group newGroup = foundGroup.get();
-            newGroup.setChildren(group.getChildren());
-            newGroup.setParent(group.getParent());
+            newGroup.setName(group.getName());
+            newGroup.setSchedule(group.getSchedule());
             return new ResponseEntity<>(groupRepository.save(newGroup), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-         */
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
