@@ -27,8 +27,6 @@ export default class WeekDays extends Component {
         
         if (destDay === sourceDay
             && destination.index === source.index) return;
-
-        console.log(result);
       
         if (destDay === sourceDay) {
             if (result.type === "droppableSubItem") {
@@ -82,6 +80,7 @@ export default class WeekDays extends Component {
 
                 destItems[destination.index] = sourceItems[source.index];
                 sourceItems[source.index] = removedItem;
+                destItems[destination.index].weekDay = parseInt(destination.droppableId);
     
                 lessons[destination.droppableId].items = destItems;
                 lessons[source.droppableId].items = sourceItems;
@@ -95,31 +94,33 @@ export default class WeekDays extends Component {
 
         const { lessons, hoursTemplate } = this.props;
 
+        console.log(lessons);
+
         return(
             <>
                 <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
-                    <Droppable droppableId="0" key="0">
-                    {((provided, snapshot) => (
-                        <Paper 
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        className="
-                        myDefaultMinWidth
-                        paperRow"
-                        style={getListStyle(snapshot.isDraggingOver)}
-                        >
-                            {lessons[0] && lessons[0].items.length === 0 && 
-                                <h3 className="myFontFamily">Nothing left here</h3>
-                            }
-                            {lessons[0] && 
-                            <LessonSlot 
-                                day={lessons[0]} 
-                                slots={hoursTemplate}
-                                weekDay={0}
-                            />}
-                            {provided.placeholder}
-                        </Paper>
-                    ))}
+                    <Droppable droppableId="0" type="droppableItem">
+                        {((provided, snapshot) => (
+                            <Paper 
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                className="
+                                myDefaultMinWidth
+                                paperRow"
+                                style={getListStyle(snapshot.isDraggingOver)}
+                            >
+                                {lessons[0] && lessons[0].items.length === 0 && 
+                                    <h3 className="myFontFamily">Nothing left here</h3>
+                                }
+                                {lessons[0] && 
+                                <LessonSlot 
+                                    day={lessons[0]} 
+                                    slots={hoursTemplate}
+                                    weekDay={0}
+                                />}
+                                {provided.placeholder}
+                            </Paper>
+                        ))}
                     </Droppable>
                     <div className="myDefaultMarginTopBottom">
                         <Paper className="paperRow">

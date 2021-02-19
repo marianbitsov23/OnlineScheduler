@@ -22,7 +22,7 @@
 }
 
 .myDefaultMargin {
-    margin: 1rem;
+    margin: 1rem!important;
 }
 
 .myDefaultPadding {
@@ -51,6 +51,14 @@
 
 .myTextAlignCenter {
     text-align: center!important;
+}
+
+.justifyContentSpaceAround {
+    justify-content: space-around
+}
+
+.justifyContentSpaceBetween {
+    justify-content: space-between;
 }
 
 .alignItemsCenter {

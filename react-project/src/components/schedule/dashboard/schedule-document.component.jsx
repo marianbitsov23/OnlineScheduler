@@ -27,7 +27,7 @@ class ComponentToPrint extends Component {
                                         <div key={columnId}>
                                             {column.items.map((item, index) => (
                                                 <div key={index}>
-                                                {item.weekDay === dayNumber + 1 &&
+                                                {item && item.weekDay === dayNumber + 1 &&
                                                  item.slotIndex === slot && item.teachingHour &&
                                                         <div className="myDisplayFlex" key={index}>
                                                             <div className="space slotNumber">

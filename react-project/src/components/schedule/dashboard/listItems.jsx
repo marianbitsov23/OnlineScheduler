@@ -88,21 +88,21 @@ export const SecondaryListItems = ({open, schedules}) => (
 
   export const LessonSlot = ({day, slots, weekDay}) => (
     <>
-    {slots.map((slot, index) => (
-        <div key={slot}>
-            {day && day.items[index] &&
-                <div>
-                    <LessonItem
-                        type={day.items[index].id.toString()}
-                        subItems={day.items[index].subItems}
-                        lesson={day.items[index]}
-                        weekDay={weekDay}
-                        index={index}
-                    />
-                </div>
-            }
-        </div>
-    ))}
+        {slots.map((slot, index) => (
+            <div key={slot}>
+                {day && day.items[index] &&
+                    <div>
+                        <LessonItem
+                            type={day.items[index].id.toString()}
+                            subItems={day.items[index].subItems}
+                            lesson={day.items[index]}
+                            weekDay={weekDay}
+                            index={index}
+                        />
+                    </div>
+                }
+            </div>
+        ))}
     </>
 );
 

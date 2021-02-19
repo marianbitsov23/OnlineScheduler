@@ -13,15 +13,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
-import { Form, FormControl } from 'react-bootstrap';
-import Button from '@material-ui/core/Button';
 import WeekDays from './week-days.component';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { CustomDialog } from '../../shared/custom-dialog.component';
+import { TextInput } from '../../shared/text-input.component';
 
 const useStyles = theme => ({
     appBar: {
@@ -80,7 +74,7 @@ class ScheduleDashboard extends Component {
     }
 
     componentDidMount() {
-        const weekDaysTemplate = ['Lessons', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
 
         this.loadPreviousSchedules();
 
@@ -260,6 +254,7 @@ class ScheduleDashboard extends Component {
         //this.saveLessonsInDb(this.state.lessons);
     }
 
+    onClose = () => this.setState({ show: !this.state.show });
 
     render() {
         const { open, lessons, show, previousSchedules, hoursTemplate } = this.state;
@@ -281,7 +276,7 @@ class ScheduleDashboard extends Component {
                         </IconButton>
                         <Typography component="h1" varinat="h6" color="inherit"
                         noWrap className="title">
-                            Dashboard
+                            {this.state.schedule.name}
                         </Typography>
                             <SchedulePrint lessons={lessons} />
                         <IconButton onClick={() => this.setState({ show: true })} color="inherit">
@@ -317,35 +312,30 @@ class ScheduleDashboard extends Component {
                         </Container>
                     </div>
                 </main>
-                <Dialog
-                    open={show}
-                    onClose={() => this.setState({ show: !show })}
-                >
-                    <DialogTitle>{"Are you sure you want to delete this schedule?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Are you absolutely sure that you want to delete this schedule?
-                            This change is permanent and cannot be reverted.
-                            Type in <div className="scheduleName">{this.state.schedule.name}</div> 
-                            and press the <span className="deleteButtonText">DELETE</span> button to proceed.
-                        </DialogContentText>
-                        <TextField
-                            autoFocus
-                            margin="dense"
+                <CustomDialog 
+                    show={show}
+                    onClose={this.onClose}
+                    title="Are you sure you want to delete this schedule?"
+                    confirmFunction={this.deleteSchedule}
+                    confirmButtonText="Delete"
+                    text=
+                    {<>
+                        Are you absolutely sure that you want to delete this schedule?
+                        This change is permanent and cannot be reverted.
+                        Type in <div className="scheduleName">{this.state.schedule.name}</div> 
+                        and press the <span className="deleteButtonText">DELETE</span> button to proceed.
+                    </>}
+                    content=
+                    {<>
+                        <TextInput 
                             name="scheduleName"
-                            label="Enter the schedule name"
+                            value={this.state.scheduleName}
+                            label="Въведете името на графика"
                             type="scheduleName"
                             onChange={this.onChange}
-                            value={this.state.scheduleName}
-                            fullWidth
                         />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={this.deleteSchedule} color="secondary" variant="contained">
-                            Delete
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                    </>}
+                />
             </div>
         )
     }

@@ -4,9 +4,11 @@ import { Component } from "react";
 import { FormGroup, Alert } from 'react-bootstrap';
 import authService from "../../services/user-auth/auth.service";
 import { Avatar, CssBaseline, Container, 
-        Typography, TextField, Button, Grid, Paper } from '@material-ui/core';
+        Typography, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
+import { TextInput } from '../shared/text-input.component';
+import { ConfirmButton } from '../shared/confirm-button.component';
 
 export default class Login extends Component {
     constructor(props) {
@@ -68,45 +70,31 @@ export default class Login extends Component {
                                 <LockOutlinedIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Login
+                                Влезте в своя профил
                             </Typography>
                             <Form onSubmit={this.handleLogin}>
-                                <TextField
-                                    variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    label="Username"
+                                <TextInput
                                     name="username"
                                     value={username}
-                                    onChange={this.onChange}
-                                    autoComplete="text"
-                                />
-                                <TextField
+                                    label="Потребителско име"
+                                    autoComplete="username"
                                     variant="outlined"
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    label="Password"
-                                    name="password"
-                                    type="password"
-                                    value={password}
                                     onChange={this.onChange}
-                                    autoComplete="current-password"
                                 />
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
+                                <TextInput
+                                    name="password"
+                                    value={password}
+                                    label="Парола"
+                                    autoComplete="password"
+                                    type="password"
+                                    variant="outlined"
+                                    onChange={this.onChange}
+                                />
+                                <ConfirmButton 
                                     disabled={disabled}
-                                    className="myDefaultMarginTopBottom"
-                                >
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Login</span>
-                                </Button>
+                                    loading={this.state.loading}
+                                    text="Влизане"
+                                />
                                 {this.state.message && (
                                     <FormGroup>
                                         <Alert variant="danger" role="alert">
@@ -117,16 +105,18 @@ export default class Login extends Component {
                                 <Grid container>
                                     <Grid item xs>
                                         <Link to={"/forgot-password"} 
-                                        className="myDefaultMarginTopBottom
-                                        defaultFontSize secondaryColor">
-                                            Forgot Password
+                                            className="myDefaultMarginTopBottom
+                                            defaultFontSize secondaryColor"
+                                        >
+                                            Забравена парола?
                                         </Link>
                                     </Grid>
                                     <Grid item>
                                         <Link to={"/register"} 
-                                        className="myDefaultMarginTopBottom
-                                        defaultFontSize secondaryColor">
-                                            Don't have an account? Sign Up
+                                            className="myDefaultMarginTopBottom
+                                            defaultFontSize secondaryColor"
+                                        >
+                                            Нямаш профил? Регистрирай се сега!
                                         </Link>
                                     </Grid>
                                 </Grid>

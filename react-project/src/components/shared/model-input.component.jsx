@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import scheduleService from '../../services/schedule/schedule.service';
 import TableList from '../shared/table.component';
-import { Container, Card, FormGroup, Button } from 'react-bootstrap';
-import FormBootstrap from 'react-bootstrap/Form';
+import { Container, Typography, Paper } from '@material-ui/core';
 import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import CategorySelect from './category-select.component';
+import { ConfirmButton } from './confirm-button.component';
+import { TextInput } from './text-input.component';
 
 export default class ModelInput extends Component {
     constructor(props) {
@@ -72,78 +72,72 @@ export default class ModelInput extends Component {
     }
 
     render() {
-
         const { elementName } = this.state;
         const service = this.props.service;
-        const isInvalid = elementName === "";
+        const disabled = elementName === "";
 
         return(
             <>
-                <Container>
-                    <Card>
-                    {this.props.type === "teacher" && <Card.Header>Добави нов учител</Card.Header>}
-                    {this.props.type === "subject" && <Card.Header>Добави нов предмет</Card.Header>}
-                    {this.props.type === "cabinet" && <Card.Header>Добави нов кабинет</Card.Header>}
-                        <Card.Body>
-                            <Form
-                                onSubmit={this.createElement}
-                                ref={c => {
-                                    this.form = c;
-                                }}
-                            >
-                                <FormGroup>
-                                    {this.props.type === "teacher" && 
-                                        <FormBootstrap.Label htmlFor="elementName">Име на учителя</FormBootstrap.Label>
-                                    }
-                                    {this.props.type === "subject" && 
-                                        <FormBootstrap.Label htmlFor="elementName">Име на предмета</FormBootstrap.Label>
-                                    }
-                                    {this.props.type === "cabinet" && 
-                                        <FormBootstrap.Label htmlFor="elementName">Име на кабинета</FormBootstrap.Label>
-                                    }
-                                    <Input
-                                        className="form-control"
-                                        name="elementName"
-                                        value={this.state.elementName}
-                                        onChange={this.onChange}
-                                    />
-                                </FormGroup>
-                                
-                                {this.props.type === "cabinet" && 
-                                    <CategorySelect 
-                                        cabinetName={this.state.elementName} 
-                                        schedule={this.state.schedule} 
-                                        categories={this.props.categories} 
-                                        selectCategories={this.selectCategories}
-                                    />
-                                }
+                <Container className="myDefaultPadding">
+                    <Paper className="myDefaultPadding">
+                        <Form onSubmit={this.createElement}>
+                            {this.props.type === "teacher" &&
+                                <Typography variant="h4" className="myTextAlignCenter">
+                                    Добави нов учител
+                                </Typography>
+                            }
+                            {this.props.type === "subject" &&
+                                <Typography variant="h4" className="myTextAlignCenter">
+                                    Добави нов предмет
+                                </Typography>
+                            }
+                            {this.props.type === "cabinet" &&
+                                <Typography variant="h4"className="myTextAlignCenter">
+                                    Добави нов кабинет
+                                </Typography>
+                            }
 
-                                {this.props.type === "teacher" && 
-                                <FormGroup>
-                                    <FormBootstrap.Label htmlFor="initials">Инициали</FormBootstrap.Label>
-                                    <Input
-                                        className="form-control"
-                                        name="initials"
-                                        value={this.state.initials}
-                                        onChange={this.onChange}
-                                    />
-                                </FormGroup>}
+                            <div className="myDefaultMargin">
+                                <TextInput
+                                    name="elementName"
+                                    value={this.state.elementName}
+                                    label=
+                                        {this.props.type === "teacher" && "Име на учителя"
+                                        || this.props.type === "subject" && "Име на предмета"
+                                        || this.props.type === "cabinet" && "Име на учебната зала"}
+                                    onChange={this.onChange}
+                                />
+                            </div>
 
-                                <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        variant="success"
-                                        className="btn-block"
-                                        disabled={isInvalid}>
-                                            {this.state.loading &&
-                                                <span className="spinner-border spinner-border-sm"></span>
-                                            }
-                                            <span>Добави</span>
-                                        </Button>
-                                </FormGroup>
-                            </Form>
-                        </Card.Body>
-                    </Card>
+                            {this.props.type === "teacher" &&
+                                <TextInput
+                                    className="myDefaultMargin"
+                                    name="elementName"
+                                    value={this.state.elementName}
+                                    label=
+                                        {this.props.type === "teacher" && "Име на учителя"
+                                        || this.props.type === "subject" && "Име на предмета"
+                                        || this.props.type === "cabinet" && "Име на учебната зала"}
+                                    onChange={this.onChange}
+                                />
+                            }
+
+                            {this.props.type === "cabinet" && 
+                                <CategorySelect 
+                                    cabinetName={this.state.elementName} 
+                                    schedule={this.state.schedule} 
+                                    categories={this.props.categories} 
+                                    selectCategories={this.selectCategories}
+                                />
+                            }
+
+                            <ConfirmButton 
+                                disabled={disabled}
+                                loading={this.state.loading}
+                                text="Добави"
+                            />
+                        </Form>
+                    </Paper>
                 </Container>
                 <hr />
                 <Container>

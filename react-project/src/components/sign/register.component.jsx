@@ -3,12 +3,14 @@ import authService from "../../services/user-auth/auth.service";
 import { FormGroup, Alert } from 'react-bootstrap';
 import { isEmail } from "validator";
 import Form from "react-validation/build/form";
-import { Avatar, CssBaseline, Container, 
-    Typography, TextField, Button, Grid, Paper } from '@material-ui/core';
+import { Avatar, Container, 
+    Typography, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
+import { TextInput } from '../shared/text-input.component';
+import { ConfirmButton } from '../shared/confirm-button.component';
 
-export  default class Register extends Component {
+export default class Register extends Component {
     constructor(props) {
         super(props);
         this.handleRegister = this.handleRegister.bind(this);
@@ -20,9 +22,11 @@ export  default class Register extends Component {
             email: "",
             message: "",
             loading: false,
+            confirmPassword: "",
             isInvalidUsername: false,
             isInvalidEmail: false,
-            isInvalidPassword: false
+            isInvalidPassword: false,
+            isInvalidConfirmPasword: false
         };
     }
 
@@ -46,6 +50,14 @@ export  default class Register extends Component {
                 this.setState({
                     isInvalidEmail: 
                         !isEmail(event.target.value)
+                });
+                break;
+            case 'confirmPassword':
+                this.setState({
+                    isInvalidConfirmPasword:
+                        event.target.value.length < 6 ||
+                        event.target.value.length > 40 ||
+                        event.target.value !== this.state.password  
                 });
                 break;
             default:
@@ -87,9 +99,9 @@ export  default class Register extends Component {
     }
 
     render() {
-
-        const{ username, email, password, 
-            isInvalidUsername, isInvalidEmail, isInvalidPassword } = this.state;
+        const{ username, email, password, confirmPassword, 
+            isInvalidUsername, isInvalidEmail, isInvalidPassword,
+            isInvalidConfirmPasword } = this.state;
         
             const disabled =
                 isInvalidUsername ||
@@ -103,7 +115,6 @@ export  default class Register extends Component {
             setFlexOne">
             <Paper className="backgroundPaper myDefaultPadding">
                 <Container component="main" maxWidth="xs">
-                    <CssBaseline />
                     <div className="myDisplayFlexColumn 
                     alignItemsCenter
                     myDefaultMargin">
@@ -111,62 +122,56 @@ export  default class Register extends Component {
                             <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                            Create account
+                            Създаване на профил
                         </Typography>
                         <Form onSubmit={this.handleRegister}>
-                            <TextField
+                            <TextInput
                                 error={isInvalidUsername}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Username"
                                 name="username"
                                 value={username}
-                                onChange={this.onChange}
+                                helperText="The username must be between 3 and 20 characters!"
+                                label="Потребителско име"
                                 autoComplete="username"
-                                helperText='The username must be between 3 and 20 characters!'
-                            />
-                            <TextField
-                                error={isInvalidEmail}
                                 variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Email Address"
+                                onChange={this.onChange}
+                            />
+                            <TextInput
+                                error={isInvalidEmail}
                                 name="email"
                                 value={email}
-                                onChange={this.onChange}
+                                helperText="Enter a valid email example@emp.com"
+                                label="Email Address"
                                 autoComplete="email"
-                                helperText='Enter a valid email example@emp.com'
-                            />
-                            <TextField
-                                error={isInvalidPassword}
                                 variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Password"
-                                name="password"
-                                type="password"
-                                value={password}
                                 onChange={this.onChange}
-                                autoComplete="current-password"
-                                helperText='The password must be between 6 and 40 characters!'
                             />
-                            <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            disabled={disabled}
-                            className="myDefaultMarginTopBottom"
-                            >
-                                {this.state.loading &&
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                }
-                                <span>Register</span>
-                            </Button>
+                            <TextInput
+                                error={isInvalidPassword}
+                                name="password"
+                                value={password}
+                                helperText="The password must be between 6 and 40 characters!"
+                                label="Password"
+                                autoComplete="password"
+                                type="password"
+                                variant="outlined"
+                                onChange={this.onChange}
+                            />
+                            <TextInput
+                                error={isInvalidConfirmPasword}
+                                name="confirmPassword"
+                                value={confirmPassword}
+                                helperText="The passwords must match!"
+                                label="Confirm your password"
+                                autoComplete="password"
+                                type="password"
+                                variant="outlined"
+                                onChange={this.onChange}
+                            />
+                            <ConfirmButton 
+                                disabled={disabled}
+                                loading={this.state.loading}
+                                text="Register"
+                            />
                             {this.state.message && (
                                 <FormGroup>
                                     <Alert variant="danger" role="alert">
@@ -177,8 +182,9 @@ export  default class Register extends Component {
                             <Grid container justify="flex-end">
                                 <Grid item>
                                     <Link to={"/login"}
-                                    className="myDefaultMarginTopBottom
-                                    defaultFontSize secondaryColor">
+                                        className="myDefaultMarginTopBottom
+                                        defaultFontSize secondaryColor"
+                                    >
                                         Already have an account? Sign in
                                     </Link>
                                 </Grid>
