@@ -38,9 +38,7 @@ export default class ManageTimeTables extends Component {
         .then(timeTables => {
             this.setState({ timeTables: timeTables.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     initWeekDays() {

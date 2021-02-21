@@ -23,9 +23,7 @@ export default class ScheduleBoard extends Component {
         .then(result => {
             this.setState({ schedules: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        })
+        .catch(error => console.error(error))
     }
 
     render() {

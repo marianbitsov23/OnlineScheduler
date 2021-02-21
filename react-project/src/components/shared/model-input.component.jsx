@@ -62,9 +62,7 @@ export default class ModelInput extends Component {
             this.props.elements.push(result.data);
             this.setState({ elementName: "", initials: "", loading: false });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     selectCategories = categories => {
@@ -110,16 +108,14 @@ export default class ModelInput extends Component {
                             </div>
 
                             {this.props.type === "teacher" &&
-                                <TextInput
-                                    className="myDefaultMargin"
-                                    name="elementName"
-                                    value={this.state.elementName}
-                                    label=
-                                        {this.props.type === "teacher" && "Име на учителя"
-                                        || this.props.type === "subject" && "Име на предмета"
-                                        || this.props.type === "cabinet" && "Име на учебната зала"}
-                                    onChange={this.onChange}
-                                />
+                                <div className="myDefaultMargin">
+                                    <TextInput
+                                        name="initials"
+                                        value={this.state.initials}
+                                        label="Инициали"
+                                        onChange={this.onChange}
+                                    />
+                                </div>
                             }
 
                             {this.props.type === "cabinet" && 

@@ -20,9 +20,7 @@ export default class ManageTeachers extends Component {
         .then(result => {
             this.setState({ teachers: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     render() {

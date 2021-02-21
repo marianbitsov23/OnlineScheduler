@@ -1,0 +1,16 @@
+.categories {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+
+    .category {
+        justify-content: space-between;
+        display: flex;
+        margin: .5rem 0;
+
+        .categoryButtons {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}

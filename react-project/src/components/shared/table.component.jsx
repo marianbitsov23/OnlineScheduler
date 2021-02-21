@@ -24,7 +24,6 @@ export default class TableList extends Component {
             selectedCabinet: 0,
             selectedTimeTable: 0
         };
-
     }
 
     saveElement = event => {
@@ -45,9 +44,7 @@ export default class TableList extends Component {
             elements[index] = editableElement;
             this.setState({ elements });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     onShow = element => {
@@ -62,9 +59,7 @@ export default class TableList extends Component {
             elements.splice(elements.indexOf(element), 1);
             this.setState({ elements });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     editElement = event => {

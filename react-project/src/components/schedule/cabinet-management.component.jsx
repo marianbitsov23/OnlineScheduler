@@ -22,9 +22,7 @@ export default class ManageCabinets extends Component {
         .then(result => {
             this.setState({ cabinets: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
 
         cabinetCategoryService.getDefaultCabinetCategories()
         .then(result => {
@@ -35,9 +33,7 @@ export default class ManageCabinets extends Component {
                 this.setState({ categories: categories.concat(result.data) });
             });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
     
 

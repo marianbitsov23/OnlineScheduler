@@ -59,9 +59,7 @@ export default class Profile extends Component {
         .then(() => {
           this.setState({ edit: false });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     render() {

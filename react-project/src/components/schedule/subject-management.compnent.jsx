@@ -20,9 +20,7 @@ export default class ManageSubjects extends Component {
         .then(result => {
             this.setState({ subjects: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
     
     render() {

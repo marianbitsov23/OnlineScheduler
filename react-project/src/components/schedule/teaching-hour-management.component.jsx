@@ -47,9 +47,7 @@ export default class ManageTeachingHours extends Component {
         .then(result => {
             this.setState({ teachingHours: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
 
         await this.fetchAllSubjects();
 
@@ -67,9 +65,7 @@ export default class ManageTeachingHours extends Component {
         .then(result => {
             this.setState({ subjects: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     async fetchAllTeachers() {
@@ -77,9 +73,7 @@ export default class ManageTeachingHours extends Component {
         .then(result => {
             this.setState({ teachers: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }    
 
     async fetchAllCabinets() {
@@ -87,9 +81,7 @@ export default class ManageTeachingHours extends Component {
         .then(result => {
             this.setState({ cabinets: result.data });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     async fetchAllTimeTables() {
@@ -106,9 +98,7 @@ export default class ManageTeachingHours extends Component {
         .then(() => {
             this.resetSelected(this.state.timeTables, false);
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     resetSelected = (timeTables, type) => {
@@ -144,9 +134,7 @@ export default class ManageTeachingHours extends Component {
             this.setState({ show: false, loading: false, ammount: 0, checkAll: false });
             this.resetSelected(this.state.timeTables, false);
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
     }
 
     onChange = event => {
