@@ -9,6 +9,7 @@ import '../src/scss/schedule/dashboard/dashboard.scss';
 import '../src/scss/schedule/document/document.scss';
 import '../src/scss/shared/dialog/dialog.scss';
 import '../src/scss/shared/category-select/category-select.scss';
+import '../src/scss/schedule/time-table/time-table.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";

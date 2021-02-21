@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Modal, FormGroup } from 'react-bootstrap';
-import Input from "react-validation/build/input";
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import { Button, Container, Typography } from '@material-ui/core';
 import { CustomDialog } from './custom-dialog.component';
@@ -64,7 +62,7 @@ export default class CategorySelect extends Component {
 
     render() {
 
-        const { cabinetCategories, show, categoryName } = this.state;
+        const { cabinetCategories, show } = this.state;
 
         return(
             <>

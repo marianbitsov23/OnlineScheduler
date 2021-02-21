@@ -141,12 +141,7 @@ export default class ManageTimeTables extends Component {
                         }
 
                         {edit &&
-                        <Form
-                            onSubmit={() => this.setState({ edit : false,  })}
-                            ref={c => {
-                                this.form = c;
-                            }}
-                        >
+                        <Form onSubmit={() => this.setState({ edit : false,  })}>
                             <FormGroup>
                                 <FormBootstrap.Label htmlFor="timeTableName">Име на времевата таблица</FormBootstrap.Label>
                                 <Input
@@ -203,9 +198,7 @@ export default class ManageTimeTables extends Component {
                     <TableList type="time-table" elements={timeTables} service={timeTableService} />
                 </Container>
                 <Link to={"/subject-management"}>
-                    <Button
-                        className="btn-block"
-                    >
+                    <Button className="btn-block">
                         Напред
                     </Button>
                 </Link>

@@ -1,5 +1,7 @@
+import { TableContainer, Table, TableHead, 
+        TableRow, TableCell, TableBody, Paper } from "@material-ui/core";
 import React, { Component } from "react";
-import { Table, Button, Row, Col } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 export default class TimeSlotSelect extends Component {
     constructor(props) {
@@ -43,6 +45,8 @@ export default class TimeSlotSelect extends Component {
         let timeSlots = this.props.weekDays;
 
         timeSlots.splice(event.target.value, 1);
+
+        console.log(timeSlots);
 
         this.setState({ weekDays: timeSlots });
     }
@@ -92,28 +96,41 @@ export default class TimeSlotSelect extends Component {
 
         return (
             <>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Понеделник</th>
-                            <th>Вторник</th>
-                            <th>Сряда</th>
-                            <th>Четвъртък</th>
-                            <th>Петък</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <TableContainer component={Paper} className="myDefaultMarginTopBottom">
+                <Table>
+                    <TableHead className="primaryBackground">
+                        <TableRow>
+                            <TableCell className="myTextAlignCenter myWhiteColor">
+                                Понеделник
+                            </TableCell>
+                            <TableCell className="myTextAlignCenter myWhiteColor">
+                                Вторник
+                            </TableCell>
+                            <TableCell className="myTextAlignCenter myWhiteColor">
+                                Сряда
+                            </TableCell>
+                            <TableCell className="myTextAlignCenter myWhiteColor">
+                                Четвъртък
+                            </TableCell>
+                            <TableCell className="myTextAlignCenter myWhiteColor">
+                                Петък
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
                         {numberOfRows.map(row => (
-                            <tr key={row}>
+                            <TableRow key={row}>
                                 {weekDaysTemplate.map((weekDayTemplate, index) => (
-                                    <td key={index}>
+                                    <TableCell className="defaultSlot" key={index}>
                                         {timeSlots.map((timeSlot, index) => (
                                             <>
                                             {timeSlot.weekDay === weekDayTemplate.toUpperCase() &&
                                             timeSlot.index === row &&
-                                                <Row key={index}>
-                                                    <Col>{timeSlot.timeStart} - {timeSlot.timeEnd}</Col>
-                                                    <Col>
+                                                <div className="timeSlot" key={index}>
+                                                    <div className="timeRange">
+                                                        {timeSlot.timeStart} - {timeSlot.timeEnd}
+                                                    </div>
+                                                    <div className="timeButton">
                                                         {this.props.type !=='select' &&
                                                         <Button
                                                             size="sm"
@@ -140,18 +157,18 @@ export default class TimeSlotSelect extends Component {
                                                             variant="outline-danger">
                                                             Премахване</Button>
                                                         }
-                                                    </Col>
-                                                </Row>
+                                                    </div>
+                                                </div>
                                             }
                                             </>
                                         ))}
-                                    </td>
+                                    </TableCell>
                                 ))}
-                            </tr>
+                            </TableRow>
                         ))}
-                        <tr>
-                            {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map((weekDayTemplate, index) => (
-                                <td>
+                        <TableRow>
+                            {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map(weekDayTemplate => (
+                                <TableCell className="myTextAlignCenter">
                                     <Button
                                     variant="outline-info"
                                     name={weekDayTemplate}
@@ -159,11 +176,12 @@ export default class TimeSlotSelect extends Component {
                                     onClick={this.addSlot}>
                                         Добави час
                                     </Button>
-                                </td>
+                                </TableCell>
                             ))}
-                        </tr>
-                    </tbody>
+                        </TableRow>
+                    </TableBody>
                 </Table>
+                </TableContainer>
             </>
         )
     }

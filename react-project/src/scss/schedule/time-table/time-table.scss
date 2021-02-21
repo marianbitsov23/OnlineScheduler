@@ -1,0 +1,19 @@
+.defaultSlot {
+    min-width: 170px;
+    height: 85px!important;
+}
+
+.timeSlot {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    .timeRange {
+        font-size: 14px;
+    }
+
+    .timeButton {
+        margin: .25rem;
+    }
+}
