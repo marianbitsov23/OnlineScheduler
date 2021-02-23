@@ -94,8 +94,6 @@ export default class WeekDays extends Component {
 
         const { lessons, hoursTemplate } = this.props;
 
-        console.log(lessons);
-
         return(
             <>
                 <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>

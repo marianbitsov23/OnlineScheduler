@@ -11,20 +11,20 @@ public class TimeTableRequest {
     private Schedule schedule;
 
     @NotBlank
-    private String timeTableName;
+    private String name;
 
     public TimeTableRequest() {}
 
-    public TimeTableRequest(@NotBlank Schedule schedule, @NotBlank String timeTableName) {
+    public TimeTableRequest(@NotBlank Schedule schedule, @NotBlank String name) {
         this.schedule = schedule;
-        this.timeTableName = timeTableName;
+        this.name = name;
     }
 
     public Schedule getSchedule() { return schedule; }
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public String getTimeTableName() { return timeTableName; }
+    public String getName() { return name; }
 
-    public void setTimeTableName(String timeTableName) { this.timeTableName = timeTableName; }
+    public void setName(String name) { this.name = name; }
 }

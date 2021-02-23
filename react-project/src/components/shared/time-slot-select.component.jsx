@@ -170,11 +170,11 @@ export default class TimeSlotSelect extends Component {
                             {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map(weekDayTemplate => (
                                 <TableCell className="myTextAlignCenter">
                                     <Button
-                                    variant="outline-info"
-                                    name={weekDayTemplate}
-                                    disabled={this.props.edit}
-                                    onClick={this.addSlot}>
-                                        Добави час
+                                        variant="primary"
+                                        name={weekDayTemplate}
+                                        disabled={this.props.edit}
+                                        onClick={this.addSlot}>
+                                            Добави час
                                     </Button>
                                 </TableCell>
                             ))}

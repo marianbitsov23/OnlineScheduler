@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
+import { Container, Jumbotron, FormGroup } from 'react-bootstrap';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import SchoolIcon from '@material-ui/icons/School';
 import groupService from '../../services/schedule/group.service';
@@ -9,7 +9,10 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import GroupIcon from '@material-ui/icons/Group';
 import { TextField, Button, List, Collapse,
     ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-
+import { CustomDialog } from '../shared/custom-dialog.component';
+import { TextInput } from '../shared/text-input.component';
+import { ConfirmButton } from '../shared/confirm-button.component';
+import CloseIcon from '@material-ui/icons/Close';
 
 export default class ManageGroups extends Component {
     constructor(props) {
@@ -31,7 +34,6 @@ export default class ManageGroups extends Component {
     }
 
     componentDidMount() {
-        // load already created groups for this schedule
         groupService.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
             const schoolType = this.state.schedule.schoolType;
@@ -106,12 +108,11 @@ export default class ManageGroups extends Component {
 
     addGroup = event => {
         const { groupName, schedule, groups, selectedClass, selectedSubClass } = this.state; 
-
         const selectedGroup = groups[selectedClass];
         let selectedSubGroup = undefined;
+        
         if(selectedSubClass !== undefined) selectedSubGroup = selectedGroup.children[selectedSubClass];
 
-        
         groupService.create({ 
             parent: selectedSubGroup !== undefined ? selectedSubGroup : selectedGroup, 
             groupName: groupName, 
@@ -127,15 +128,13 @@ export default class ManageGroups extends Component {
                 groups[selectedClass].children.push(result.data);
             }
 
-            this.setState({ groups, groupName: '', show: false, selectedSubGroup: undefined });
+            this.setState({ groups, groupName: '', show: false, selectedSubClass: undefined });
         })
         .catch(error => console.error(error));
     }
 
     mapOpenBoxes = groups => {
-        groups.forEach(group =>{
-            group.open = false;
-        })
+        groups.forEach(group => group.open = false);
 
         return groups;
     }
@@ -167,7 +166,6 @@ export default class ManageGroups extends Component {
 
     groupChange = event => {
         const { groups } = this.state;
-
         groups[parseInt(event.target.name)].name = event.target.value;
 
         this.setState({ groups });
@@ -191,6 +189,14 @@ export default class ManageGroups extends Component {
         this.setState({ groups });
     }
 
+    deleteGroup = (groupId) => {
+        groupService.deleteGroup(groupId)
+        .then(() => {
+            console.log('deleted')
+        })
+        .catch(error => console.error(error));
+    }
+
     render() {
         const { 
             groupName, 
@@ -201,8 +207,6 @@ export default class ManageGroups extends Component {
         } = this.state;
 
         const isInvalid = groupName === "";
-
-        console.log(groups);
 
         return(
             <>
@@ -262,13 +266,14 @@ export default class ManageGroups extends Component {
                                                         <div key={classIndex}>
                                                         <ListItem 
                                                             button 
-                                                            onClick={this.handleOpen.bind(this, {groupIndex, classIndex}, 'classGroup')}
+                                                            onClick={this.handleOpen.bind(this, 
+                                                            {groupIndex, classIndex}, 'classGroup')}
                                                         >
                                                             <ListItemIcon>
                                                                 <GroupWorkIcon />
                                                             </ListItemIcon>
                                                             <ListItemText primary={"Клас: " + classGroup.name} />
-                                                            {classGroup.open ? <ExpandLess /> : <ExpandMore />}
+                                                            <CloseIcon onClick={this.deleteGroup.bind(this, classGroup.id)} />
                                                         </ListItem>
                                                         <Collapse in={classGroup.open} timeout="auto" unmountOnExit>
                                                             <List>
@@ -285,6 +290,7 @@ export default class ManageGroups extends Component {
                                                                             <GroupIcon />
                                                                         </ListItemIcon>
                                                                     <ListItemText primary={"Подгрупа: " + subGroup.name} />
+                                                                    <CloseIcon onClick={this.deleteGroup.bind(this, subGroup.id)} />
                                                                     </ListItem>
                                                                 ))}
                                                             </List>
@@ -307,7 +313,10 @@ export default class ManageGroups extends Component {
                                                 <Button
                                                     variant="contained"
                                                     color="secondary"
-                                                    onClick={() => this.setState({ show: !show, selectedClass: groupIndex })}
+                                                    onClick={() => this.setState({ 
+                                                        show: !show, 
+                                                        selectedClass: groupIndex 
+                                                    })}
                                                 >
                                                     Добави клас
                                                 </Button>
@@ -332,43 +341,21 @@ export default class ManageGroups extends Component {
                         }
                     </Jumbotron>
                 </Container>
-                <Modal 
-                    show={show} 
-                    onHide={() => this.setState({ show: false })}
-                    centered
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Въведете името на класа</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <FormGroup>
-                            <TextField
-                                label="Име на групата"
-                                placeholder="Въведете името на групата"
-                                fullWidth
-                                name="groupName"
-                                margin="normal"
-                                value={groupName}
-                                onChange={this.onChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
-                        </FormGroup>   
-                        <FormGroup>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="secondary"
-                                onClick={this.addGroup}
-                                disabled={isInvalid}
-                            >
-                                {this.state.loading &&
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                }
-                                <span>Добави група</span>
-                            </Button>
-                        </FormGroup>
-                    </Modal.Body>
-                </Modal>
+                <CustomDialog
+                    show={show}
+                    onClose={() => this.setState({ show: false })}
+                    title="Въвъедете името на класа"
+                    confirmFunction={this.addGroup}
+                    confirmButtonText="Добави група"
+                    content={
+                        <TextInput 
+                            name="groupName"
+                            value={groupName}
+                            label="Въведете името на групата"
+                            type="text"
+                            onChange={this.onChange}
+                        />}
+                />
             </>
         );
     }

@@ -10,6 +10,8 @@ export const CustomDialog = ({ show, onClose, title,
     <Dialog
         className="dialog"
         open={show}
+        maxWidth="md"
+        fullWidth={true}
         onClose={onClose}
     >
         <DialogTitle>
@@ -30,7 +32,7 @@ export const CustomDialog = ({ show, onClose, title,
             </DialogContentText>
             {content}
         </DialogContent>
-        <DialogActions>
+        <DialogActions className="dialogAction">
             <Button onClick={confirmFunction} color="secondary" variant="contained">
                 {confirmButtonText}
             </Button>

@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import TableList from '../../shared/table.component';
 import { Container, Button, Jumbotron, FormGroup, } from 'react-bootstrap';
-import FormBootstrap from 'react-bootstrap/Form';
-import Input from "react-validation/build/input";
 import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
 import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
 import { Link } from 'react-router-dom';
 import TimeSlotSelect from '../../shared/time-slot-select.component';
+import { TextInput } from '../../shared/text-input.component';
+import { Select, MenuItem, FormHelperText } from '@material-ui/core';
+import { ConfirmButton } from '../../shared/confirm-button.component';
 
 export default class ManageTimeTables extends Component {
     constructor(props) {
@@ -16,7 +17,7 @@ export default class ManageTimeTables extends Component {
 
         this.state = {
             name: "",
-            weekDays: undefined,
+            weekDays: [],
             weekDaysTemplate: [],
             timeSlotTemplateMorning: [],
             timeSlotTemplateEvening: [],
@@ -42,7 +43,6 @@ export default class ManageTimeTables extends Component {
     }
 
     initWeekDays() {
-        let weekDays = [];
         let weekDaysTemplate = [];
 
         const timeSlotTemplateMorning = [
@@ -72,7 +72,6 @@ export default class ManageTimeTables extends Component {
         weekDaysTemplate.push('Friday');
         
         this.setState({ 
-            weekDays : weekDays,
             weekDaysTemplate : weekDaysTemplate,
             timeSlotTemplateMorning : timeSlotTemplateMorning,
             timeSlotTemplateEvening: timeSlotTemplateEvening
@@ -85,7 +84,12 @@ export default class ManageTimeTables extends Component {
         const { weekDays } = this.state;
 
         for(let i = 0; i < weekDays.length; i++) {
-            await timeSlotService.createTimeSlot(weekDays[i].weekDay, weekDays[i].timeStart, weekDays[i].timeEnd, tableId);
+            await timeSlotService.createTimeSlot(
+                weekDays[i].weekDay, 
+                weekDays[i].timeStart, 
+                weekDays[i].timeEnd, 
+                tableId
+            );
         }
     }
 
@@ -112,9 +116,7 @@ export default class ManageTimeTables extends Component {
         });
     }
 
-    setSlots = (weekDays) => {
-        this.setState({ weekDays });
-    }
+    setSlots = (weekDays) => this.setState({ weekDays });
 
     render() {
         const { name, weekDays, weekDaysTemplate, edit, timeTables } = this.state;
@@ -143,35 +145,38 @@ export default class ManageTimeTables extends Component {
                         {edit &&
                         <Form onSubmit={() => this.setState({ edit : false,  })}>
                             <FormGroup>
-                                <FormBootstrap.Label htmlFor="timeTableName">Име на времевата таблица</FormBootstrap.Label>
-                                <Input
-                                    type="text"
-                                    className="form-control"
+                                <TextInput
                                     name="name"
                                     value={this.state.name}
+                                    label="Име на времевата таблица"
                                     onChange={this.onChange}
+                                    type="text"
                                 />
                             </FormGroup>
 
                             <FormGroup>
-                                <FormBootstrap.Label>Изберете смяна</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select" name="time" value={this.state.time} onChange={this.onChange}>
-                                    <option value="1">Първа смяна</option>
-                                    <option value="2">Втора смяна</option>
-                                </FormBootstrap.Control>
+                                <Select
+                                    name="schoolType"
+                                    fullWidth
+                                    value={this.state.time}
+                                    onChange={this.onChange}
+                                    defaultValue="1"
+                                >
+                                    <MenuItem value="1">Първа смяна</MenuItem>
+                                    <MenuItem value="2">Втора смяна</MenuItem>
+                                </Select>
+                                <FormHelperText>
+                                    Изберете за коя смяна се отнася следният график
+                                </FormHelperText>
                             </FormGroup>
 
                             <FormGroup>
-                                    <Button
-                                        type="submit"
-                                        className="btn-block"
-                                        disabled={isInvalid}>
-                                            {this.state.loading &&
-                                                <span className="spinner-border spinner-border-sm"></span>
-                                            }
-                                            <span>Запази</span>
-                                        </Button>
-                                </FormGroup>
+                                <ConfirmButton 
+                                    disabled={isInvalid}
+                                    loading={this.state.loading}
+                                    text="Запази"
+                                />
+                            </FormGroup>
                         </Form>}
                     </Jumbotron>
                     <TimeSlotSelect 

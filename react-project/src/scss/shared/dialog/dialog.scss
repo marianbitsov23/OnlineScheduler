@@ -1,4 +1,6 @@
 .dialog {
+    padding: 1rem!important;
+
     .dialogTitle {
         display: flex;
         flex-direction: row;
@@ -9,5 +11,9 @@
     .titleText {
         display: flex;
         align-items: center;
+    }
+
+    .dialogAction {
+        padding: 1rem!important;
     }
 }

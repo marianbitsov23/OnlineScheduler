@@ -23,7 +23,7 @@ public class TimeSlot {
     @Column(name = "timeEnd")
     private String timeEnd;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "time_table_id", referencedColumnName = "id")
     private TimeTable timeTable;
 

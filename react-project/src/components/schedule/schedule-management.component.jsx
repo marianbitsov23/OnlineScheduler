@@ -17,6 +17,7 @@ import Select from '@material-ui/core/Select';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import groupService from '../../services/schedule/group.service';
 import lessonService from '../../services/schedule/lesson.service';
+import { ConfirmButton } from '../shared/confirm-button.component';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -72,9 +73,10 @@ export default class ManageSchedules extends Component {
             //saves current user in the local storage
             authService.setCurrentUser(creator);
 
-            const oldScheduleId = this.state.scheduls 
+            const oldScheduleId = this.state.schedules 
                 ? this.state.schedules[this.state.selectedSchedule].id
                 : undefined;
+
             onCreatedSchedule(result.data, oldScheduleId);
 
             this.setState({ newSchedule: result.data });
@@ -83,7 +85,7 @@ export default class ManageSchedules extends Component {
         .catch(error => console.error(error));
     }
 
-    saveFromExistingSchedule = event => {
+    saveFromExistingSchedule = () => {
         const { 
             scheduleName,
             description,
@@ -112,7 +114,7 @@ export default class ManageSchedules extends Component {
         this.redirectToNextPage();
     }
 
-    redirectToNextPage = () => this.props.history.push('/time-table-management');
+    redirectToNextPage = () => this.props.history.push('/schedule-dashboard');
 
     copyElements = (service, elements, schedule) => {
         elements.forEach(element => {
@@ -147,7 +149,7 @@ export default class ManageSchedules extends Component {
                     <Jumbotron fluid>
                         <Container>
                             <h1>Създайте своя график</h1>
-                            <p>Въведете името на граика, малко описание за него
+                            <p>Въведете името на граика, кратко описание за него
                             и послете продължетете с въвъеждането на информацията за училищетп!</p>
                         </Container>
                     </Jumbotron>
@@ -207,7 +209,7 @@ export default class ManageSchedules extends Component {
                                 value={this.state.schoolType}
                                 onChange={this.onChange}
                             >
-                                <MenuItem value={"middleSchool"}>Средно</MenuItem>0
+                                <MenuItem value={"middleSchool"}>Средно</MenuItem>
                                 <MenuItem value={"highSchool"}>Гимназиално</MenuItem>
                             </Select>
                             <FormHelperText>
@@ -216,17 +218,11 @@ export default class ManageSchedules extends Component {
                         </FormGroup>
 
                         <FormGroup>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                className="btn-block"
-                                disabled={isInvalid}>
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Създаване</span>
-                            </Button>
+                            <ConfirmButton
+                                disabled={isInvalid}
+                                loading={this.state.loading}
+                                text="Създаване"
+                            />
                         </FormGroup>
 
                         <div className="myDisplayFlex">

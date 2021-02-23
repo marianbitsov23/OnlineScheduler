@@ -12,10 +12,8 @@ import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import { Link } from 'react-router-dom';
 import { Card } from 'semantic-ui-react';
-import { Paper, List } from '@material-ui/core';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import scheduleService from '../../../services/schedule/schedule.service';
-import HistoryIcon from '@material-ui/icons/History';
 
 export const MainListItems = (
     <div>
@@ -86,25 +84,46 @@ export const SecondaryListItems = ({open, schedules}) => (
     </>
   );
 
-  export const LessonSlot = ({day, slots, weekDay}) => (
-    <>
-        {slots.map((slot, index) => (
-            <div key={slot}>
-                {day && day.items[index] &&
-                    <div>
-                        <LessonItem
-                            type={day.items[index].id.toString()}
-                            subItems={day.items[index].subItems}
-                            lesson={day.items[index]}
-                            weekDay={weekDay}
-                            index={index}
-                        />
+export const LessonSlot = ({day, slots, weekDay}) => {
+    if(weekDay === 0) {
+        return (
+            <>
+                {day.items.map((item, index) => (
+                    <>
+                    {item &&
+                    <LessonItem
+                        type={item.id.toString()}
+                        subItems={item.subItems}
+                        lesson={item}
+                        weekDay={weekDay}
+                        index={index}
+                    />}
+                    </>
+                ))}
+            </>
+        )
+    } else {
+        return(
+            <>
+                {slots.map((slot, index) => (
+                    <div key={slot}>
+                        {day && day.items[index] &&
+                            <div>
+                                <LessonItem
+                                    type={day.items[index].id.toString()}
+                                    subItems={day.items[index].subItems}
+                                    lesson={day.items[index]}
+                                    weekDay={weekDay}
+                                    index={index}
+                                />
+                            </div>
+                        }
                     </div>
-                }
-            </div>
-        ))}
-    </>
-);
+                ))}
+            </>
+        )
+    }
+};
 
 export const SubItem = ({item, helperText, subIndex, index, droppableId}) => (
     <>

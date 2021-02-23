@@ -59,7 +59,7 @@ public class TimeTableController {
         //TODO: Make no duplicate table names
         TimeTable timeTable = new TimeTable(
                 timeTableRequest.getSchedule(),
-                timeTableRequest.getTimeTableName()
+                timeTableRequest.getName()
         );
         timeTableRepository.save(timeTable);
 

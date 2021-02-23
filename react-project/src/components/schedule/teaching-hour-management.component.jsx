@@ -13,8 +13,12 @@ import Input from "react-validation/build/input";
 import TableList from '../shared/table.component';
 import timeSlotService from '../../services/schedule/time-management/time-slot.service';
 import TimeSlotSelect from '../shared/time-slot-select.component';
-import Checkbox from '@material-ui/core/Checkbox';
+import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import groupService from '../../services/schedule/group.service';
+import { CustomDialog } from '../shared/custom-dialog.component';
+import { CustomSelect } from '../shared/custom-select.component';
+import { TextInput } from '../shared/text-input.component';
 
 export default class ManageTeachingHours extends Component {
     constructor(props) {
@@ -33,6 +37,7 @@ export default class ManageTeachingHours extends Component {
             selectedTeacher: 0,
             selectedCabinet: 0,
             selectedTimeTable: 0,
+            selectedGroup: 0,
             fetchedTimeSlots: [],
             hoursPerWeek: 1,
             overAWeek: false,
@@ -49,6 +54,8 @@ export default class ManageTeachingHours extends Component {
         })
         .catch(error => console.error(error));
 
+        await this.fetchAllGroups();
+
         await this.fetchAllSubjects();
 
         await this.fetchAllTeachers();
@@ -58,7 +65,13 @@ export default class ManageTeachingHours extends Component {
         await this.fetchAllTimeTables();
     }
 
-    async fetchAllGroups() {}
+    async fetchAllGroups() {
+        groupService.getAllByScheduleId(this.state.schedule.id)
+        .then(result => {
+            this.setState({ groups: result.data });
+        })
+        .catch(error => console.error(error));
+    }
 
     async fetchAllSubjects() {
         subjectService.getAllByScheduleId(this.state.schedule.id)
@@ -162,6 +175,7 @@ export default class ManageTeachingHours extends Component {
             teachers, 
             cabinets, 
             timeTables,
+            groups,
             hours,
             hoursPerWeek,
             ammount,
@@ -177,23 +191,18 @@ export default class ManageTeachingHours extends Component {
                         <Container>
                             <h1>Хорариум</h1>
                             <p>Въведете групата за която се отнася, преподавател, 
-                            предмет, колко часа в седмицата ще се преподава и в кои кабинети!</p>
+                            предмет, колко часа в седмицата ще се преподава и в кой кабинет!</p>
                         </Container>
                     </Jumbotron>
                 </Container>
                 <Container>
-                    <FormGroup>
-                        <FormBootstrap.Label>Изберете предмет</FormBootstrap.Label>
-                        <FormBootstrap.Control 
-                        as="select" 
-                        name="selectedSubject" 
-                        value={this.state.selectedSubject} 
-                        onChange={this.onChange}>
-                            {subjects && subjects.map((subject, index) => (
-                                <option key={subject.id} value={index}>{subject.name}</option>
-                            ))}
-                        </FormBootstrap.Control>
-                    </FormGroup>
+                    <CustomSelect
+                        label="Изберете предмет"
+                        name="selectedSubject"
+                        value={this.state.selectedSubject}
+                        onChange={this.onChange}
+                        elements={subjects}
+                    />
 
                     <Button
                         className="btn-block myDefaultMarginTopBottom"
@@ -204,108 +213,79 @@ export default class ManageTeachingHours extends Component {
                     </Button>
                 </Container>
                 <Container>
+                    {subjects[0] &&
                     <TableList 
                         type="teaching-hour" 
                         teachers={teachers} 
                         cabinets={cabinets}
                         timeTables={timeTables}
-                        elements={teachingHours.filter(hour => hour.subject.id === subjects[this.state.selectedSubject].id)}
+                        elements={teachingHours.filter(
+                            hour => hour.subject.id === subjects[this.state.selectedSubject].id
+                        )}
                         service={teachingHourService}
-                    />
+                    />}
                 </Container>
-                <Modal 
-                show={show}
-                size="lg"
-                onHide={() => this.setState({ show: !show })}
-                centered
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Добавете нов час</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form onSubmit={this.saveTeachingHour}>
-                            <FormGroup>
-                                <FormBootstrap.Label>Изберете група</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select">
-                                </FormBootstrap.Control>
-                            </FormGroup>
+                <CustomDialog
+                    show={show}
+                    onClose={() => this.setState({ show: !show })}
+                    title="Добавете нов час"
+                    confirmFunction={this.saveTeachingHour}
+                    confirmButtonText="Добавяне"
+                    content={
+                        <>
+                            <CustomSelect
+                                label="Изберете група"
+                                name="selectedGroup"
+                                value={this.state.selectedGroup}
+                                onChange={this.onChange}
+                                elements={groups}
+                            />
 
-                            <FormGroup>
-                                <FormBootstrap.Label>Изберете учител</FormBootstrap.Label>
-                                <FormBootstrap.Control 
-                                as="select" 
-                                name="selectedTeacher" 
-                                value={this.state.selectedTeacher} 
-                                onChange={this.onChange}>
-                                    {teachers && teachers.map((teacher, index) => (
-                                        <option key={teacher.id} value={index}>{teacher.name}</option>
-                                    ))}
-                                </FormBootstrap.Control>
-                            </FormGroup>
+                            <CustomSelect
+                                label="Изберете учител"
+                                name="selectedTeacher"
+                                value={this.state.selectedTeacher}
+                                onChange={this.onChange}
+                                elements={teachers}
+                            />
 
-                            <FormGroup>
-                                <FormBootstrap.Label>Час/седмица</FormBootstrap.Label>
-                                <Input
-                                    required
-                                    className="form-control"
-                                    type="number"
-                                    max="35"
-                                    name="hoursPerWeek"
-                                    value={this.state.hoursPerWeek}
-                                    onChange={this.onChange}
-                                />
-                            </FormGroup>
+                            <TextInput
+                                label="Час/седмица"
+                                name="hoursPerWeek"
+                                type="number"
+                                max="35"
+                                value={this.state.hoursPerWeek}
+                                onChange={this.onChange}
+                            />
 
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                    <Checkbox 
-                                        checked={this.state.overAWeek} 
-                                        onChange={this.handleCheck} 
-                                        name="overAWeek" 
-                                        color="primary"
-                                    />}
-                                    label="През седмица"
-                                />
-                            </FormGroup>
+                            <FormControlLabel
+                                control={
+                                <Checkbox 
+                                    checked={this.state.overAWeek} 
+                                    onChange={this.handleCheck} 
+                                    name="overAWeek" 
+                                    color="primary"
+                                />}
+                                label="През седмица"
+                            />
 
-                            <FormGroup>
-                                <FormBootstrap.Label>Изберете кабинет</FormBootstrap.Label>
-                                <FormBootstrap.Control 
-                                as="select" 
-                                name="selectedCabinet" 
-                                value={this.state.selectedCabinet} 
-                                onChange={this.onChange}>
-                                    {cabinets && cabinets.map((cabinet, index) => (
-                                        <option key={cabinet.id} value={index}>{cabinet.name}</option>
-                                    ))}
-                                </FormBootstrap.Control>
-                            </FormGroup>
+                            <CustomSelect
+                                label="Изберете кабинет"
+                                name="selectedCabinet"
+                                value={this.state.selectedCabinet}
+                                onChange={this.onChange}
+                                elements={cabinets}
+                            />
 
-                            <FormGroup>
-                                <Button
-                                    variant="outline-info"
-                                    onClick={() => this.setState({ hours: true, show: false })}
-                                >
-                                    Изберете часове
-                                </Button>
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Button
-                                    type="submit"
-                                    variant="success"
-                                    disabled={disabled}
-                                    className="btn-block">
-                                        {this.state.loading &&
-                                            <span className="spinner-border spinner-border-sm"></span>
-                                        }
-                                        <span>Добавяне</span>
-                                    </Button>
-                            </FormGroup>
-                        </Form>
-                    </Modal.Body>
-                </Modal>
+                            <Button
+                                variant="outline-info"
+                                onClick={() => this.setState({ hours: true, show: false })}
+                            >
+                                Изберете часове
+                            </Button>
+                        </>
+                    }
+                />
                 <Modal
                 show={hours}
                 size="lg"

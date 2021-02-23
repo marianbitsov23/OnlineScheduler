@@ -24,7 +24,7 @@ public class Group {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
     private Group parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = {CascadeType.REMOVE})
     private Set<Group> children;
 
     public Group() {}

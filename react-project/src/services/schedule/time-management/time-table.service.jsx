@@ -21,7 +21,7 @@ class TimeTableService {
         return axios.post(API_URL, 
             {
                 schedule: timeTable.schedule,
-                timeTableName: timeTable.name
+                name: timeTable.name
             }, {headers: authHeader()});
     }
 
