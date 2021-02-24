@@ -11,7 +11,6 @@ import { TextField, Button, List, Collapse,
     ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { TextInput } from '../shared/text-input.component';
-import { ConfirmButton } from '../shared/confirm-button.component';
 import CloseIcon from '@material-ui/icons/Close';
 
 export default class ManageGroups extends Component {
@@ -189,10 +188,19 @@ export default class ManageGroups extends Component {
         this.setState({ groups });
     }
 
-    deleteGroup = (groupId) => {
-        groupService.deleteGroup(groupId)
+    deleteGroup = (group, type, index, classGroup) => {
+        let { groups } = this.state;
+
+        const deletedGroup = classGroup === undefined 
+            ? group.children[index]
+            : classGroup.children[index];
+
+        groupService.deleteGroup(deletedGroup.id)
         .then(() => {
-            console.log('deleted')
+            if(type === 'classGroup') group.children.splice(group.children.indexOf(deletedGroup), 1);
+            else classGroup.children.splice(classGroup.children.indexOf(deletedGroup), 1);
+            
+            this.setState({ groups });
         })
         .catch(error => console.error(error));
     }
@@ -273,7 +281,9 @@ export default class ManageGroups extends Component {
                                                                 <GroupWorkIcon />
                                                             </ListItemIcon>
                                                             <ListItemText primary={"Клас: " + classGroup.name} />
-                                                            <CloseIcon onClick={this.deleteGroup.bind(this, classGroup.id)} />
+                                                            <CloseIcon
+                                                                onClick={this.deleteGroup.bind(this, group, 'classGroup', classIndex)} 
+                                                            />
                                                         </ListItem>
                                                         <Collapse in={classGroup.open} timeout="auto" unmountOnExit>
                                                             <List>
@@ -290,7 +300,9 @@ export default class ManageGroups extends Component {
                                                                             <GroupIcon />
                                                                         </ListItemIcon>
                                                                     <ListItemText primary={"Подгрупа: " + subGroup.name} />
-                                                                    <CloseIcon onClick={this.deleteGroup.bind(this, subGroup.id)} />
+                                                                    <CloseIcon 
+                                                                        onClick={this.deleteGroup.bind(this, group, 'subGroup', subIndex, classGroup)} 
+                                                                    />
                                                                     </ListItem>
                                                                 ))}
                                                             </List>

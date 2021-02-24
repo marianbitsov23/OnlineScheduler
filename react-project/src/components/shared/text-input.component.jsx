@@ -10,7 +10,7 @@ export const TextInput = ({ error, name, value,
             error={error}
             className={className}
             variant={variant}
-            margin="dense"
+            margin="normal"
             max={max}
             required
             fullWidth
