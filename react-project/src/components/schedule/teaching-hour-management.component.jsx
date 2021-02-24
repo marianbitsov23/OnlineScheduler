@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Button, Jumbotron, FormGroup, Modal } from 'react-bootstrap';
+import { Container, Button, Jumbotron } from 'react-bootstrap';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
 import subjectService from '../../services/schedule/subject.service';
 import teacherService from '../../services/schedule/teacher.service';
-import { Link } from 'react-router-dom';
+import { NextButton } from '../shared/next-button.component';
 import scheduleService from '../../services/schedule/schedule.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
-import FormBootstrap from 'react-bootstrap/Form';
 import TableList from '../shared/table.component';
 import timeSlotService from '../../services/schedule/time-management/time-slot.service';
 import TimeSlotSelect from '../shared/time-slot-select.component';
@@ -322,13 +321,9 @@ export default class ManageTeachingHours extends Component {
                         </>
                     }
                 />
-                <Link to={"/schedule-dashboard"}>
-                    <Button
-                        className="btn-block"
-                    >
-                        Напред
-                    </Button>
-                </Link>
+                <Container>
+                    <NextButton link={"/schedule-dashboard"}/>
+                </Container>
             </>
         );
     }

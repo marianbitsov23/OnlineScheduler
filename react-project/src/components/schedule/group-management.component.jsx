@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, FormGroup } from 'react-bootstrap';
+import { Jumbotron, FormGroup } from 'react-bootstrap';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import SchoolIcon from '@material-ui/icons/School';
 import groupService from '../../services/schedule/group.service';
@@ -8,10 +8,11 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import GroupIcon from '@material-ui/icons/Group';
 import { TextField, Button, List, Collapse,
-    ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+    ListItem, ListItemIcon, ListItemText, Container } from '@material-ui/core';
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { TextInput } from '../shared/text-input.component';
 import CloseIcon from '@material-ui/icons/Close';
+import { NextButton } from '../shared/next-button.component';
 
 export default class ManageGroups extends Component {
     constructor(props) {
@@ -352,6 +353,8 @@ export default class ManageGroups extends Component {
                             </>
                         }
                     </Jumbotron>
+                    
+                    <NextButton link={"/teaching-hour-management"}/>
                 </Container>
                 <CustomDialog
                     show={show}

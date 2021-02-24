@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Button } from 'react-bootstrap';
 import teacherService from '../../services/schedule/teacher.service';
 import ModelInput from '../shared/model-input.component';
-import { Link } from 'react-router-dom';
 import scheduleService from '../../services/schedule/schedule.service';
+import { NextButton } from '../shared/next-button.component';
+import { Container } from '@material-ui/core';
 
 export default class ManageTeachers extends Component {
     constructor(props) {
@@ -24,22 +24,13 @@ export default class ManageTeachers extends Component {
     }
 
     render() {
-
         const { teachers } = this.state;
 
         return(
-            <>
-                <Container>
-                    <ModelInput type="teacher" elements={teachers} service={teacherService}/>
-                </Container>
-                <Link to={"/cabinet-management"}>
-                    <Button
-                        className="btn-block"
-                    >
-                        Напред
-                    </Button>
-                </Link>
-            </>
+            <Container>
+                <ModelInput type="teacher" elements={teachers} service={teacherService}/>
+                <NextButton link={"/cabinet-management"}/>
+            </Container>
         );
     }
 }

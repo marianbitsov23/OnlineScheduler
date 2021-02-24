@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import ModelInput from '../shared/model-input.component';
-import { Link } from 'react-router-dom';
+import { NextButton } from '../shared/next-button.component';
 import scheduleService from '../../services/schedule/schedule.service';
 
 export default class ManageCabinets extends Component {
@@ -42,18 +42,10 @@ export default class ManageCabinets extends Component {
         const { cabinets, categories } = this.state;
 
         return(
-            <>
-                <Container>
-                    <ModelInput type="cabinet" categories={categories} elements={cabinets} service={cabinetService}/>
-                </Container>
-                <Link to={"/teaching-hour-management"}>
-                    <Button
-                        className="btn-block"
-                    >
-                        Напред
-                    </Button>
-                </Link>
-            </>
+            <Container>
+                <ModelInput type="cabinet" categories={categories} elements={cabinets} service={cabinetService}/>
+                <NextButton link={"/teaching-hour-management"}/>
+            </Container>
         );
     }
 }

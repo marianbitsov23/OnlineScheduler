@@ -76,7 +76,7 @@ export default class ModelInput extends Component {
 
         return(
             <>
-                <Container className="myDefaultPadding">
+                <Container>
                     <Paper className="myDefaultPadding">
                         <Form onSubmit={this.createElement}>
                             {this.props.type === "teacher" &&

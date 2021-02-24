@@ -5,10 +5,10 @@ import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
 import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
-import { Link } from 'react-router-dom';
 import TimeSlotSelect from '../../shared/time-slot-select.component';
 import { TextInput } from '../../shared/text-input.component';
 import { Select, MenuItem, FormHelperText } from '@material-ui/core';
+import { NextButton } from '../../shared/next-button.component';
 import { ConfirmButton } from '../../shared/confirm-button.component';
 
 export default class ManageTimeTables extends Component {
@@ -202,11 +202,7 @@ export default class ManageTimeTables extends Component {
                 <Container>
                     <TableList type="time-table" elements={timeTables} service={timeTableService} />
                 </Container>
-                <Link to={"/subject-management"}>
-                    <Button className="btn-block">
-                        Напред
-                    </Button>
-                </Link>
+                <NextButton link={"/subject-management"}/>
             </>
         )
     }
