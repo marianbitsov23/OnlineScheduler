@@ -11,13 +11,10 @@ import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import groupService from '../../services/schedule/group.service';
 import lessonService from '../../services/schedule/lesson.service';
 import { ConfirmButton } from '../shared/confirm-button.component';
+import { CustomSelect } from '../shared/custom-select.component';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -27,7 +24,7 @@ export default class ManageSchedules extends Component {
             scheduleName: "",
             description: "",
             schoolName: "",
-            schoolType: "middleSchool",
+            schoolType: { name: 'middleSchool'},
             creator: authService.getCurrentUser(),
             message: "",
             loading: false,
@@ -59,7 +56,7 @@ export default class ManageSchedules extends Component {
     }
 
     saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolType, onCreatedSchedule) => {
-        scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.toUpperCase())
+        scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.name.toUpperCase())
         .then(result => {
             //add schedule to the current user
             let schedules = creator.schedules ? creator.schedules : [];
@@ -197,24 +194,13 @@ export default class ManageSchedules extends Component {
                         </FormGroup>
 
                         <FormGroup>
-                            <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                                Тип
-                            </InputLabel>
-                            <Select
-                                labelId="demo-simple-select-placeholder-label-label"
-                                id="demo-simple-select-placeholder-label"
+                            <CustomSelect
+                                label="Тип"
                                 name="schoolType"
-                                fullWidth
-                                labelId="demo-simple-select-helper-label"
                                 value={this.state.schoolType}
                                 onChange={this.onChange}
-                            >
-                                <MenuItem value={"middleSchool"}>Средно</MenuItem>
-                                <MenuItem value={"highSchool"}>Гимназиално</MenuItem>
-                            </Select>
-                            <FormHelperText>
-                                Изберете типа на училището, за да се генерират определения брой випуски
-                            </FormHelperText>
+                                elements={[ {name: 'middleSchool'}, {name: 'highSchool'}]}
+                            />
                         </FormGroup>
 
                         <FormGroup>

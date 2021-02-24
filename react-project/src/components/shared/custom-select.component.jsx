@@ -19,4 +19,4 @@ export const CustomSelect = ({ label, name, value, onChange, elements }) => (
             ))}
         </Select>
     </div>
-)
+);

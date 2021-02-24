@@ -199,7 +199,7 @@ export default class ManageGroups extends Component {
         .then(() => {
             if(type === 'classGroup') group.children.splice(group.children.indexOf(deletedGroup), 1);
             else classGroup.children.splice(classGroup.children.indexOf(deletedGroup), 1);
-            
+
             this.setState({ groups });
         })
         .catch(error => console.error(error));
@@ -282,7 +282,7 @@ export default class ManageGroups extends Component {
                                                             </ListItemIcon>
                                                             <ListItemText primary={"Клас: " + classGroup.name} />
                                                             <CloseIcon
-                                                                onClick={this.deleteGroup.bind(this, group, 'classGroup', classIndex)} 
+                                                                onClick={this.deleteGroup.bind(this, group, 'classGroup', classIndex, undefined)} 
                                                             />
                                                         </ListItem>
                                                         <Collapse in={classGroup.open} timeout="auto" unmountOnExit>

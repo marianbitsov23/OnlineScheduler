@@ -8,8 +8,6 @@ import scheduleService from '../../services/schedule/schedule.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
 import FormBootstrap from 'react-bootstrap/Form';
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
 import TableList from '../shared/table.component';
 import timeSlotService from '../../services/schedule/time-management/time-slot.service';
 import TimeSlotSelect from '../shared/time-slot-select.component';
@@ -286,25 +284,22 @@ export default class ManageTeachingHours extends Component {
                         </>
                     }
                 />
-                <Modal
-                show={hours}
-                size="lg"
-                onHide={() => this.setState({ hours: !hours })}
-                centered
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Изберете часове</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <FormGroup>
-                            <FormBootstrap.Label>Изберете график</FormBootstrap.Label>
-                            <FormBootstrap.Control as="select" name="selectedTimeTable" value={this.state.selectedTimeTable} onChange={this.onChange}>
-                                {timeTables && timeTables.map((timeTable, index) => (
-                                    <option key={timeTable.id} value={index}>{timeTable.name}</option>
-                                ))}
-                            </FormBootstrap.Control>
-                        </FormGroup>
-                        <FormGroup>
+                <CustomDialog
+                    show={hours}
+                    onClose={() => this.setState({ hours: !hours })}
+                    title="Изберете часове"
+                    confirmFunction={() => this.setState({ hours: false, show: true })}
+                    confirmButtonText="Запази"
+                    content={
+                        <>
+                            <CustomSelect
+                                label="Изберете график"
+                                name="selectedTimeTable"
+                                value={this.state.selectedTimeTable}
+                                onChange={this.onChange}
+                                elements={timeTables}
+                            />
+
                             <FormControlLabel
                                 control={
                                 <Checkbox 
@@ -315,24 +310,18 @@ export default class ManageTeachingHours extends Component {
                                 />}
                                 label="Избери всички"
                             />
-                        </FormGroup>
-                        {timeTables[this.state.selectedTimeTable] &&
-                        <TimeSlotSelect
-                            timeSlots={timeTables[this.state.selectedTimeTable].slots}
-                            weekDaysTemplate={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
-                            ammount={this.state.ammount}
-                            type="select"
-                            changeTimeSlots={this.changeTimeSlots}
-                        />}
-                        <Button
-                            variant="success"
-                            className="btn-block"
-                            onClick={() => this.setState({ hours: false, show: true })}
-                        >   
-                            Запази
-                    </Button>
-                    </Modal.Body>
-                </Modal>
+
+                            {timeTables[this.state.selectedTimeTable] &&
+                            <TimeSlotSelect
+                                timeSlots={timeTables[this.state.selectedTimeTable].slots}
+                                weekDaysTemplate={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
+                                ammount={this.state.ammount}
+                                type="select"
+                                changeTimeSlots={this.changeTimeSlots}
+                            />}
+                        </>
+                    }
+                />
                 <Link to={"/schedule-dashboard"}>
                     <Button
                         className="btn-block"

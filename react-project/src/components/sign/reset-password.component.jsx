@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import { FormGroup, Alert } from 'react-bootstrap';
-import { Avatar, CssBaseline, Container, 
-    Typography, TextField, Button, Paper } from '@material-ui/core';
+import { Avatar, Container, 
+        Typography, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import authService from "../../services/user-auth/auth.service";
+import { TextInput } from '../shared/text-input.component';
+import { ConfirmButton } from "../shared/confirm-button.component";
 
 export default class ResetPassword extends Component {
     constructor(props) {
@@ -20,9 +22,7 @@ export default class ResetPassword extends Component {
         };
     }
 
-    onChange = event => {
-        this.setState({[event.target.name] : event.target.value});
-    }
+    onChange = event => this.setState({[event.target.name] : event.target.value});
 
     resetPassword = event => {
         event.preventDefault();
@@ -31,10 +31,7 @@ export default class ResetPassword extends Component {
         const { password, token } = this.state;
 
         authService.resetPassword(token, password)
-        .then(result => {
-            console.log(result.data);
-            this.setState({ message: result.data.message, alert: false, loading: false });
-        })
+        .then(result => this.setState({ message: result.data.message, alert: false, loading: false }))
         .catch(error => {
             console.error(error);
             this.setState({ message: error.message, alert: true, loading: false });
@@ -58,7 +55,6 @@ export default class ResetPassword extends Component {
             setFlexOne">
                 <Paper className="backgroundPaper myDefaultPadding">
                     <Container component="main" maxWidth="xs">
-                        <CssBaseline />
                         <div 
                         className="myDisplayFlexColumn 
                         alignItemsCenter
@@ -67,65 +63,46 @@ export default class ResetPassword extends Component {
                                 <LockOutlinedIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Reset your password
+                                Променете паролата си
                             </Typography>
                             <Form onSubmit={this.resetPassword}>
-                                <TextField
-                                type="text"
-                                name="token"
-                                value={token}
-                                onChange={this.onChange}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Security key"
-                                onChange={this.onChange}
-                                autoComplete="text"
-                                helperText='Enter the token that was sent to your email'
+                                <TextInput
+                                    name="token"
+                                    value={token}
+                                    helperText="Въведете секретния ключ от електронната поща"
+                                    label="Секретен ключ"
+                                    autoComplete="text"
+                                    variant="outlined"
+                                    onChange={this.onChange}
                                 />
 
-                                <TextField
-                                type="password"
-                                name="password"
-                                value={password}
-                                onChange={this.onChange}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="New Password"
-                                onChange={this.onChange}
-                                autoComplete="password"
-                                helperText='Enter your new secure password'
+                                <TextInput
+                                    name="password"
+                                    type="password"
+                                    value={password}
+                                    helperText="Въведете новата си парола"
+                                    label="Нова парола"
+                                    autoComplete="password"
+                                    variant="outlined"
+                                    onChange={this.onChange}
                                 />
 
-                                <TextField
-                                type="password"
-                                name="confirmPassword"
-                                value={confirmPassword}
-                                onChange={this.onChange}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Confirm New Password"
-                                onChange={this.onChange}
-                                autoComplete="password"
-                                helperText='Confirm your new secure password'
+                                <TextInput
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={confirmPassword}
+                                    helperText="Потвърдете новата си парола"
+                                    label="Потвърдете паролата"
+                                    autoComplete="password"
+                                    variant="outlined"
+                                    onChange={this.onChange}
                                 />
-                                <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                disabled={isInvalid}
-                                className="myDefaultMarginTopBottom">
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Save Password</span>
-                                </Button>
+
+                                <ConfirmButton
+                                    disabled={isInvalid}
+                                    loading={this.state.loading}
+                                    text="Запази паролата"
+                                />
                                 {this.state.message && alert && (
                                     <FormGroup>
                                         <Alert variant="success" role="alert">

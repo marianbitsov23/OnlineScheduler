@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import { FormGroup, Alert } from "react-bootstrap";
 import authService from "../../services/user-auth/auth.service";
-import { Avatar, CssBaseline, Container, 
-    Typography, TextField, Button, Grid, Paper } from '@material-ui/core';
+import { Avatar, Container, 
+        Typography, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
 import { isEmail } from "validator";
+import { ConfirmButton } from "../shared/confirm-button.component";
+import { TextInput } from '../shared/text-input.component';
 
 export default class ForgotPassword extends Component {
     constructor(props) {
@@ -35,9 +37,7 @@ export default class ForgotPassword extends Component {
         const { email } = this.state;
 
         authService.forgotPassword(email)
-        .then(result => {
-            this.setState({ message: result.data.message, alert: false, loading: false });
-        })
+        .then(result => this.setState({ message: result.data.message, alert: false, loading: false }))
         .catch(error => {
             const response = 
                     (error.response &&
@@ -60,7 +60,6 @@ export default class ForgotPassword extends Component {
             setFlexOne">
                 <Paper className="backgroundPaper myDefaultPadding">
                     <Container component="main" maxWidth="xs">
-                        <CssBaseline />
                         <div 
                         className="myDisplayFlexColumn 
                         alignItemsCenter
@@ -69,54 +68,43 @@ export default class ForgotPassword extends Component {
                                 <LockOutlinedIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Forgot password
+                                Забравена парола
                             </Typography>
                             <Form onSubmit={this.forgotPassword}>
-                                <TextField
-                                error={isInvalidEmail}
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Email Address"
-                                name="email"
-                                value={email}
-                                onChange={this.onChange}
-                                autoComplete="email"
-                                helperText='Enter a valid email example@emp.com'
+                                <TextInput
+                                    name="email"
+                                    value={email}
+                                    label="Електронна поща"
+                                    autoComplete="email"
+                                    variant="outlined"
+                                    onChange={this.onChange}
+                                    helperText='Въведете валидна електронна поща example@emp.com'
                                 />
-                                <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                disabled={isInvalidEmail}
-                                className="myDefaultMarginTopBottom">
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Send email</span>
-                                </Button>
+                                <ConfirmButton
+                                    disabled={isInvalidEmail}
+                                    loading={this.state.loading}
+                                    text="Изпрати електронна поща"
+                                />
                                 {this.state.message && alert && (
-                                <FormGroup>
-                                    <Alert variant="danger" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
+                                    <FormGroup>
+                                        <Alert variant="danger" role="alert">
+                                            {this.state.message}
+                                        </Alert>
+                                    </FormGroup>
                                 )}
                                 {this.state.message && !alert && (
-                                <FormGroup>
-                                    <Alert variant="success" role="alert">
-                                        {this.state.message}
-                                    </Alert>
-                                </FormGroup>
+                                    <FormGroup>
+                                        <Alert variant="success" role="alert">
+                                            {this.state.message}
+                                        </Alert>
+                                    </FormGroup>
                                 )}
                                 <Grid container justify="flex-end">
                                     <Grid item>
                                         <Link to={"/login"} 
                                         className="myDefaultMarginTopBottom
                                         defaultFontSize secondaryColor">
-                                            You remembered it? Sign in
+                                            Спомнихте си я? Влезте в профила си
                                         </Link>
                                     </Grid>
                                 </Grid>

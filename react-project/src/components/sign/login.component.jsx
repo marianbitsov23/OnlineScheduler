@@ -3,7 +3,7 @@ import Form from "react-validation/build/form";
 import { Component } from "react";
 import { FormGroup, Alert } from 'react-bootstrap';
 import authService from "../../services/user-auth/auth.service";
-import { Avatar, CssBaseline, Container, 
+import { Avatar, Container, 
         Typography, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
@@ -59,7 +59,6 @@ export default class Login extends Component {
             setFlexOne">
                 <Paper className="backgroundPaper myDefaultPadding">
                     <Container component="main" maxWidth="xs">
-                        <CssBaseline />
                         <div className="
                         myDisplayFlexColumn 
                         alignItemsCenter

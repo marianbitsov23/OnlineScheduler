@@ -4,7 +4,7 @@ import { FormGroup, Alert } from 'react-bootstrap';
 import { isEmail } from "validator";
 import Form from "react-validation/build/form";
 import { Avatar, Container, 
-    Typography, Grid, Paper } from '@material-ui/core';
+        Typography, Grid, Paper } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
 import { TextInput } from '../shared/text-input.component';
@@ -129,7 +129,7 @@ export default class Register extends Component {
                                 error={isInvalidUsername}
                                 name="username"
                                 value={username}
-                                helperText="The username must be between 3 and 20 characters!"
+                                helperText="Потребителското име трябва да бъде между 3 и 20 символа!"
                                 label="Потребителско име"
                                 autoComplete="username"
                                 variant="outlined"
@@ -139,8 +139,8 @@ export default class Register extends Component {
                                 error={isInvalidEmail}
                                 name="email"
                                 value={email}
-                                helperText="Enter a valid email example@emp.com"
-                                label="Email Address"
+                                helperText="Въведете валидна електронна поща example@emp.com"
+                                label="Електронна поща"
                                 autoComplete="email"
                                 variant="outlined"
                                 onChange={this.onChange}
@@ -149,8 +149,8 @@ export default class Register extends Component {
                                 error={isInvalidPassword}
                                 name="password"
                                 value={password}
-                                helperText="The password must be between 6 and 40 characters!"
-                                label="Password"
+                                helperText="Паролата трябва да бъде между 6 и 40 символа!"
+                                label="Парола"
                                 autoComplete="password"
                                 type="password"
                                 variant="outlined"
@@ -160,8 +160,8 @@ export default class Register extends Component {
                                 error={isInvalidConfirmPasword}
                                 name="confirmPassword"
                                 value={confirmPassword}
-                                helperText="The passwords must match!"
-                                label="Confirm your password"
+                                helperText="Паролите трябва да съвпадат!"
+                                label="Потвърдете паролата"
                                 autoComplete="password"
                                 type="password"
                                 variant="outlined"
@@ -170,7 +170,7 @@ export default class Register extends Component {
                             <ConfirmButton 
                                 disabled={disabled}
                                 loading={this.state.loading}
-                                text="Register"
+                                text="Регистрирай се"
                             />
                             {this.state.message && (
                                 <FormGroup>
@@ -185,7 +185,7 @@ export default class Register extends Component {
                                         className="myDefaultMarginTopBottom
                                         defaultFontSize secondaryColor"
                                     >
-                                        Already have an account? Sign in
+                                        Вече имаш акаунт? Влезте в него
                                     </Link>
                                 </Grid>
                             </Grid>
