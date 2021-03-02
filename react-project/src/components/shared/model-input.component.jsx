@@ -100,9 +100,9 @@ export default class ModelInput extends Component {
                                     name="elementName"
                                     value={this.state.elementName}
                                     label=
-                                        {this.props.type === "teacher" && "Име на учителя"
-                                        || this.props.type === "subject" && "Име на предмета"
-                                        || this.props.type === "cabinet" && "Име на учебната зала"}
+                                        {(this.props.type === "teacher" && "Име на учителя")
+                                        || (this.props.type === "subject" && "Име на предмета")
+                                        || (this.props.type === "cabinet" && "Име на учебната зала")}
                                     onChange={this.onChange}
                                 />
                             </div>

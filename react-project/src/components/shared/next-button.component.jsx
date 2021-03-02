@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container } from '@material-ui/core';
 
-export const NextButton = ({ link }) => (
+export const NextButton = ({ type, link }) => (
     <Link to={link} className="noUnderLine">
         <Container>
             <Button 
@@ -11,7 +11,8 @@ export const NextButton = ({ link }) => (
                 variant="contained" 
                 color="secondary"
             >
-                Напред
+                {type === "forward" && 'Напред'}
+                {type === "backwards" && 'Назад'}
             </Button>
         </Container>
     </Link>

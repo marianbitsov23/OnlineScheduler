@@ -175,15 +175,13 @@ export default class ManageGroups extends Component {
 
     handleOpen = (indexes, type) => {
         const { groups } = this.state;
-        switch(type) {
-            case'yearGroup':
-                groups[indexes].open = !groups[indexes].open;
-                break;
-            case 'classGroup':
-                const { groupIndex, classIndex, subIndex } = indexes;
-                groups[groupIndex].children[classIndex].open = 
-                !groups[groupIndex].children[classIndex].open;
-                break;
+        if(type === "yearGroup") {
+            groups[indexes].open = !groups[indexes].open;
+        }
+        else if(type === "classGroup") {
+            const { groupIndex, classIndex } = indexes;
+            groups[groupIndex].children[classIndex].open = 
+            !groups[groupIndex].children[classIndex].open;
         }
         
         this.setState({ groups });

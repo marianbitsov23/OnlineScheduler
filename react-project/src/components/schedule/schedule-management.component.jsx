@@ -131,6 +131,14 @@ export default class ManageSchedules extends Component {
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
+    onSelect = event => {
+        if(event.target.value === 1) {
+            this.setState({ schoolType: { name: 'highSchool' }});
+        } else {
+            this.setState({ schoolType: { name: 'middleSchool' }});
+        }
+    }
+
     render() {
 
         const { show, selectedSchedule, schedules } = this.state;
@@ -140,6 +148,8 @@ export default class ManageSchedules extends Component {
             this.state.description === "" ||
             this.state.schoolName === "";
 
+        console.log(this.state.schoolType);
+
         return(
             <>
                 <Container>
@@ -147,7 +157,7 @@ export default class ManageSchedules extends Component {
                         <Container>
                             <h1>Създайте своя график</h1>
                             <p>Въведете името на граика, кратко описание за него
-                            и послете продължетете с въвъеждането на информацията за училищетп!</p>
+                            и после продължетете с въвеждането на информацията за училището!</p>
                         </Container>
                     </Jumbotron>
 
@@ -198,7 +208,7 @@ export default class ManageSchedules extends Component {
                                 label="Тип"
                                 name="schoolType"
                                 value={this.state.schoolType}
-                                onChange={this.onChange}
+                                onChange={this.onSelect}
                                 elements={[ {name: 'middleSchool'}, {name: 'highSchool'}]}
                             />
                         </FormGroup>

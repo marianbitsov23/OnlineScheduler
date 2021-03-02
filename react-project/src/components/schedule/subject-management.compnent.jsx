@@ -30,7 +30,10 @@ export default class ManageSubjects extends Component {
         return(
             <Container>
                 <ModelInput type="subject" elements={subjects} service={subjectService} />
-                <NextButton link={"/teaching-hour-management"}/>
+                <div className="myDisplayFlex justifyContentSpaceBetween">
+                    <NextButton type="backwards" link={"/cabinet-management"}/>
+                    <NextButton type="forward" link={"/teacher-management"}/>
+                </div>
             </Container>
         );
     }

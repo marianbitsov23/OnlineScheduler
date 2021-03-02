@@ -55,7 +55,7 @@ export default class ScheduleBoard extends Component {
                 </Grid>
                 <Grid container justify="center" className="myDefaultPadding" item xs={12}>
                     <Link to={"/schedule-management"}>
-                        <Button variant="info">Create new schedule</Button>
+                        <Button variant="info">Създай нов график</Button>
                     </Link>
                 </Grid>
             </Grid>

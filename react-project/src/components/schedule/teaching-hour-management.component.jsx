@@ -314,7 +314,7 @@ export default class ManageTeachingHours extends Component {
                             <TimeSlotSelect
                                 timeSlots={timeTables[this.state.selectedTimeTable].slots}
                                 weekDaysTemplate={['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
-                                ammount={this.state.ammount}
+                                ammount={ammount}
                                 type="select"
                                 changeTimeSlots={this.changeTimeSlots}
                             />}

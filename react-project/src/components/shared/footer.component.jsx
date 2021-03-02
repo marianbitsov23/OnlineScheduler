@@ -8,7 +8,7 @@ function Copyright() {
         <Typography variant="body2" className="myWhiteColor" color="textSecondary">
             {'Copyright © '}
             <Link color="inherit" href="/" className="myWhiteColor">
-                Online scheduler
+                OnlineScheduler
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}

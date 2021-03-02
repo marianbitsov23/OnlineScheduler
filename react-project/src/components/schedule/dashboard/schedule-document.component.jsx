@@ -5,9 +5,11 @@ import { IconButton } from '@material-ui/core';
 
 class ComponentToPrint extends Component {
     render() {
-        const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const weekDays = ['Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
         const slots = [0, 1, 2, 3, 4, 5, 6, 7];
         const { lessons } = this.props;
+
+        console.log(lessons);
 
         return(
             <table className="document">

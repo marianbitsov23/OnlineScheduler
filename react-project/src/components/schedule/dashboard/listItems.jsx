@@ -77,10 +77,6 @@ export const SecondaryListItems = ({open, schedules}) => (
             </ListItem>
         </Link>
         )}
-        {schedules.length === 1 && open &&
-        <ListItem>
-            <ListItemText primary="Няма нищо тук" secondary="Не сте редактирали нищо напоследък"/>
-        </ListItem>}
     </>
   );
 

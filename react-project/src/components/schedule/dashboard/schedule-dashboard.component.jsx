@@ -8,7 +8,7 @@ import { AppBar, CssBaseline, IconButton,
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
-import { MainListItems, SecondaryListItems, CardSlot } from './listItems';
+import { MainListItems, SecondaryListItems } from './listItems';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
@@ -84,7 +84,7 @@ class ScheduleDashboard extends Component {
                 const lessons = [];
                 
                 for(let i = 0; i < 6; i++) {
-                    const items = this.initalizeEmptyLessons();
+                    const items = this.initializeEmptyLessons();
                     result.data.forEach(lesson => {
                         for(let j = 0; j < 7; j++) {
                             if(lesson.weekDay === i && lesson.slotIndex === j) {
@@ -127,7 +127,7 @@ class ScheduleDashboard extends Component {
                     for(let i = 1; i < 6; i++) {
                         lessons.push({
                             name: weekDaysTemplate[i],
-                            items: [],
+                            items: this.initializeEmptyLessons(),
                             weekDay: i
                         });
                     }
@@ -140,7 +140,7 @@ class ScheduleDashboard extends Component {
 
     setLessons = lessons => this.setState({ lessons });
 
-    initalizeEmptyLessons() {
+    initializeEmptyLessons() {
         let items = [];
         for(let i = 0; i < 7; i++) {
             items.push({
@@ -205,19 +205,15 @@ class ScheduleDashboard extends Component {
         this.setState({ open: !this.state.open})
     }
 
-    onChange = event => {
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     deleteSchedule = event => {
         event.preventDefault();
-        const schedule = this.state.schedule;
-        console.log(schedule.name)
+        const { schedule } = this.state;
         if(this.state.scheduleName === schedule.name) {
             scheduleService.deleteSchedule(schedule.id)
             .then(() => {
-                this.state.previousSchedules.splice(
-                    this.state.previousSchedules.indexOf(this.state.schedule), 1);
+                this.state.previousSchedules.shift();
                 scheduleService.setPreviousSchedules(this.state.previousSchedules);
                 this.props.history.push('/schedules');
             })
@@ -259,8 +255,6 @@ class ScheduleDashboard extends Component {
     render() {
         const { open, lessons, show, previousSchedules, hoursTemplate } = this.state;
         const { classes } = this.props;
-
-        console.log(lessons);
 
         return(
             <div className="myDisplayFlexColumn">

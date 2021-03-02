@@ -13,7 +13,6 @@ const getListStyle = isDraggingOver => ({
   });
 
 export default class WeekDays extends Component {
-
     handleOnDragEnd(result) {
         const { lessons, setLessons } = this.props;
         const { source, destination, draggableId } = result;
@@ -48,8 +47,8 @@ export default class WeekDays extends Component {
 
                 items[destination.index] = items[source.index];
                 items[destination.index].slotIndex = destination.index;
-                items[source.index].slotIndex = source.index;
                 items[source.index] = removedItem;
+                items[source.index].slotIndex = source.index;
 
                 lessons[destination.droppableId].items = items;
 
@@ -79,8 +78,11 @@ export default class WeekDays extends Component {
                 const removedItem = destItems[destination.index];
 
                 destItems[destination.index] = sourceItems[source.index];
+                destItems[destination.index].slotIndex = destination.index;
                 sourceItems[source.index] = removedItem;
+                sourceItems[source.index].slotIndex = source.index;
                 destItems[destination.index].weekDay = parseInt(destination.droppableId);
+                sourceItems[source.index].weekDay = parseInt(source.droppableId);
     
                 lessons[destination.droppableId].items = destItems;
                 lessons[source.droppableId].items = sourceItems;
