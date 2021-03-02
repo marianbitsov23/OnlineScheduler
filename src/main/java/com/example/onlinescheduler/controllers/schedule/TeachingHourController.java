@@ -49,6 +49,15 @@ public class TeachingHourController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/group/{groupId}/teaching-hours")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<TeachingHour>> getTeachingHoursByGroupId(@PathVariable Long groupId) {
+        Optional<List<TeachingHour>> teachingHours = teachingHourRepository.findAllByGroupId(groupId);
+
+        return teachingHours.map(teachingHourList -> new ResponseEntity<>(teachingHourList, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<TeachingHour> createHour(@RequestBody TeachingHourRequest teachingHourRequest) {

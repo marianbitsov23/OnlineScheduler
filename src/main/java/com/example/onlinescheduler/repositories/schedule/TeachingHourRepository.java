@@ -14,4 +14,6 @@ public interface TeachingHourRepository extends JpaRepository<TeachingHour, Long
     Optional<TeachingHour> findById(Long id);
 
     Optional<List<TeachingHour>> findAllTeachingHoursByScheduleId(Long scheduleId);
+
+    Optional<List<TeachingHour>> findAllByGroupId(Long groupId);
 }

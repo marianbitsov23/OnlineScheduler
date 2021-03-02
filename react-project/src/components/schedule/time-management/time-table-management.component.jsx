@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TableList from '../../shared/table.component';
-import { Container, Button, Jumbotron, FormGroup, } from 'react-bootstrap';
+import { Container, Button, Jumbotron, FormGroup } from 'react-bootstrap';
 import Form from "react-validation/build/form";
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
 import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
