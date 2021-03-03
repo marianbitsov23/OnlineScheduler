@@ -9,8 +9,6 @@ class ComponentToPrint extends Component {
         const slots = [0, 1, 2, 3, 4, 5, 6, 7];
         const { lessons } = this.props;
 
-        console.log(lessons);
-
         return(
             <table className="document">
                 <thead>

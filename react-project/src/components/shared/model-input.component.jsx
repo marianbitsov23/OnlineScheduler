@@ -18,14 +18,9 @@ export default class ModelInput extends Component {
             categories: [],
             schedule: scheduleService.getCurrentSchedule()
         };
-
     }
 
-    onChange = event => {
-        event.preventDefault();
-
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     createElement = event => {
         event.preventDefault();
@@ -65,9 +60,7 @@ export default class ModelInput extends Component {
         .catch(error => console.error(error));
     }
 
-    selectCategories = categories => {
-        this.setState({ categories: categories });
-    }
+    selectCategories = categories => this.setState({ categories: categories });
 
     render() {
         const { elementName } = this.state;

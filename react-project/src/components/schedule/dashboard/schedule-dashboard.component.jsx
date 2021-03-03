@@ -16,6 +16,7 @@ import SchedulePrint from './schedule-document.component';
 import WeekDays from './week-days.component';
 import { CustomDialog } from '../../shared/custom-dialog.component';
 import { TextInput } from '../../shared/text-input.component';
+import groupService from '../../../services/schedule/group.service';
 
 const useStyles = theme => ({
     appBar: {
@@ -63,6 +64,7 @@ class ScheduleDashboard extends Component {
             schedule: scheduleService.getCurrentSchedule(),
             open: true,
             lessons: [],
+            groups: [],
             show: false,
             scheduleName: "",
             previousSchedules: [],
@@ -78,64 +80,70 @@ class ScheduleDashboard extends Component {
 
         this.loadPreviousSchedules();
 
-        lessonService.getAllByScheduleId(this.state.schedule.id)
+        groupService.getAllTeachingGroups(this.state.schedule.id)
         .then(result => {
-            if(result.data.length !== 0) {
-                const lessons = [];
-                
-                for(let i = 0; i < 6; i++) {
-                    const items = this.initializeEmptyLessons();
-                    result.data.forEach(lesson => {
-                        for(let j = 0; j < 7; j++) {
-                            if(lesson.weekDay === i && lesson.slotIndex === j) {
-                                items[j] = lesson;
-                                items[j].subItems = lesson.teachingHour.overAWeek 
-                                    ? [{
-                                        id: uuidv4(),
-                                        teachingHour: lesson.teachingHour
-                                    }, {id: uuidv4(),
-                                        teachingHour: undefined}]
-                                    : new Array(2);
-                            }
-                        }
-                    });
-                    lessons.push({
-                        name: weekDaysTemplate[i],
-                        items: i !== 0 ? items : [],
-                        weekDay: i
-                    });
-                }
-                this.setState({ lessons });
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            teachingHourService.getAllByScheduleId(this.state.schedule.id)
-                .then(result => {
-                    this.setState({ teachingHours: result.data });
-                })
-                .then(() => {
+            this.setState({ groups: result.data });
+        }).then(() => {
+            lessonService.getAllByScheduleId(this.state.schedule.id)
+            .then(result => {
+                if(result.data.length !== 0) {
                     const lessons = [];
-                    const { teachingHours } = this.state;
-
-                    lessons.push({
-                        name: weekDaysTemplate[0],
-                        items: this.initializeAllLessons(teachingHours),
-                        weekDay: 0
-                    });
-
-                    for(let i = 1; i < 6; i++) {
+                    
+                    for(let i = 0; i < 6; i++) {
+                        const items = this.initializeEmptyLessons();
+                        result.data.forEach(lesson => {
+                            for(let j = 0; j < 7; j++) {
+                                if(lesson.weekDay === i && lesson.slotIndex === j) {
+                                    items[j] = lesson;
+                                    items[j].subItems = lesson.teachingHour.overAWeek 
+                                        ? [{
+                                            id: uuidv4(),
+                                            teachingHour: lesson.teachingHour
+                                        }, {id: uuidv4(),
+                                            teachingHour: undefined}]
+                                        : new Array(2);
+                                }
+                            }
+                        });
                         lessons.push({
                             name: weekDaysTemplate[i],
-                            items: this.initializeEmptyLessons(),
+                            items: i !== 0 ? items : [],
                             weekDay: i
                         });
                     }
-
                     this.setState({ lessons });
-                })
-                .catch(error => console.error(error));
-        });
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                teachingHourService.getAllByScheduleId(this.state.schedule.id)
+                    .then(result => {
+                        this.setState({ teachingHours: result.data });
+                    })
+                    .then(() => {
+                        const lessons = [];
+                        const { teachingHours } = this.state;
+    
+                        lessons.push({
+                            name: weekDaysTemplate[0],
+                            items: this.initializeAllLessons(teachingHours),
+                            weekDay: 0
+                        });
+    
+                        for(let i = 1; i < 6; i++) {
+                            lessons.push({
+                                name: weekDaysTemplate[i],
+                                items: this.initializeEmptyLessons(),
+                                weekDay: i
+                            });
+                        }
+    
+                        this.setState({ lessons });
+                    })
+                    .catch(error => console.error(error));
+            });
+        })
+        
     }
 
     setLessons = lessons => this.setState({ lessons });
@@ -201,9 +209,7 @@ class ScheduleDashboard extends Component {
         return lessons;
     }
 
-    handleDrawer() {
-        this.setState({ open: !this.state.open})
-    }
+    handleDrawer = () => this.setState({ open: !this.state.open });
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
@@ -253,8 +259,10 @@ class ScheduleDashboard extends Component {
     onClose = () => this.setState({ show: !this.state.show });
 
     render() {
-        const { open, lessons, show, previousSchedules, hoursTemplate } = this.state;
+        const { open, lessons, show, previousSchedules, hoursTemplate, groups } = this.state;
         const { classes } = this.props;
+
+        console.log(groups)
 
         return(
             <div className="myDisplayFlexColumn">
@@ -274,7 +282,7 @@ class ScheduleDashboard extends Component {
                         noWrap className="title">
                             {this.state.schedule.name}
                         </Typography>
-                            <SchedulePrint lessons={lessons} />
+                        <SchedulePrint lessons={lessons} />
                         <IconButton onClick={() => this.setState({ show: true })} color="inherit">
                             <DeleteIcon />
                         </IconButton>
@@ -313,13 +321,13 @@ class ScheduleDashboard extends Component {
                     onClose={this.onClose}
                     title="Are you sure you want to delete this schedule?"
                     confirmFunction={this.deleteSchedule}
-                    confirmButtonText="Delete"
+                    confirmButtonText="Изтриване"
                     text=
                     {<>
-                        Are you absolutely sure that you want to delete this schedule?
-                        This change is permanent and cannot be reverted.
-                        Type in <div className="scheduleName">{this.state.schedule.name}</div> 
-                        and press the <span className="deleteButtonText">DELETE</span> button to proceed.
+                        Напълно сигурни ли сте че искате да изтриете този график?
+                        Изтриването е перманентно и графикът не може да бъде възстановен!
+                        Въведете името на графика <div className="scheduleName">{this.state.schedule.name}</div> 
+                        и натиснете <span className="deleteButtonText">Изтриване</span> бутона, за да потвърдите.
                     </>}
                     content=
                     {<>

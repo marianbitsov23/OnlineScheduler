@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
@@ -28,6 +30,21 @@ public class GroupController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(allGroups, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/teaching/{scheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<List<Group>> getAllTeachingGroups(@PathVariable Long scheduleId) {
+        Optional<List<Group>> groups = groupRepository.findAllByScheduleId(scheduleId);
+
+        if(groups.isPresent()) {
+            List<Group> teachingGroups = groups.get().stream()
+                    .filter(Predicate.not(group -> group.getParent() == null || group.getParent().getParent() == null))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(teachingGroups, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

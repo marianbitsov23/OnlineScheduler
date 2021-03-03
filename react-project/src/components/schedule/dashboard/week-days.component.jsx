@@ -10,7 +10,7 @@ const getListStyle = isDraggingOver => ({
     background: isDraggingOver ? primaryColor : whiteColor,
     padding: '1rem',
     width: 200
-  });
+});
 
 export default class WeekDays extends Component {
     handleOnDragEnd(result) {
@@ -80,9 +80,11 @@ export default class WeekDays extends Component {
                 destItems[destination.index] = sourceItems[source.index];
                 destItems[destination.index].slotIndex = destination.index;
                 sourceItems[source.index] = removedItem;
-                sourceItems[source.index].slotIndex = source.index;
+                if(sourceItems[source.index]) {
+                    sourceItems[source.index].slotIndex = source.index;
+                    sourceItems[source.index].weekDay = parseInt(source.droppableId);
+                }
                 destItems[destination.index].weekDay = parseInt(destination.droppableId);
-                sourceItems[source.index].weekDay = parseInt(source.droppableId);
     
                 lessons[destination.droppableId].items = destItems;
                 lessons[source.droppableId].items = sourceItems;

@@ -20,9 +20,7 @@ export default class Navigation extends Component {
         if (currentUser) this.setState({currentUser: currentUser});
     }
 
-    logOut() {
-        authService.logout();
-    }
+    logOut = () => authService.logout();
 
     render() {
 

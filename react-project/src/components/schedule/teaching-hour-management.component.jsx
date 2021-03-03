@@ -147,10 +147,7 @@ export default class ManageTeachingHours extends Component {
         .catch(error => console.error(error));
     }
 
-    onChange = event => {
-        event.preventDefault();
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     changeTimeSlots = (timeSlots, ammount) => {
         const { timeTables } = this.state;

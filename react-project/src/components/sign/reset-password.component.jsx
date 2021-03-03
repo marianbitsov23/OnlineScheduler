@@ -3,10 +3,10 @@ import Form from "react-validation/build/form";
 import { FormGroup, Alert } from 'react-bootstrap';
 import { Avatar, Container, 
         Typography, Paper } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import authService from "../../services/user-auth/auth.service";
 import { TextInput } from '../shared/text-input.component';
 import { ConfirmButton } from "../shared/confirm-button.component";
+import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 
 export default class ResetPassword extends Component {
     constructor(props) {
@@ -60,7 +60,7 @@ export default class ResetPassword extends Component {
                         alignItemsCenter
                         myDefaultMargin">
                             <Avatar className="myDefaultMargin primaryBackground">
-                                <LockOutlinedIcon />
+                                <ReplayOutlinedIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Променете паролата си

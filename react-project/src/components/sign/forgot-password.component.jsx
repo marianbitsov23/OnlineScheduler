@@ -4,11 +4,11 @@ import { FormGroup, Alert } from "react-bootstrap";
 import authService from "../../services/user-auth/auth.service";
 import { Avatar, Container, 
         Typography, Grid, Paper } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
 import { isEmail } from "validator";
 import { ConfirmButton } from "../shared/confirm-button.component";
 import { TextInput } from '../shared/text-input.component';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
 export default class ForgotPassword extends Component {
     constructor(props) {
@@ -65,7 +65,7 @@ export default class ForgotPassword extends Component {
                         alignItemsCenter
                         myDefaultMargin">
                             <Avatar className="myDefaultMargin primaryBackground">
-                                <LockOutlinedIcon />
+                                <MailOutlineIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Забравена парола

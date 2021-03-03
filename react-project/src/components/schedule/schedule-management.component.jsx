@@ -321,7 +321,7 @@ export default class ManageSchedules extends Component {
                             <Button
                             onClick={this.saveFromExistingSchedule}
                             variant="contained"
-                            //disabled={isInvalid}
+                            disabled={isInvalid}
                             color="primary">
                                 Създаване
                             </Button>

@@ -5,10 +5,10 @@ import { isEmail } from "validator";
 import Form from "react-validation/build/form";
 import { Avatar, Container, 
         Typography, Grid, Paper } from '@material-ui/core';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Link } from 'react-router-dom';
 import { TextInput } from '../shared/text-input.component';
 import { ConfirmButton } from '../shared/confirm-button.component';
+import EditIcon from '@material-ui/icons/Edit';
 
 export default class Register extends Component {
     constructor(props) {
@@ -119,7 +119,7 @@ export default class Register extends Component {
                     alignItemsCenter
                     myDefaultMargin">
                         <Avatar className="myDefaultMargin primaryBackground">
-                            <LockOutlinedIcon />
+                            <EditIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Създаване на профил

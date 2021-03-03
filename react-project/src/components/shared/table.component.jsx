@@ -47,9 +47,7 @@ export default class TableList extends Component {
         .catch(error => console.error(error));
     }
 
-    onShow = element => {
-        this.setState({ show: !this.state.show, editableElement: {...element} });
-    }
+    onShow = element => this.setState({ show: !this.state.show, editableElement: {...element} });
 
     deleteElement = (element) => {
         let elements = this.props.elements;
@@ -86,10 +84,7 @@ export default class TableList extends Component {
         this.setState({ editableElement });
     }
 
-    onChange = event => {
-        event.preventDefault();
-        this.setState({ [event.target.name] : event.target.value });
-    }
+    onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     render() {
 
