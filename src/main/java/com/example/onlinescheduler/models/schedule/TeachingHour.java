@@ -60,6 +60,7 @@ public class TeachingHour {
     public TeachingHour() {}
 
     public TeachingHour(@NotBlank Subject subject,
+                        @NotBlank Group group,
                         @NotBlank Teacher teacher,
                         @NotBlank Integer hoursPerWeek,
                         @NotBlank Boolean overAWeek,
@@ -67,6 +68,7 @@ public class TeachingHour {
                         @NotBlank Set<TimeSlot> timeSlots,
                         @NotBlank Schedule schedule) {
         this.subject = subject;
+        this.group = group;
         this.teacher = teacher;
         this.hoursPerWeek = hoursPerWeek;
         this.overAWeek = overAWeek;

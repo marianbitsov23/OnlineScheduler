@@ -63,6 +63,7 @@ public class TeachingHourController {
     public ResponseEntity<TeachingHour> createHour(@RequestBody TeachingHourRequest teachingHourRequest) {
         TeachingHour newTeachingHour = new TeachingHour(
                 teachingHourRequest.getSubject(),
+                teachingHourRequest.getGroup(),
                 teachingHourRequest.getTeacher(),
                 teachingHourRequest.getHoursPerWeek(),
                 teachingHourRequest.getOverAWeek(),

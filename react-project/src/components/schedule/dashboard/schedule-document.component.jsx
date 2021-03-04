@@ -81,7 +81,10 @@ export default class SchedulePrint extends Component {
                     </PrintContextConsumer>
                 </ReactToPrint>
                 <div className="myHidden">
-                    <ComponentToPrint lessons={this.props.lessons} ref={el => (this.componentRef = el)} />
+                    <ComponentToPrint 
+                        lessons={this.props.lessons} 
+                        ref={el => (this.componentRef = el)} 
+                    />
                 </div>
             </>
         );

@@ -13,6 +13,11 @@ class TeachingHourService {
         {headers: authHeader()});
     }
 
+    getAllByGroupId(groupId) {
+        return axios.get(API_URL + '/group/' + groupId + '/teaching-hours', 
+        {headers: authHeader()});
+    }
+
     getTeachingHourById(id) {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
@@ -22,6 +27,7 @@ class TeachingHourService {
             {
                 subject: teachingHour.subject,
                 teacher: teachingHour.teacher,
+                group: teachingHour.group,
                 hoursPerWeek: teachingHour.hoursPerWeek,
                 overAWeek: teachingHour.overAWeek,
                 cabinet: teachingHour.cabinet,

@@ -24,6 +24,7 @@ export default class ManageTeachingHours extends Component {
         this.state = {
             teachingHours: [],
             subjects: [],
+            groups: [],
             teachers: [],
             cabinets: [],
             timeTables: [],
@@ -52,18 +53,14 @@ export default class ManageTeachingHours extends Component {
         .catch(error => console.error(error));
 
         await this.fetchAllGroups();
-
         await this.fetchAllSubjects();
-
         await this.fetchAllTeachers();
-
         await this.fetchAllCabinets();
-
         await this.fetchAllTimeTables();
     }
 
     async fetchAllGroups() {
-        groupService.getAllByScheduleId(this.state.schedule.id)
+        groupService.getAllTeachingGroups(this.state.schedule.id)
         .then(result => {
             this.setState({ groups: result.data });
         })
@@ -133,6 +130,7 @@ export default class ManageTeachingHours extends Component {
         teachingHourService.create({
             subject: this.state.subjects[this.state.selectedSubject],
             teacher: this.state.teachers[this.state.selectedTeacher],
+            group: this.state.groups[this.state.selectedGroup],
             hoursPerWeek: this.state.hoursPerWeek,
             overAWeek: this.state.overAWeek,
             cabinet: this.state.cabinets[this.state.selectedCabinet],
@@ -319,7 +317,10 @@ export default class ManageTeachingHours extends Component {
                     }
                 />
                 <Container>
-                    <NextButton link={"/schedule-dashboard"}/>
+                    <div className="myDisplayFlex justifyContentSpaceBetween">
+                        <NextButton type="backwards" link={"/cabinet-management"}/>
+                        <NextButton type="forward" link={"/teacher-management"}/>
+                    </div>
                 </Container>
             </>
         );

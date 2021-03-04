@@ -16,6 +16,7 @@ import SchedulePrint from './schedule-document.component';
 import WeekDays from './week-days.component';
 import { CustomDialog } from '../../shared/custom-dialog.component';
 import { TextInput } from '../../shared/text-input.component';
+import { CustomSelect } from '../../shared/custom-select.component';
 import groupService from '../../../services/schedule/group.service';
 
 const useStyles = theme => ({
@@ -66,6 +67,7 @@ class ScheduleDashboard extends Component {
             lessons: [],
             groups: [],
             show: false,
+            selectedGroup: 0,
             scheduleName: "",
             previousSchedules: [],
             hoursTemplate: [0, 1, 2, 3, 4, 5, 6]
@@ -117,30 +119,30 @@ class ScheduleDashboard extends Component {
             .catch(error => {
                 console.error(error);
                 teachingHourService.getAllByScheduleId(this.state.schedule.id)
-                    .then(result => {
-                        this.setState({ teachingHours: result.data });
-                    })
-                    .then(() => {
-                        const lessons = [];
-                        const { teachingHours } = this.state;
-    
+                .then(result => {
+                    this.setState({ teachingHours: result.data });
+                })
+                .then(() => {
+                    const lessons = [];
+                    const { teachingHours } = this.state;
+
+                    lessons.push({
+                        name: weekDaysTemplate[0],
+                        items: this.initializeAllLessons(teachingHours),
+                        weekDay: 0
+                    });
+
+                    for(let i = 1; i < 6; i++) {
                         lessons.push({
-                            name: weekDaysTemplate[0],
-                            items: this.initializeAllLessons(teachingHours),
-                            weekDay: 0
+                            name: weekDaysTemplate[i],
+                            items: this.initializeEmptyLessons(),
+                            weekDay: i
                         });
-    
-                        for(let i = 1; i < 6; i++) {
-                            lessons.push({
-                                name: weekDaysTemplate[i],
-                                items: this.initializeEmptyLessons(),
-                                weekDay: i
-                            });
-                        }
-    
-                        this.setState({ lessons });
-                    })
-                    .catch(error => console.error(error));
+                    }
+
+                    this.setState({ lessons });
+                })
+                .catch(error => console.error(error));
             });
         })
         
@@ -169,9 +171,7 @@ class ScheduleDashboard extends Component {
         .then(result => {
             let index;
             previousSchedules.forEach((prev, i) => {
-                if(prev.id === schedule.id) {
-                    index = i;
-                }
+                if(prev.id === schedule.id) index = i;
             });
     
             if(previousSchedules) {
@@ -211,7 +211,10 @@ class ScheduleDashboard extends Component {
 
     handleDrawer = () => this.setState({ open: !this.state.open });
 
-    onChange = event => this.setState({ [event.target.name] : event.target.value });
+    onChange = event => {
+        this.setState({ [event.target.name] : event.target.value });
+        if([event.target.name][0] === "selectedGroup") this.fetchLessonsByGroup();
+    }
 
     deleteSchedule = event => {
         event.preventDefault();
@@ -252,6 +255,41 @@ class ScheduleDashboard extends Component {
         });
     }
 
+    fetchLessonsByGroup = () => {
+        const { selectedGroup } = this.state;
+        const group = this.state.groups[selectedGroup];
+        const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
+
+        teachingHourService.getAllByGroupId(group.id)
+        .then(result => {
+            this.setState({ teachingHours: result.data });
+        })
+        .then(() => {
+            const lessons = [];
+            const { teachingHours } = this.state;
+
+            lessons.push({
+                name: weekDaysTemplate[0],
+                items: this.initializeAllLessons(teachingHours),
+                weekDay: 0
+            });
+
+            for(let i = 1; i < 6; i++) {
+                lessons.push({
+                    name: weekDaysTemplate[i],
+                    items: this.initializeEmptyLessons(),
+                    weekDay: i
+                });
+            }
+
+            this.setState({ lessons });
+        })
+        .catch(error => {
+            this.setState({ lessons: [] });
+            console.error(error);
+        });
+    }
+
     componentWillUnmount() {
         //this.saveLessonsInDb(this.state.lessons);
     }
@@ -282,6 +320,12 @@ class ScheduleDashboard extends Component {
                         noWrap className="title">
                             {this.state.schedule.name}
                         </Typography>
+                        <CustomSelect
+                            name="selectedGroup"
+                            value={this.state.selectedGroup}
+                            onChange={this.onChange}
+                            elements={groups}
+                        />
                         <SchedulePrint lessons={lessons} />
                         <IconButton onClick={() => this.setState({ show: true })} color="inherit">
                             <DeleteIcon />
@@ -298,7 +342,12 @@ class ScheduleDashboard extends Component {
                         <Divider />
                         <List>{MainListItems}</List>
                         <Divider />
-                        <List><SecondaryListItems open={open} schedules={previousSchedules} /></List>
+                        <List>
+                            <SecondaryListItems 
+                                open={open} 
+                                schedules={previousSchedules}
+                            />
+                        </List>
                     </Drawer>
                     <div className="content">
                         <Container maxWidth="xl" className="myDefaultPadding">

@@ -43,7 +43,12 @@ export default class ManageCabinets extends Component {
 
         return(
             <Container>
-                <ModelInput type="cabinet" categories={categories} elements={cabinets} service={cabinetService}/>
+                <ModelInput 
+                    type="cabinet" 
+                    categories={categories} 
+                    elements={cabinets} 
+                    service={cabinetService}
+                />
                 <NextButton link={"/teaching-hour-management"}/>
             </Container>
         );
