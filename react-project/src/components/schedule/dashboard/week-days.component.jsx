@@ -85,12 +85,58 @@ export default class WeekDays extends Component {
                     sourceItems[source.index].weekDay = parseInt(source.droppableId);
                 }
                 destItems[destination.index].weekDay = parseInt(destination.droppableId);
-    
-                lessons[destination.droppableId].items = destItems;
-                lessons[source.droppableId].items = sourceItems;
-    
-                setLessons(lessons);
+
+                if(this.validateLesson(
+                    sourceItems[source.index], destItems[destination.index]
+                )) {
+                    lessons[destination.droppableId].items = destItems;
+                    lessons[source.droppableId].items = sourceItems;
+        
+                    setLessons(lessons);
+                } else {
+                    console.log('error')
+                }
             }
+        }
+    }
+
+    validateLesson = (sourceLesson, destLesson) => {
+        if(sourceLesson === undefined || destLesson === undefined) return false;
+        if((sourceLesson.teachingHour === undefined ||
+        this.validateTimeSpan(
+            sourceLesson.teachingHour.timeSlots,
+            sourceLesson.slotIndex    
+        ))&& this.validateTimeSpan(
+            destLesson.teachingHour.timeSlots,
+            destLesson.slotIndex
+        )) {
+            return true;
+        }
+
+        return false;
+    }
+
+    validateTimeSpan = (timeSlots, index) => {
+        for(let i = 0; i < timeSlots.length; i++) {
+            const timeSlotIndex = this.determineTimeSpan(
+                timeSlots[i].timeStart, timeSlots[i].timeEnd
+            );
+            if(timeSlotIndex === index) return true;
+        }
+        return false;
+    }
+
+    determineTimeSpan = (timeStart, timeEnd) => {
+        switch (timeStart + ' - ' + timeEnd) {
+            case "8:00 - 8:40": return 0;
+            case "8:50 - 9:30": return 1;
+            case "9:40 - 10:20": return 2;
+            case "10:50 - 11:40": return 3;
+            case "11:50 - 12:30": return 4;
+            case "12:40 - 13:20": return 5;
+            case "13:30 - 14:10": return 6;
+            default: return -1;
+            //vtora smqna
         }
     }
 

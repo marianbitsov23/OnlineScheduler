@@ -300,8 +300,6 @@ class ScheduleDashboard extends Component {
         const { open, lessons, show, previousSchedules, hoursTemplate, groups } = this.state;
         const { classes } = this.props;
 
-        console.log(groups)
-
         return(
             <div className="myDisplayFlexColumn">
                 <CssBaseline />

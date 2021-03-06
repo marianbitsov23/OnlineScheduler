@@ -5,7 +5,7 @@ import { Button, IconButton,
 import CloseIcon from '@material-ui/icons/Close';
 
 export const CustomDialog = ({ show, onClose, title, 
-                            confirmFunction, text, 
+                            confirmFunction, text, disabled,
                             confirmButtonText, content }) => (
     <Dialog
         className="dialog"
@@ -33,7 +33,12 @@ export const CustomDialog = ({ show, onClose, title,
             {content}
         </DialogContent>
         <DialogActions className="dialogAction">
-            <Button onClick={confirmFunction} color="secondary" variant="contained">
+            <Button 
+                onClick={confirmFunction} 
+                color="secondary" 
+                variant="contained"
+                disabled={disabled}
+            >
                 {confirmButtonText}
             </Button>
         </DialogActions>

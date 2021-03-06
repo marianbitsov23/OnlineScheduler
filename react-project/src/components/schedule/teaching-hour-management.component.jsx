@@ -284,6 +284,7 @@ export default class ManageTeachingHours extends Component {
                     title="Изберете часове"
                     confirmFunction={() => this.setState({ hours: false, show: true })}
                     confirmButtonText="Запази"
+                    disabled={disabled}
                     content={
                         <>
                             <CustomSelect
