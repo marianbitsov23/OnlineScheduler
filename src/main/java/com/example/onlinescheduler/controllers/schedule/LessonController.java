@@ -43,6 +43,14 @@ public class LessonController {
         return new ResponseEntity<>(lesson, HttpStatus.CREATED);
     }
 
+    @GetMapping("schedule/{scheduleId}/exist/lessons")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<Boolean> checkIfLessonsExist(@PathVariable Long scheduleId) {
+        Boolean check = lessonRepository.existsByScheduleId(scheduleId);
+
+        return (new ResponseEntity<>(check, HttpStatus.OK));
+    }
+
     @GetMapping("/schedule/{scheduleId}/lessons")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Lesson>> getLessonsByScheduleId(@PathVariable Long scheduleId) {

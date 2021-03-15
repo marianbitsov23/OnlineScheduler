@@ -8,6 +8,11 @@ class LessonService {
         return axios.get(API_URL, { headers: authHeader() });
     }
 
+    checkIfLessonsExist(scheduleId) {
+        return axios.get(API_URL + '/schedule/' + scheduleId + '/exist/lessons',
+        {headers: authHeader()});
+    }
+
     getAllByScheduleId(scheduleId) {
         return axios.get(API_URL + '/schedule/' + scheduleId + '/lessons', 
         {headers: authHeader()});

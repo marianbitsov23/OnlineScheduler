@@ -17,4 +17,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             @NotBlank Integer slotIndex,
             @NotBlank Integer weekDay,
             @NotBlank TeachingHour teachingHour);
+
+    Boolean existsByScheduleId(Long scheduleId);
 }
