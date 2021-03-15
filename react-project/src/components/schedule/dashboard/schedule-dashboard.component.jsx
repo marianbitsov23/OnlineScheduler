@@ -121,11 +121,9 @@ class ScheduleDashboard extends Component {
 
     mapLessonsBySelectedGroup = () => {
         const { teachingHours, lessons } = this.state;
-        
 
         if(teachingHours) {
             this.mapLessonsBySelectedTimeTable();
-
         } else {
 
         }
@@ -133,9 +131,13 @@ class ScheduleDashboard extends Component {
 
     mapLessonsBySelectedTimeTable = () => {
         const { lessons, weekDaysTemplate, teachingHours } = this.state;
-        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
         const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+
+        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
         const selectedGroup = this.state.groups[this.state.selectedGroup];
+
+        console.log(selectedGroup);
+
         const filteredTeachingHours = teachingHours.filter(
             teachingHour => teachingHour.group.id === selectedGroup.id
             && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
@@ -160,71 +162,6 @@ class ScheduleDashboard extends Component {
         this.setState({ lessons });
     }
 
-        /*
-        groupService.getAllTeachingGroups(this.state.schedule.id)
-        .then(result => {
-            this.setState({ groups: result.data });
-        }).then(() => {
-            lessonService.getAllByScheduleId(this.state.schedule.id)
-            .then(result => {
-                if(result.data.length !== 0) {
-                    const lessons = [];
-                    
-                    for(let i = 0; i < 6; i++) {
-                        const items = this.initializeItems();
-                        result.data.forEach(lesson => {
-                            for(let j = 0; j < 7; j++) {
-                                if(lesson.weekDay === i && lesson.slotIndex === j) {
-                                    items[j] = lesson;
-                                    items[j].subItems = lesson.teachingHour.overAWeek 
-                                        ? [{
-                                            id: uuidv4(),
-                                            teachingHour: lesson.teachingHour
-                                        }, {id: uuidv4(),
-                                            teachingHour: undefined}]
-                                        : new Array(2);
-                                }
-                            }
-                        });
-                        lessons.push({
-                            name: weekDaysTemplate[i],
-                            items: i !== 0 ? items : [],
-                            weekDay: i
-                        });
-                    }
-                    this.setState({ lessons });
-                }
-            })
-            .catch(error => {
-                console.error(error);
-                teachingHourService.getAllByScheduleId(this.state.schedule.id)
-                .then(result => {
-                    this.setState({ teachingHours: result.data });
-                })
-                .then(() => {
-                    const lessons = [];
-                    const { teachingHours } = this.state;
-
-                    lessons.push({
-                        name: weekDaysTemplate[0],
-                        items: this.initializeAllLessons(teachingHours),
-                        weekDay: 0
-                    });
-
-                    for(let i = 1; i < 6; i++) {
-                        lessons.push({
-                            name: weekDaysTemplate[i],
-                            items: this.initializeItems(),
-                            weekDay: i
-                        });
-                    }
-
-                    this.setState({ lessons });
-                })
-                .catch(error => console.error(error));
-            });
-        })
-        */
     fetchTimeTables = () => {
         return timeTableService.getAllByScheduleId(this.state.schedule.id)
         .then(async timeTables => {
@@ -312,8 +249,15 @@ class ScheduleDashboard extends Component {
     handleDrawer = () => this.setState({ open: !this.state.open });
 
     onChange = event => {
-        this.setState({ [event.target.name] : event.target.value });
-        if([event.target.name][0] === "selectedGroup") this.fetchLessonsByGroup();
+        if([event.target.name][0] === "selectedGroup") {
+            this.state.selectedGroup = event.target.value;
+            this.mapLessonsBySelectedGroup();
+        }
+        else if([event.target.name][0] === "selectedTimeTable") {
+            this.state.selectedTimeTable = event.target.value;
+            this.mapLessonsBySelectedTimeTable();
+        }
+        else this.setState({ [event.target.name] : event.target.value });
     }
 
     deleteSchedule = event => {
@@ -352,39 +296,6 @@ class ScheduleDashboard extends Component {
                     .catch(error => console.error(error));
                 }
             })
-        });
-    }
-
-    fetchLessonsByGroup = () => {
-        const { selectedGroup } = this.state;
-        const group = this.state.groups[selectedGroup];
-        const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
-
-        teachingHourService.getAllByGroupId(group.id)
-        .then(result => this.setState({ teachingHours: result.data }))
-        .then(() => {
-            const lessons = [];
-            const { teachingHours } = this.state;
-
-            lessons.push({
-                name: weekDaysTemplate[0],
-                items: this.initializeAllLessons(teachingHours),
-                weekDay: 0
-            });
-
-            for(let i = 1; i < 6; i++) {
-                lessons.push({
-                    name: weekDaysTemplate[i],
-                    items: this.initializeItems(),
-                    weekDay: i
-                });
-            }
-
-            this.setState({ lessons });
-        })
-        .catch(error => {
-            this.setState({ lessons: [] });
-            console.error(error);
         });
     }
 

@@ -122,7 +122,7 @@ export default class TableList extends Component {
                                         <li key={category.id}>{category.name}</li>
                                     </ul>
                                 ))}</TableCell>}
-                                {this.props.type === "teaching-hour" && <TableCell>12A</TableCell>}
+                                {this.props.type === "teaching-hour" && <TableCell>{element.group.name}</TableCell>}
                                 {this.props.type === "teaching-hour" && <TableCell>
                                     {element.teacher.name} ({element.teacher.initials})
                                 </TableCell>}

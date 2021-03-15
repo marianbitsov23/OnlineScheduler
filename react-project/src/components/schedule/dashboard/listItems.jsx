@@ -85,16 +85,16 @@ export const LessonSlot = ({day, slots, weekDay}) => {
         return (
             <>
                 {day.items.map((item, index) => (
-                    <>
-                    {item &&
-                    <LessonItem
-                        type={item.id.toString()}
-                        subItems={item.subItems}
-                        lesson={item}
-                        weekDay={weekDay}
-                        index={index}
-                    />}
-                    </>
+                    <div key={index}>
+                        {item &&
+                        <LessonItem
+                            type={item.id.toString()}
+                            subItems={item.subItems}
+                            lesson={item}
+                            weekDay={weekDay}
+                            index={index}
+                        />}
+                    </div>
                 ))}
             </>
         )
