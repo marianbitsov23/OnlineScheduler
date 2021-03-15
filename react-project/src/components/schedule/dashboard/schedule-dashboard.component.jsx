@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import scheduleService from '../../../services/schedule/schedule.service';
 import teachingHourService from '../../../services/schedule/teaching-hour.service';
-import { AppBar, CssBaseline, IconButton,
+import { AppBar, IconButton,
          Toolbar, Typography,
          Drawer, Divider, Container,
          Grid, List} from '@material-ui/core';
@@ -18,6 +18,8 @@ import { CustomDialog } from '../../shared/custom-dialog.component';
 import { TextInput } from '../../shared/text-input.component';
 import { CustomSelect } from '../../shared/custom-select.component';
 import groupService from '../../../services/schedule/group.service';
+import timeTableService from '../../../services/schedule/time-management/time-table.service';
+import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
 
 const useStyles = theme => ({
     appBar: {
@@ -65,12 +67,16 @@ class ScheduleDashboard extends Component {
             schedule: scheduleService.getCurrentSchedule(),
             open: true,
             lessons: [],
+            timeTables: [],
             groups: [],
             show: false,
             selectedGroup: 0,
+            selectedTimeTable: 0,
+            teachingHours: undefined,
             scheduleName: "",
             previousSchedules: [],
-            hoursTemplate: [0, 1, 2, 3, 4, 5, 6]
+            hoursTemplate: [0, 1, 2, 3, 4, 5, 6],
+            weekDaysTemplate: ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък']
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
@@ -79,9 +85,82 @@ class ScheduleDashboard extends Component {
 
     componentDidMount() {
         const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
+        const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+
+        const scheduleId = this.state.schedule.id;
 
         this.loadPreviousSchedules();
 
+        this.fetchGroups(scheduleId)
+        .then(() => {
+            this.fetchTimeTables()
+            .then(() => {
+                const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable]
+    
+                lessonService.checkIfLessonsExist(scheduleId)
+                .then(result => {
+                    if(result.data) {
+                        lessonService.getAllByScheduleId(scheduleId)
+                        .then(lessons => {
+                            const filteredLessons = lessons.data.filter(
+                                lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+                            );
+
+                            console.log(filteredLessons);
+                        })
+                    } else {
+                        teachingHourService.getAllByScheduleId(scheduleId)
+                        .then(teachingHours => this.setState({ teachingHours: teachingHours.data }))
+                        .then(() => this.mapLessonsBySelectedGroup());
+                    }
+    
+                })             
+            })
+        })
+    }
+
+    mapLessonsBySelectedGroup = () => {
+        const { teachingHours, lessons } = this.state;
+        
+
+        if(teachingHours) {
+            this.mapLessonsBySelectedTimeTable();
+
+        } else {
+
+        }
+    }
+
+    mapLessonsBySelectedTimeTable = () => {
+        const { lessons, weekDaysTemplate, teachingHours } = this.state;
+        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
+        const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+        const selectedGroup = this.state.groups[this.state.selectedGroup];
+        const filteredTeachingHours = teachingHours.filter(
+            teachingHour => teachingHour.group.id === selectedGroup.id
+            && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+        );
+
+        lessons[0] = {
+            name: weekDaysTemplate[0],
+            items: this.initTeachingHours(filteredTeachingHours),
+            weekDay: 0
+        }
+
+        for(let i = 1; i < 6; i++) {
+            lessons[i] = {
+                name: weekDaysTemplate[i],
+                items: this.initializeItems(selectedTimeTable.timeSlots.filter(
+                    timeSlot => timeSlot.weekDay === timeSlotDayTemplates[i - 1]
+                )),
+                weekDay: i
+            }
+        }
+
+        this.setState({ lessons });
+    }
+
+        /*
         groupService.getAllTeachingGroups(this.state.schedule.id)
         .then(result => {
             this.setState({ groups: result.data });
@@ -92,7 +171,7 @@ class ScheduleDashboard extends Component {
                     const lessons = [];
                     
                     for(let i = 0; i < 6; i++) {
-                        const items = this.initializeEmptyLessons();
+                        const items = this.initializeItems();
                         result.data.forEach(lesson => {
                             for(let j = 0; j < 7; j++) {
                                 if(lesson.weekDay === i && lesson.slotIndex === j) {
@@ -135,7 +214,7 @@ class ScheduleDashboard extends Component {
                     for(let i = 1; i < 6; i++) {
                         lessons.push({
                             name: weekDaysTemplate[i],
-                            items: this.initializeEmptyLessons(),
+                            items: this.initializeItems(),
                             weekDay: i
                         });
                     }
@@ -145,14 +224,35 @@ class ScheduleDashboard extends Component {
                 .catch(error => console.error(error));
             });
         })
-        
+        */
+    fetchTimeTables = () => {
+        return timeTableService.getAllByScheduleId(this.state.schedule.id)
+        .then(async timeTables => {
+            for( let i = 0; i < timeTables.data.length; i++) {
+                await this.fetchTimeSlotsForTimeTable(timeTables.data[i]);
+            }
+            this.setState({ timeTables: timeTables.data })
+        })
+        .catch(error => console.error(error));
+    }
+
+    fetchTimeSlotsForTimeTable = (timeTable) => {
+        return timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
+        .then(timeSlots => timeTable.timeSlots = timeSlots.data)
+        .catch(error => console.error(error));
+    }
+
+    fetchGroups = (scheduleId) => {
+        return groupService.getAllTeachingGroups(scheduleId)
+        .then(result => this.setState({ groups: result.data }))
+        .catch(error => console.error(error));
     }
 
     setLessons = lessons => this.setState({ lessons });
 
-    initializeEmptyLessons() {
+    initializeItems = (timeSlots) => {
         let items = [];
-        for(let i = 0; i < 7; i++) {
+        for(let i = 0; i < timeSlots.length; i++) {
             items.push({
                 id: uuidv4(),
                 teachingHour: undefined,
@@ -191,7 +291,7 @@ class ScheduleDashboard extends Component {
         .catch(error => console.error(error));
     }
 
-    initializeAllLessons = teachingHours => {
+    initTeachingHours = (teachingHours) => {
         let lessons = [];
         teachingHours.forEach(teachingHour => {
             for(let i = 0; i < teachingHour.hoursPerWeek; i++) {
@@ -261,9 +361,7 @@ class ScheduleDashboard extends Component {
         const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
 
         teachingHourService.getAllByGroupId(group.id)
-        .then(result => {
-            this.setState({ teachingHours: result.data });
-        })
+        .then(result => this.setState({ teachingHours: result.data }))
         .then(() => {
             const lessons = [];
             const { teachingHours } = this.state;
@@ -277,7 +375,7 @@ class ScheduleDashboard extends Component {
             for(let i = 1; i < 6; i++) {
                 lessons.push({
                     name: weekDaysTemplate[i],
-                    items: this.initializeEmptyLessons(),
+                    items: this.initializeItems(),
                     weekDay: i
                 });
             }
@@ -297,12 +395,21 @@ class ScheduleDashboard extends Component {
     onClose = () => this.setState({ show: !this.state.show });
 
     render() {
-        const { open, lessons, show, previousSchedules, hoursTemplate, groups } = this.state;
+        const { 
+            open, 
+            lessons, 
+            show, 
+            previousSchedules, 
+            hoursTemplate, 
+            groups,
+            timeTables
+        } = this.state;
         const { classes } = this.props;
 
+        console.log(lessons);
+        
         return(
             <div className="myDisplayFlexColumn">
-                <CssBaseline />
                 <AppBar position="static" className={clsx(classes.appBar, open && classes.appBarShift)}>
                     <Toolbar className="baseColor blackColor">
                         <IconButton
@@ -318,6 +425,12 @@ class ScheduleDashboard extends Component {
                         noWrap className="title">
                             {this.state.schedule.name}
                         </Typography>
+                        <CustomSelect
+                            name="selectedTimeTable"
+                            value={this.state.selectedTimeTable}
+                            onChange={this.onChange}
+                            elements={timeTables}
+                        />
                         <CustomSelect
                             name="selectedGroup"
                             value={this.state.selectedGroup}

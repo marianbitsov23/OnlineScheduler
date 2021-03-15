@@ -111,7 +111,7 @@ export default class ManageTimeTables extends Component {
             .then(() => {
                 this.initWeekDays();
                 this.state.timeTables.push(result.data)
-                this.setState({ edit: true, name: "", loading: false });
+                this.setState({ edit: true, name: "", loading: false, weekDays: [] });
             })
         });
     }
@@ -156,7 +156,7 @@ export default class ManageTimeTables extends Component {
 
                             <FormGroup>
                                 <Select
-                                    name="schoolType"
+                                    name="time"
                                     fullWidth
                                     value={this.state.time}
                                     onChange={this.onChange}
