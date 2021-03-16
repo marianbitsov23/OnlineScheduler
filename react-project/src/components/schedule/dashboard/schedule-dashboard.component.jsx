@@ -67,6 +67,8 @@ class ScheduleDashboard extends Component {
             schedule: scheduleService.getCurrentSchedule(),
             open: true,
             lessons: [],
+            fetchedLessons: undefined,
+            isTeachingHour: false,
             timeTables: [],
             groups: [],
             show: false,
@@ -81,85 +83,6 @@ class ScheduleDashboard extends Component {
 
         this.handleDrawer = this.handleDrawer.bind(this);
         this.deleteSchedule = this.deleteSchedule.bind(this);
-    }
-
-    componentDidMount() {
-        const weekDaysTemplate = ['Хорариуми', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
-        const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
-
-        const scheduleId = this.state.schedule.id;
-
-        this.loadPreviousSchedules();
-
-        this.fetchGroups(scheduleId)
-        .then(() => {
-            this.fetchTimeTables()
-            .then(() => {
-                const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable]
-    
-                lessonService.checkIfLessonsExist(scheduleId)
-                .then(result => {
-                    if(result.data) {
-                        lessonService.getAllByScheduleId(scheduleId)
-                        .then(lessons => {
-                            const filteredLessons = lessons.data.filter(
-                                lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-                            );
-
-                            console.log(filteredLessons);
-                        })
-                    } else {
-                        teachingHourService.getAllByScheduleId(scheduleId)
-                        .then(teachingHours => this.setState({ teachingHours: teachingHours.data }))
-                        .then(() => this.mapLessonsBySelectedGroup());
-                    }
-    
-                })             
-            })
-        })
-    }
-
-    mapLessonsBySelectedGroup = () => {
-        const { teachingHours, lessons } = this.state;
-
-        if(teachingHours) {
-            this.mapLessonsBySelectedTimeTable();
-        } else {
-
-        }
-    }
-
-    mapLessonsBySelectedTimeTable = () => {
-        const { lessons, weekDaysTemplate, teachingHours } = this.state;
-        const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
-
-        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
-        const selectedGroup = this.state.groups[this.state.selectedGroup];
-
-        console.log(selectedGroup);
-
-        const filteredTeachingHours = teachingHours.filter(
-            teachingHour => teachingHour.group.id === selectedGroup.id
-            && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-        );
-
-        lessons[0] = {
-            name: weekDaysTemplate[0],
-            items: this.initTeachingHours(filteredTeachingHours),
-            weekDay: 0
-        }
-
-        for(let i = 1; i < 6; i++) {
-            lessons[i] = {
-                name: weekDaysTemplate[i],
-                items: this.initializeItems(selectedTimeTable.timeSlots.filter(
-                    timeSlot => timeSlot.weekDay === timeSlotDayTemplates[i - 1]
-                )),
-                weekDay: i
-            }
-        }
-
-        this.setState({ lessons });
     }
 
     fetchTimeTables = () => {
@@ -185,9 +108,118 @@ class ScheduleDashboard extends Component {
         .catch(error => console.error(error));
     }
 
-    setLessons = lessons => this.setState({ lessons });
+    fetchTeachingHours = (scheduleId) => {
+        return teachingHourService.getAllByScheduleId(scheduleId)
+        .then(teachingHours => this.setState({ teachingHours: teachingHours.data }))
+        .catch(error => console.error(error));
+    }
 
-    initializeItems = (timeSlots) => {
+    componentDidMount() {
+        const scheduleId = this.state.schedule.id;
+
+        this.loadPreviousSchedules();
+
+        this.fetchTeachingHours(scheduleId)
+        .then(() => {
+        this.fetchGroups(scheduleId)
+        .then(() => {
+        this.fetchTimeTables()
+        .then(() => {
+            const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable]
+        
+            lessonService.checkIfLessonsExist(scheduleId)
+            .then(result => {
+                lessonService.getAllByScheduleId(scheduleId)
+                .then(lessons => {
+                    const filteredLessons = lessons.data.filter(
+                        lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+                    );
+                    this.setState({ fetchedLessons: filteredLessons });
+                }).
+                then(() => this.mapLessons());
+            });         
+        });
+        });
+        });
+    }
+
+    mapLessons = () => {
+        const { teachingHours, fetchedLessons } = this.state;
+
+        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
+        const selectedGroup = this.state.groups[this.state.selectedGroup];
+
+        const filteredTeachingHours = teachingHours.filter(
+            teachingHour => teachingHour.group.id === selectedGroup.id
+            && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+        );
+
+        const filteredLessons = fetchedLessons.filter(
+            fetchedLesson => fetchedLesson.teachingHour.group.id === selectedGroup.id
+            && fetchedLesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+        );
+
+        this.initLessons(filteredLessons, filteredTeachingHours);
+    }
+
+    initLessons = (filteredLessons, filteredTeachingHours) => {
+        const { lessons, weekDaysTemplate } = this.state;
+        const timeSlotDayTemplates = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+        const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
+
+        for(let i = 0; i < 6; i++) {
+            lessons[i] = {
+                name: weekDaysTemplate[i],
+                items: this.initializeEmptyItems(selectedTimeTable.timeSlots.filter(
+                    timeSlot => timeSlot.weekDay === timeSlotDayTemplates[i - 1]
+                )),
+                weekDay: i
+            }
+        }
+
+        if(filteredLessons.length === 0) {
+            console.log('afsasfas')
+            lessons[0] = {
+                name: weekDaysTemplate[0],
+                items: this.initTeachingHours(filteredTeachingHours),
+                weekDay: 0
+            }
+        } else {
+            filteredLessons.forEach(lesson => {
+                for(let i = 0; i < 6; i++) {
+                    if(lesson.weekDay === i) {
+                        lessons[i].items[lesson.slotIndex] = {
+                            id: lesson.id,
+                            teachingHour: lesson.teachingHour,
+                            subItems: new Array(2)
+                        };
+                    }
+                }
+            })
+        }
+
+        this.setState({ lessons });
+    }
+
+    initTeachingHours = (teachingHours) => {
+        let lessons = [];
+        teachingHours.forEach(teachingHour => {
+            for(let i = 0; i < teachingHour.hoursPerWeek; i++) {
+                lessons.push({
+                    id: uuidv4(),
+                    teachingHour: teachingHour,
+                    subItems: teachingHour.overAWeek ? [{
+                        id: uuidv4(),
+                        teachingHour: teachingHour
+                    }, {id: uuidv4(),
+                        teachingHour: undefined}] : new Array(2)
+                });
+            }
+        });
+        return lessons;
+    }
+
+    initializeEmptyItems = (timeSlots) => {
         let items = [];
         for(let i = 0; i < timeSlots.length; i++) {
             items.push({
@@ -198,7 +230,9 @@ class ScheduleDashboard extends Component {
         }
         return items;
     }
-
+    
+    setLessons = lessons => this.setState({ lessons });
+    
     loadPreviousSchedules() {
         let { previousSchedules, schedule } = this.state;
 
@@ -228,34 +262,17 @@ class ScheduleDashboard extends Component {
         .catch(error => console.error(error));
     }
 
-    initTeachingHours = (teachingHours) => {
-        let lessons = [];
-        teachingHours.forEach(teachingHour => {
-            for(let i = 0; i < teachingHour.hoursPerWeek; i++) {
-                lessons.push({
-                    id: uuidv4(),
-                    teachingHour: teachingHour,
-                    subItems: teachingHour.overAWeek ? [{
-                        id: uuidv4(),
-                        teachingHour: teachingHour
-                    }, {id: uuidv4(),
-                        teachingHour: undefined}] : new Array(2)
-                });
-            }
-        });
-        return lessons;
-    }
-
+    
     handleDrawer = () => this.setState({ open: !this.state.open });
 
     onChange = event => {
         if([event.target.name][0] === "selectedGroup") {
             this.state.selectedGroup = event.target.value;
-            this.mapLessonsBySelectedGroup();
+            this.mapLessons();
         }
         else if([event.target.name][0] === "selectedTimeTable") {
             this.state.selectedTimeTable = event.target.value;
-            this.mapLessonsBySelectedTimeTable();
+            this.mapLessons();
         }
         else this.setState({ [event.target.name] : event.target.value });
     }
@@ -277,23 +294,25 @@ class ScheduleDashboard extends Component {
     saveLessonsInDb = lessons => {
         lessons.forEach(lesson => {
             lesson.items.forEach(item => {
-                if(typeof item.id === 'string') {
-                    lessonService.create({
-                        schedule: this.state.schedule,
-                        weekDay: lesson.weekDay,
-                        slotIndex: item.slotIndex,
-                        teachingHour: item.teachingHour
-                    })
-                    .catch(error => console.error(error));
-                } else {
-                    lessonService.update({
-                        id: item.id,
-                        schedule: this.state.schedule,
-                        weekDay: lesson.weekDay,
-                        slotIndex: item.slotIndex,
-                        teachingHour: item.teachingHour
-                    })
-                    .catch(error => console.error(error));
+                if(item.teachingHour !== undefined) {
+                    if(typeof item.id === 'string') {
+                        lessonService.create({
+                            schedule: this.state.schedule,
+                            weekDay: lesson.weekDay,
+                            slotIndex: item.slotIndex,
+                            teachingHour: item.teachingHour
+                        })
+                        .catch(error => console.error(error));
+                    } else {
+                        lessonService.update({
+                            id: item.id,
+                            schedule: this.state.schedule,
+                            weekDay: lesson.weekDay,
+                            slotIndex: item.slotIndex,
+                            teachingHour: item.teachingHour
+                        })
+                        .catch(error => console.error(error));
+                    }
                 }
             })
         });
