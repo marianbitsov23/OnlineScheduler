@@ -106,7 +106,7 @@ export default class WeekDays extends Component {
         this.validateTimeSpan(
             sourceLesson.teachingHour.timeSlots,
             sourceLesson.slotIndex    
-        ))&& this.validateTimeSpan(
+        )) && this.validateTimeSpan(
             destLesson.teachingHour.timeSlots,
             destLesson.slotIndex
         )) {
@@ -141,7 +141,6 @@ export default class WeekDays extends Component {
     }
 
     render() {
-
         const { lessons, hoursTemplate } = this.props;
 
         return(

@@ -24,7 +24,9 @@ export default class ManageSchedules extends Component {
             scheduleName: "",
             description: "",
             schoolName: "",
-            schoolType: { name: 'middleSchool'},
+            schoolTypes: [{ name: 'Гимназия', type: 'highSchool'},
+                          {name: 'Средно училище', type: 'middleSchool'}],
+            selectedSchoolType: 0,
             creator: authService.getCurrentUser(),
             message: "",
             loading: false,
@@ -47,16 +49,18 @@ export default class ManageSchedules extends Component {
 
     saveSchedule = (event) => {
         event.preventDefault();
-        const { scheduleName, description, creator, schoolName, schoolType } = this.state;
+        const { scheduleName, description, creator, schoolName, schoolTypes } = this.state;
         creator.roles = [];
         
         this.setState({ message: "", loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, this.redirectToNextPage);
+        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolTypes, this.redirectToNextPage);
     }
 
-    saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolType, onCreatedSchedule) => {
-        scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.name.toUpperCase())
+    saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolTypes, onCreatedSchedule) => {
+        const schoolType = schoolTypes[this.state.selectedSchoolType].type;
+
+        scheduleService.createSchedule(scheduleName, description, creator, schoolName, schoolType.toUpperCase())
         .then(result => {
             //add schedule to the current user
             let schedules = creator.schedules ? creator.schedules : [];
@@ -131,14 +135,6 @@ export default class ManageSchedules extends Component {
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
-    onSelect = event => {
-        if(event.target.value === 1) {
-            this.setState({ schoolType: { name: 'highSchool' }});
-        } else {
-            this.setState({ schoolType: { name: 'middleSchool' }});
-        }
-    }
-
     render() {
 
         const { show, selectedSchedule, schedules } = this.state;
@@ -148,7 +144,7 @@ export default class ManageSchedules extends Component {
             this.state.description === "" ||
             this.state.schoolName === "";
 
-        console.log(this.state.schoolType);
+        console.log(this.state.selectedSchoolType);
 
         return(
             <>
@@ -162,22 +158,19 @@ export default class ManageSchedules extends Component {
                     </Jumbotron>
 
                     <Form onSubmit={this.saveSchedule}>
-                        <FormGroup>
-                            <TextField
-                                label="Име на графика"
-                                placeholder="Въвъедете името на графика"
-                                helperText="Example: ScheduleName_1_Morning"
-                                fullWidth
-                                className="myFontFamily"
-                                margin="normal"
-                                name="scheduleName"
-                                value={this.state.scheduleName}
-                                onChange={this.onChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
-                        </FormGroup>
+                        <TextField
+                            label="Име на графика"
+                            placeholder="Въвъедете името на графика"
+                            helperText="Example: ScheduleName_1_Morning"
+                            fullWidth
+                            className="myFontFamily"
+                            margin="normal"
+                            name="scheduleName"
+                            value={this.state.scheduleName}
+                            onChange={this.onChange}
+                            InputLabelProps={{ shrink: true }}
+                        />
 
-                        <FormGroup>
                             <TextField
                                 label="Описание"
                                 placeholder="Въведете малко описание за графика"
@@ -188,9 +181,7 @@ export default class ManageSchedules extends Component {
                                 onChange={this.onChange}
                                 InputLabelProps={{ shrink: true }}
                             />
-                        </FormGroup>
 
-                        <FormGroup>
                             <TextField
                                 label="Име на училище"
                                 placeholder="Напишете името на училището, за което се отнася графика"
@@ -201,17 +192,14 @@ export default class ManageSchedules extends Component {
                                 onChange={this.onChange}
                                 InputLabelProps={{ shrink: true }}
                             />
-                        </FormGroup>
 
-                        <FormGroup>
                             <CustomSelect
                                 label="Тип"
-                                name="schoolType"
-                                value={this.state.schoolType}
-                                onChange={this.onSelect}
-                                elements={[ {name: 'middleSchool'}, {name: 'highSchool'}]}
+                                name="selectedSchoolType"
+                                value={this.state.selectedSchoolType}
+                                onChange={this.onChange}
+                                elements={this.state.schoolTypes}
                             />
-                        </FormGroup>
 
                         <FormGroup>
                             <ConfirmButton
