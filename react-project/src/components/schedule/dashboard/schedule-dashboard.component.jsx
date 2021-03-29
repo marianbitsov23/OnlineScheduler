@@ -127,17 +127,18 @@ class ScheduleDashboard extends Component {
         .then(() => {
             const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable]
         
-            lessonService.checkIfLessonsExist(scheduleId)
-            .then(result => {
-                lessonService.getAllByScheduleId(scheduleId)
-                .then(lessons => {
-                    const filteredLessons = lessons.data.filter(
-                        lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-                    );
-                    this.setState({ fetchedLessons: filteredLessons });
-                }).
-                then(() => this.mapLessons());
-            });         
+            lessonService.getAllByScheduleId(scheduleId)
+            .then(lessons => {
+                const filteredLessons = lessons.data.filter(
+                    lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+                );
+                this.setState({ fetchedLessons: filteredLessons });
+            }).
+            then(() => this.mapLessons())
+            .catch(error => {
+                console.error(error);
+                this.mapLessons();
+            });
         });
         });
         });
@@ -145,19 +146,23 @@ class ScheduleDashboard extends Component {
 
     mapLessons = () => {
         const { teachingHours, fetchedLessons } = this.state;
-
+        let filteredLessons, filteredTeachingHours = [];
         const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
         const selectedGroup = this.state.groups[this.state.selectedGroup];
 
-        const filteredTeachingHours = teachingHours.filter(
-            teachingHour => teachingHour.group.id === selectedGroup.id
-            && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-        );
+        if(teachingHours) {
+            filteredTeachingHours = teachingHours.filter(
+                teachingHour => teachingHour.group.id === selectedGroup.id
+                && teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+            );
+        }
 
-        const filteredLessons = fetchedLessons.filter(
-            fetchedLesson => fetchedLesson.teachingHour.group.id === selectedGroup.id
-            && fetchedLesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-        );
+        if(fetchedLessons) {
+            filteredLessons = fetchedLessons.filter(
+                fetchedLesson => fetchedLesson.teachingHour.group.id === selectedGroup.id
+                && fetchedLesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+            );
+        }
 
         this.initLessons(filteredLessons, filteredTeachingHours);
     }
@@ -178,7 +183,6 @@ class ScheduleDashboard extends Component {
         }
 
         if(filteredLessons.length === 0) {
-            console.log('afsasfas')
             lessons[0] = {
                 name: weekDaysTemplate[0],
                 items: this.initTeachingHours(filteredTeachingHours),
@@ -190,6 +194,7 @@ class ScheduleDashboard extends Component {
                     if(lesson.weekDay === i) {
                         lessons[i].items[lesson.slotIndex] = {
                             id: lesson.id,
+                            slotIndex: lesson.slotIndex,
                             teachingHour: lesson.teachingHour,
                             subItems: new Array(2)
                         };
@@ -261,7 +266,6 @@ class ScheduleDashboard extends Component {
         })
         .catch(error => console.error(error));
     }
-
     
     handleDrawer = () => this.setState({ open: !this.state.open });
 
@@ -294,7 +298,7 @@ class ScheduleDashboard extends Component {
     saveLessonsInDb = lessons => {
         lessons.forEach(lesson => {
             lesson.items.forEach(item => {
-                if(item.teachingHour !== undefined) {
+                if(item && item.teachingHour) {
                     if(typeof item.id === 'string') {
                         lessonService.create({
                             schedule: this.state.schedule,
@@ -319,7 +323,7 @@ class ScheduleDashboard extends Component {
     }
 
     componentWillUnmount() {
-        //this.saveLessonsInDb(this.state.lessons);
+        this.saveLessonsInDb(this.state.lessons);
     }
 
     onClose = () => this.setState({ show: !this.state.show });

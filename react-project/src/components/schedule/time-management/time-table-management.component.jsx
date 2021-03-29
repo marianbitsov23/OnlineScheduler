@@ -111,7 +111,12 @@ export default class ManageTimeTables extends Component {
             .then(() => {
                 this.initWeekDays();
                 this.state.timeTables.push(result.data)
-                this.setState({ edit: true, name: "", loading: false, weekDays: [] });
+                this.setState({ 
+                    edit: true, 
+                    name: "", 
+                    loading: false, 
+                    weekDays: []
+                });
             })
         });
     }

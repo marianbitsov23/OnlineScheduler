@@ -15,6 +15,8 @@ import groupService from '../../services/schedule/group.service';
 import lessonService from '../../services/schedule/lesson.service';
 import { ConfirmButton } from '../shared/confirm-button.component';
 import { CustomSelect } from '../shared/custom-select.component';
+import { TextInput } from '../shared/text-input.component';
+import { CustomDialog } from '../shared/custom-dialog.component';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -158,48 +160,44 @@ export default class ManageSchedules extends Component {
                     </Jumbotron>
 
                     <Form onSubmit={this.saveSchedule}>
-                        <TextField
-                            label="Име на графика"
-                            placeholder="Въвъедете името на графика"
-                            helperText="Example: ScheduleName_1_Morning"
-                            fullWidth
-                            className="myFontFamily"
-                            margin="normal"
+                        <TextInput 
                             name="scheduleName"
                             value={this.state.scheduleName}
+                            placeholder="Въедете името на графика"
+                            helperText="Пример: ScheduleName_1_Morning"
+                            label="Име на графика"
+                            type="scheduleName"
+                            shrink={true}
                             onChange={this.onChange}
-                            InputLabelProps={{ shrink: true }}
                         />
 
-                            <TextField
-                                label="Описание"
-                                placeholder="Въведете малко описание за графика"
-                                fullWidth
-                                margin="normal"
-                                name="description"
-                                value={this.state.description}
-                                onChange={this.onChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
+                        <TextInput 
+                            name="description"
+                            value={this.state.description}
+                            placeholder="Напишете кратко описание за графика"
+                            shrink={true}
+                            label="Описание"
+                            type="description"
+                            onChange={this.onChange}
+                        />
 
-                            <TextField
-                                label="Име на училище"
-                                placeholder="Напишете името на училището, за което се отнася графика"
-                                fullWidth
-                                margin="normal"
-                                name="schoolName"
-                                value={this.state.schoolName}
-                                onChange={this.onChange}
-                                InputLabelProps={{ shrink: true }}
-                            />
+                        <TextInput 
+                            name="schoolName"
+                            value={this.state.schoolName}
+                            placeholder="Напишете името на училището, за което се отнася графика"
+                            shrink={true}
+                            label="Име на училище"
+                            type="schoolName"
+                            onChange={this.onChange}
+                        />
 
-                            <CustomSelect
-                                label="Тип"
-                                name="selectedSchoolType"
-                                value={this.state.selectedSchoolType}
-                                onChange={this.onChange}
-                                elements={this.state.schoolTypes}
-                            />
+                        <CustomSelect
+                            label="Тип"
+                            name="selectedSchoolType"
+                            value={this.state.selectedSchoolType}
+                            onChange={this.onChange}
+                            elements={this.state.schoolTypes}
+                        />
 
                         <FormGroup>
                             <ConfirmButton
@@ -238,83 +236,43 @@ export default class ManageSchedules extends Component {
                             </FormGroup>
                         )}
                     </Form>
-                    <Modal 
-                        size="lg"
+                    <CustomDialog 
                         show={show}
-                        onHide={() => this.setState({ show: !show })}
-                        centered
-                    >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Създаване от вече съществуващ</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <FormGroup>
-                                <FormBootstrap.Label>Изберете график</FormBootstrap.Label>
-                                <FormBootstrap.Control 
-                                    as="select" 
-                                    name="selectedSchedule" 
-                                    value={selectedSchedule} 
-                                    onChange={this.onChange}>
-                                        {schedules && schedules.map((schedule, index) => (
-                                            <option key={schedule.id} value={index}>{schedule.name}</option>
-                                        ))}
-                                </FormBootstrap.Control>
-                            </FormGroup>
+                        onClose={() => this.setState({ show: !show })}
+                        title="Създаване от вече съществуващ график"
+                        confirmFunction={this.saveFromExistingSchedule}
+                        confirmButtonText="Създаване"
+                        text=
+                        {<>
+                            Цялата информация от избрания графиk ще бъде копирана.
+                            Без името и описанието.
+                        </>}
+                        content=
+                        {<>
+                            <CustomSelect
+                                name="selectedSchedule"
+                                value={this.state.selectedSchedule}
+                                onChange={this.onChange}
+                                elements={schedules}
+                            />
 
-                            <FormGroup>
-                                <TextField
-                                    label="Schedule Name"
-                                    placeholder="Enter the schedule name"
-                                    helperText="Example: ScheduleName_1_Morning"
-                                    fullWidth
-                                    margin="normal"
-                                    name="scheduleName"
-                                    value={this.state.scheduleName}
-                                    onChange={this.onChange}
-                                    InputLabelProps={{ shrink: true }}
-                                />
-                            </FormGroup>
+                            <TextInput 
+                                name="scheduleName"
+                                value={this.state.scheduleName}
+                                label="Въведете името на графика"
+                                type="scheduleName"
+                                onChange={this.onChange}
+                            />
 
-                            <FormGroup>
-                                <TextField
-                                    label="Description"
-                                    placeholder="Enter small description for the schedule"
-                                    fullWidth
-                                    margin="normal"
-                                    name="description"
-                                    value={this.state.description}
-                                    onChange={this.onChange}
-                                    InputLabelProps={{ shrink: true }}
-                                />
-                            </FormGroup>
-
-                            <FormGroup>
-                                <TextField
-                                    label="School Name"
-                                    placeholder="Enter the school this schedule is for"
-                                    fullWidth
-                                    margin="normal"
-                                    name="schoolName"
-                                    value={this.state.schoolName}
-                                    onChange={this.onChange}
-                                    InputLabelProps={{ shrink: true }}
-                                />
-                            </FormGroup>
-                            <p>
-                                Цялата информация от избрания графи ще бъде копирана.
-                                Без името и описанието.
-                            </p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                            onClick={this.saveFromExistingSchedule}
-                            variant="contained"
-                            disabled={isInvalid}
-                            color="primary">
-                                Създаване
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>                    
+                            <TextInput
+                                name="description"
+                                label="Описание за гарфика"
+                                type="description"
+                                onChange={this.onChange}
+                                value={this.state.description}
+                            />
+                        </>}
+                    />                  
                 </Container>
             </>
         );

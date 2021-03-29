@@ -1,17 +1,18 @@
 import React from 'react';
 import { TextField } from '@material-ui/core';
 
-export const TextInput = ({ error, name, value, 
+export const TextInput = ({ error, name, value, placeholder,
                             helperText, label, max,
                             autoComplete, onChange, 
-                            type, variant, className }) => (
-    <div className="myDefaultMarginTopBottom">
+                            type, variant, className, shrink }) => (
+    <div >
         <TextField
             error={error}
             className={className}
             variant={variant}
             margin="normal"
             max={max}
+            placeholder={placeholder}
             required
             fullWidth
             label={label}
@@ -21,6 +22,7 @@ export const TextInput = ({ error, name, value,
             autoComplete={autoComplete}
             helperText={helperText}
             type={type}
+            InputLabelProps={{ shrink: shrink }}
         />
     </div>
 );
