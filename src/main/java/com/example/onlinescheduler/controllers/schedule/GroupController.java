@@ -80,7 +80,7 @@ public class GroupController {
     public ResponseEntity<Group> createGroup(@RequestBody GroupRequest groupRequest) {
         Group group = new Group(
                 groupRequest.getParent(),
-                groupRequest.getGroupName(),
+                groupRequest.getName(),
                 groupRequest.getSchedule()
         );
         groupRepository.save(group);

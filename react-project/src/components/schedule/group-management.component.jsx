@@ -115,7 +115,7 @@ export default class ManageGroups extends Component {
 
         groupService.create({ 
             parent: selectedSubGroup !== undefined ? selectedSubGroup : selectedGroup, 
-            groupName: groupName, 
+            name: groupName, 
             schedule: schedule 
         })
         .then(result => {

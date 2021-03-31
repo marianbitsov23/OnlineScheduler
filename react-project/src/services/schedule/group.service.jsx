@@ -31,7 +31,7 @@ class GroupService {
         return axios.post(API_URL, 
             {
                 parent: group.parent,
-                groupName: group.groupName, 
+                name: group.name, 
                 children: group.children, 
                 schedule: group.schedule
             },

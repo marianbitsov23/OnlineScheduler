@@ -5,6 +5,7 @@ import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.timeManegment.TimeTableRequest;
+import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeSlotRepository;
 import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +24,9 @@ import java.util.Set;
 public class TimeTableController {
     @Autowired
     TimeTableRepository timeTableRepository;
+
+    @Autowired
+    TimeSlotRepository timeSlotRepository;
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -51,6 +56,39 @@ public class TimeTableController {
 
         return timeTable.map(table -> new ResponseEntity<>(table, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("copy/{oldScheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<TimeTable> copyTimeTablesForSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+        Optional<List<TimeTable>> oldTmeTables = timeTableRepository.findAllTimeTablesByScheduleId(oldScheduleId);
+
+        if(oldTmeTables.isPresent()){
+            for(TimeTable tt : oldTmeTables.get()) {
+                Optional<List<TimeSlot>> timeSlots = timeSlotRepository.findAllByTimeTable_Id(tt.getId());
+                TimeTable newTimeTable = new TimeTable(
+                        newSchedule,
+                        tt.getName()
+                );
+                timeTableRepository.save(newTimeTable);
+                if(timeSlots.isPresent()) {
+                    for(TimeSlot ts : timeSlots.get()) {
+                        TimeSlot newTimeSlot = new TimeSlot(
+                                ts.getWeekDay(),
+                                ts.getTimeStart(),
+                                ts.getTimeEnd(),
+                                newTimeTable
+                        );
+                        timeSlotRepository.save(newTimeSlot);
+                    }
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping

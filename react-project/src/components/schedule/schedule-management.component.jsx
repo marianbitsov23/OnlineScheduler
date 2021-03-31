@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Jumbotron, FormGroup, Modal, Alert } from 'react-bootstrap';
 import Form from "react-validation/build/form";
-import FormBootstrap from 'react-bootstrap/Form';
 import scheduleService from "../../services/schedule/schedule.service";
 import authService from '../../services/user-auth/auth.service';
 import { Button, TextField } from '@material-ui/core';
@@ -17,6 +16,7 @@ import { ConfirmButton } from '../shared/confirm-button.component';
 import { CustomSelect } from '../shared/custom-select.component';
 import { TextInput } from '../shared/text-input.component';
 import { CustomDialog } from '../shared/custom-dialog.component';
+import timeSlotService from '../../services/schedule/time-management/time-slot.service';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -37,10 +37,6 @@ export default class ManageSchedules extends Component {
             selectedSchedule: 0,
             newSchedule: undefined
         };
-
-        this.saveSchedule.bind(this);
-        this.saveFromExistingSchedule = this.saveFromExistingSchedule.bind(this);
-        this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -49,14 +45,21 @@ export default class ManageSchedules extends Component {
         .catch(error => console.error(error));
     }
 
-    saveSchedule = (event) => {
-        event.preventDefault();
+    saveSchedule = (copy) => {
         const { scheduleName, description, creator, schoolName, schoolTypes } = this.state;
         creator.roles = [];
-        
+        const onCreatedSchedule = copy ? this.copyExistingSchedule : this.redirectToNextPage;
+
         this.setState({ message: "", loading: true });
 
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolTypes, this.redirectToNextPage);
+        this.saveScheduleInDb(
+            scheduleName, 
+            description, 
+            creator, 
+            schoolName, 
+            schoolTypes, 
+            onCreatedSchedule
+        );
     }
 
     saveScheduleInDb = async (scheduleName, description, creator, schoolName, schoolTypes, onCreatedSchedule) => {
@@ -76,7 +79,7 @@ export default class ManageSchedules extends Component {
             //saves current user in the local storage
             authService.setCurrentUser(creator);
 
-            const oldScheduleId = this.state.schedules 
+            const oldScheduleId = this.state.schedules.length !== 0 
                 ? this.state.schedules[this.state.selectedSchedule].id
                 : undefined;
 
@@ -88,47 +91,30 @@ export default class ManageSchedules extends Component {
         .catch(error => console.error(error));
     }
 
-    saveFromExistingSchedule = () => {
-        const { 
-            scheduleName,
-            description,
-            schoolName,
-            schoolType,
-            creator } = this.state;
-
-        this.setState({ loading: true });
-
-        creator.roles = [];
-
-        this.saveScheduleInDb(scheduleName, description, creator, schoolName, schoolType, this.copyExistingSchedule);
-        //copy the information in the newSchedule
-    }
-
     copyExistingSchedule = (newSchedule, oldScheduleId) => {
-        this.fetchAndSaveElements(subjectService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(cabinetService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(groupService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(cabinetCategoryService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(timeTableService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(teachingHourService, newSchedule, oldScheduleId);
-        this.fetchAndSaveElements(lessonService, newSchedule, oldScheduleId);
+        this.fetchAndSaveElements(subjectService, newSchedule, oldScheduleId).then(() => {
+        this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId)}).then(() => {
+        this.fetchAndSaveElements(cabinetService, newSchedule, oldScheduleId)}).then(() => {
+        this.fetchAndSaveElements(cabinetCategoryService, newSchedule, oldScheduleId)}).then(() => {
+        this.fetchAndSaveElements(groupService, newSchedule, oldScheduleId)}).then(() => {
+            timeTableService.copyTimeTablesForSchedule(oldScheduleId, newSchedule)
+            .catch(error => console.error(error));
+        });
         
         this.redirectToNextPage();
     }
 
     redirectToNextPage = () => this.props.history.push('/schedule-dashboard');
 
-    copyElements = (service, elements, schedule) => {
+    copyElements = async (service, elements, schedule) => {
         elements.forEach(element => {
             element.schedule = schedule;
-            service.create(element)
-            .catch(error => console.error(error));
+            service.create(element);
         });
     }
 
     fetchAndSaveElements = (service, schedule, oldScheduleId) => {
-        service.getAllByScheduleId(oldScheduleId)
+        return service.getAllByScheduleId(oldScheduleId)
         .then(result => {
             this.copyElements(service, result.data, schedule);
         })
@@ -138,15 +124,12 @@ export default class ManageSchedules extends Component {
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
     render() {
-
-        const { show, selectedSchedule, schedules } = this.state;
+        const { show, schedules } = this.state;
 
         const isInvalid = 
             this.state.scheduleName === "" ||
             this.state.description === "" ||
             this.state.schoolName === "";
-
-        console.log(this.state.selectedSchoolType);
 
         return(
             <>
@@ -158,8 +141,6 @@ export default class ManageSchedules extends Component {
                             и после продължетете с въвеждането на информацията за училището!</p>
                         </Container>
                     </Jumbotron>
-
-                    <Form onSubmit={this.saveSchedule}>
                         <TextInput 
                             name="scheduleName"
                             value={this.state.scheduleName}
@@ -199,13 +180,16 @@ export default class ManageSchedules extends Component {
                             elements={this.state.schoolTypes}
                         />
 
-                        <FormGroup>
-                            <ConfirmButton
-                                disabled={isInvalid}
-                                loading={this.state.loading}
-                                text="Създаване"
-                            />
-                        </FormGroup>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            disabled={isInvalid}
+                            className="myDefaultMarginTopBottom"
+                            onClick={this.saveSchedule.bind(this, false)}
+                        >
+                            Създаване
+                        </Button>
 
                         <div className="myDisplayFlex">
                             <hr/>
@@ -235,12 +219,11 @@ export default class ManageSchedules extends Component {
                                 </Alert>
                             </FormGroup>
                         )}
-                    </Form>
                     <CustomDialog 
                         show={show}
                         onClose={() => this.setState({ show: !show })}
                         title="Създаване от вече съществуващ график"
-                        confirmFunction={this.saveFromExistingSchedule}
+                        confirmFunction={this.saveSchedule.bind(this, true)}
                         confirmButtonText="Създаване"
                         text=
                         {<>

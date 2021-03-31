@@ -146,7 +146,7 @@ class ScheduleDashboard extends Component {
 
     mapLessons = () => {
         const { teachingHours, fetchedLessons } = this.state;
-        let filteredLessons, filteredTeachingHours = [];
+        let filteredLessons = [], filteredTeachingHours = [];
         const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable];
         const selectedGroup = this.state.groups[this.state.selectedGroup];
 

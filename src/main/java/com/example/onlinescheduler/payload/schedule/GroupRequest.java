@@ -11,16 +11,16 @@ public class GroupRequest {
     private Group parent;
 
     @NotBlank
-    private String groupName;
+    private String name;
 
     @NotBlank
     private Schedule schedule;
 
     public GroupRequest() {}
 
-    public GroupRequest(@NotBlank Group parent, @NotBlank String groupName, @NotBlank Schedule schedule) {
+    public GroupRequest(@NotBlank Group parent, @NotBlank String name, @NotBlank Schedule schedule) {
         this.parent = parent;
-        this.groupName = groupName;
+        this.name = name;
         this.schedule = schedule;
     }
 
@@ -32,7 +32,7 @@ public class GroupRequest {
 
     public void setSchedule(Schedule schedule) { this.schedule = schedule; }
 
-    public String getGroupName() { return groupName; }
+    public String getName() { return name; }
 
-    public void setGroupName(String groupName) { this.groupName = groupName; }
+    public void setName(String name) { this.name = name; }
 }
