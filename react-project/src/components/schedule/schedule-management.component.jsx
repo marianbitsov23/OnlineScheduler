@@ -96,12 +96,14 @@ export default class ManageSchedules extends Component {
         this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId)}).then(() => {
         this.fetchAndSaveElements(cabinetService, newSchedule, oldScheduleId)}).then(() => {
         this.fetchAndSaveElements(cabinetCategoryService, newSchedule, oldScheduleId)}).then(() => {
-        this.fetchAndSaveElements(groupService, newSchedule, oldScheduleId)}).then(() => {
-            timeTableService.copyTimeTablesForSchedule(oldScheduleId, newSchedule)
+            groupService.copy(oldScheduleId, newSchedule)
             .catch(error => console.error(error));
+        }).then(() => {
+            timeTableService.copy(oldScheduleId, newSchedule)
+            .catch(error => console.error(error));
+        }).then(() => {
+            this.redirectToNextPage();
         });
-        
-        this.redirectToNextPage();
     }
 
     redirectToNextPage = () => this.props.history.push('/schedule-dashboard');

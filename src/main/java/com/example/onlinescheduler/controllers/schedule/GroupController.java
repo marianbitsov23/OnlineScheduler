@@ -1,6 +1,7 @@
 package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.Group;
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.payload.schedule.GroupRequest;
 import com.example.onlinescheduler.repositories.schedule.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,54 @@ public class GroupController {
         groupRepository.save(group);
 
         return new ResponseEntity<>(group, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/copy/{oldScheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> copyGroupsFromSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+        Optional<List<Group>> groups = groupRepository.findAllByScheduleId(oldScheduleId);
+
+        if(groups.isPresent()) {
+            Group parentGroup = groups.get().stream()
+                    .filter(group -> group.getParent() == null)
+                    .findFirst()
+                    .orElse(null);
+            if(parentGroup != null) {
+                groups.get().remove(parentGroup);
+                 Group newParentGroup = groupRepository.save(new Group(
+                        null,
+                        parentGroup.getName(),
+                        newSchedule
+                ));
+
+                List<Group> filteredGroups = groups.get().stream()
+                        .filter(group -> group.getParent().getId().equals(parentGroup.getId()))
+                        .collect(Collectors.toList());
+
+                for(Group group : filteredGroups) {
+                    saveGroupInRepository(newParentGroup, group, newSchedule);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void saveGroupInRepository(Group parent, Group child, Schedule newSchedule) {
+        Group newChild = new Group(
+                parent,
+                child.getName(),
+                newSchedule
+        );
+        groupRepository.save(newChild);
+
+        Optional<List<Group>> groups = groupRepository.findAllByParentId(child.getId());
+        if(groups.isPresent()) {
+            for(Group group : groups.get()) {
+                saveGroupInRepository(newChild, group, newSchedule);
+            }
+        }
     }
 
     @PutMapping("/{id}")

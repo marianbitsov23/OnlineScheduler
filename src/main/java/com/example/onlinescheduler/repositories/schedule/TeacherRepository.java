@@ -1,5 +1,6 @@
 package com.example.onlinescheduler.repositories.schedule;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.models.schedule.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Optional<Teacher> findById(Long id);
 
     Optional<List<Teacher>> findAllTeachersByScheduleId(Long scheduleId);
+
+    Boolean existsByScheduleAndNameAndInitials(
+            Schedule schedule,
+            String name,
+            String initials
+    );
 }

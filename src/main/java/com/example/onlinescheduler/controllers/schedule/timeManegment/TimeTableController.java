@@ -60,7 +60,7 @@ public class TimeTableController {
 
     @PostMapping("copy/{oldScheduleId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<TimeTable> copyTimeTablesForSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+    public ResponseEntity<?> copyTimeTablesForSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
         Optional<List<TimeTable>> oldTmeTables = timeTableRepository.findAllTimeTablesByScheduleId(oldScheduleId);
 
         if(oldTmeTables.isPresent()){

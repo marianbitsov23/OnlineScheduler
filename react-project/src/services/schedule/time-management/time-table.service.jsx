@@ -8,7 +8,7 @@ class TimeTableService {
         return axios.get(API_URL, { headers: authHeader() } );
     }
 
-    copyTimeTablesForSchedule(oldScheduleId, newSchedule) {
+    copy(oldScheduleId, newSchedule) {
         return axios.post(
             API_URL + '/copy/' + oldScheduleId, 
             newSchedule,

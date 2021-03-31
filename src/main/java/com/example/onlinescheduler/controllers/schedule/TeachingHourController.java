@@ -1,9 +1,15 @@
 package com.example.onlinescheduler.controllers.schedule;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.TeachingHour;
+import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.TeachingHourRequest;
+import com.example.onlinescheduler.repositories.schedule.GroupRepository;
+import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
+import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import com.example.onlinescheduler.repositories.schedule.TeachingHourRepository;
+import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +25,18 @@ public class TeachingHourController {
 
     @Autowired
     TeachingHourRepository teachingHourRepository;
+
+    @Autowired
+    SubjectRepository subjectRepository;
+
+    @Autowired
+    TeacherRepository teacherRepository;
+
+    @Autowired
+    GroupRepository groupRepository;
+
+    @Autowired
+    CabinetRepository cabinetRepository;
 
     @GetMapping
     public ResponseEntity<List<TeachingHour>> getAllHours() {
@@ -76,6 +94,41 @@ public class TeachingHourController {
 
         return new ResponseEntity<>(newTeachingHour, HttpStatus.CREATED);
     }
+    /*
+    @PostMapping("copy/{oldScheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> copyTeachingHoursFromSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+        Optional<List<TeachingHour>> teachingHours = teachingHourRepository.findAllTeachingHoursByScheduleId(oldScheduleId);
+
+        if(teachingHours.isPresent()) {
+            for(TeachingHour th : teachingHours.get()) {
+                if(!subjectRepository.existsByScheduleAndName(newSchedule, th.getSubject().getName())) {
+
+                } else if(!teacherRepository.existsByScheduleAndNameAndInitials(
+                        newSchedule,
+                        th.getTeacher().getName(),
+                        th.getTeacher().getInitials()
+                )) {
+
+                } else if(!groupRepository.existsByScheduleAndNameAndParent(
+                        newSchedule,
+                        th.getGroup().getName(),
+                        th.getGroup().getParent()
+                )) {
+
+                } else if(!cabinetRepository.existsByScheduleAndNameAndCabinetCategories(
+                        newSchedule,
+                        th.getCabinet().getName(),
+                        th.getCabinet().getCabinetCategories()
+                )) {
+
+                }
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+     */
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

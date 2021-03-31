@@ -35,12 +35,12 @@ public class ScheduleController {
                 scheduleRequest.getCreator(),
                 SchoolType.valueOf(scheduleRequest.getSchoolType())
         );
-
         scheduleRepository.save(schedule);
 
-        Group parentGroup = new Group(null, scheduleRequest.getGroupName(), schedule);
-
-        groupRepository.save(parentGroup);
+        if(scheduleRequest.getGroupName().length() != 0) {
+            Group parentGroup = new Group(null, scheduleRequest.getGroupName(), schedule);
+            groupRepository.save(parentGroup);
+        }
 
         return new ResponseEntity<>(schedule, HttpStatus.CREATED);
     }
