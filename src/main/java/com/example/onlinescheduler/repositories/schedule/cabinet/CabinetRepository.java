@@ -17,7 +17,7 @@ public interface CabinetRepository extends JpaRepository<Cabinet, Long> {
 
     Optional<List<Cabinet>> findAllCabinetsByScheduleId(Long scheduleId);
 
-    Boolean existsByScheduleAndName(
+    Optional<Cabinet> findByScheduleAndName(
             Schedule schedule,
             String name
     );

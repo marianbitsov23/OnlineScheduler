@@ -15,4 +15,6 @@ public interface CabinetCategoryRepository extends JpaRepository<CabinetCategory
     Optional<List<CabinetCategory>> findAllCabinetCategoriesByScheduleId(Long scheduleId);
 
     Optional<List<CabinetCategory>> findAllBySchedule(Schedule schedule);
+
+    Optional<CabinetCategory> findByNameAndSchedule(String name, Schedule schedule);
 }

@@ -15,7 +15,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     Optional<List<Teacher>> findAllTeachersByScheduleId(Long scheduleId);
 
-    Boolean existsByScheduleAndNameAndInitials(
+    Optional<Teacher> findByScheduleAndNameAndInitials(
             Schedule schedule,
             String name,
             String initials

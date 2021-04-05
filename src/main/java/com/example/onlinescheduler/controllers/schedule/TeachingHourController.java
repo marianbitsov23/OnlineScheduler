@@ -1,7 +1,6 @@
 package com.example.onlinescheduler.controllers.schedule;
 
-import com.example.onlinescheduler.models.schedule.Schedule;
-import com.example.onlinescheduler.models.schedule.TeachingHour;
+import com.example.onlinescheduler.models.schedule.*;
 import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.TeachingHourRequest;
@@ -94,7 +93,7 @@ public class TeachingHourController {
 
         return new ResponseEntity<>(newTeachingHour, HttpStatus.CREATED);
     }
-    /*
+
     @PostMapping("copy/{oldScheduleId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> copyTeachingHoursFromSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
@@ -102,33 +101,52 @@ public class TeachingHourController {
 
         if(teachingHours.isPresent()) {
             for(TeachingHour th : teachingHours.get()) {
-                if(!subjectRepository.existsByScheduleAndName(newSchedule, th.getSubject().getName())) {
-
-                } else if(!teacherRepository.existsByScheduleAndNameAndInitials(
+                Optional<Subject> foundSubject = subjectRepository.findByScheduleAndName(newSchedule, th.getSubject().getName());
+                Optional<Teacher> foundTeacher = teacherRepository.findByScheduleAndNameAndInitials(
                         newSchedule,
                         th.getTeacher().getName(),
                         th.getTeacher().getInitials()
-                )) {
-
-                } else if(!groupRepository.existsByScheduleAndNameAndParent(
+                );
+                Optional<Group> foundGroup = groupRepository.findByScheduleAndNameAndParent(
                         newSchedule,
                         th.getGroup().getName(),
                         th.getGroup().getParent()
-                )) {
-
-                } else if(!cabinetRepository.existsByScheduleAndNameAndCabinetCategories(
+                );
+                Optional<Cabinet> foundCabinet = cabinetRepository.findByScheduleAndName(
                         newSchedule,
-                        th.getCabinet().getName(),
-                        th.getCabinet().getCabinetCategories()
-                )) {
+                        th.getCabinet().getName()
+                );
 
-                }
+
+                TeachingHour newTeachingHour = new TeachingHour(
+                        foundSubject.orElseGet(() -> subjectRepository.save(
+                                new Subject(th.getSubject().getName(), newSchedule)
+                        )),
+                        foundGroup.orElseGet(() -> groupRepository.save(
+                                new Group(th.getGroup().getParent(), th.getGroup().getName(), newSchedule)
+                        )),
+                        foundTeacher.orElseGet(() -> teacherRepository.save(
+                                new Teacher(th.getTeacher().getName(), th.getTeacher().getInitials(), newSchedule)
+                        )),
+                        th.getHoursPerWeek(),
+                        th.getOverAWeek(),
+                        foundCabinet.orElseGet(() -> cabinetRepository.save(
+                                new Cabinet(th.getCabinet().getName(),
+                                        newSchedule,
+                                        th.getCabinet().getCabinetCategories())
+                        )),
+                        th.getTimeSlots(),
+                        newSchedule
+                );
+
+                teachingHourRepository.save(newTeachingHour);
+
             }
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-     */
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")

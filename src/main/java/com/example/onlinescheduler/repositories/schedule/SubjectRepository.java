@@ -14,5 +14,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     Optional<List<Subject>> findAllSubjectsByScheduleId(Long scheduleId);
 
-    Boolean existsByScheduleAndName(Schedule schedule, String name);
+    Optional<Subject> findByScheduleAndName(Schedule schedule, String name);
 }

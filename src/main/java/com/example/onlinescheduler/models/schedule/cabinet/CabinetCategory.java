@@ -21,7 +21,7 @@ public class CabinetCategory {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @ManyToMany(mappedBy = "cabinetCategories")
+    @ManyToMany(mappedBy = "cabinetCategories", cascade = CascadeType.ALL)
     Set<Cabinet> cabinets;
 
     public CabinetCategory() {}

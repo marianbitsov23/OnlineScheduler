@@ -17,6 +17,14 @@ class CabinetService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
+    copy(oldScheduleId, newSchedule) {
+        return axios.post(
+            API_URL + '/copy/' + oldScheduleId, 
+            newSchedule,
+            { headers: authHeader() } 
+        )
+    }
+
     create(cabinet) {
         return axios.post(API_URL, 
             {name: cabinet.name, categories: cabinet.categories, schedule: cabinet.schedule},

@@ -14,7 +14,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     Optional<List<Group>> findAllByParentId(Long parentId);
 
-    Boolean existsByScheduleAndNameAndParent(
+    Optional<Group> findByScheduleAndNameAndParent(
             Schedule schedule,
             String name,
             Group parent

@@ -94,8 +94,9 @@ export default class ManageSchedules extends Component {
     copyExistingSchedule = (newSchedule, oldScheduleId) => {
         this.fetchAndSaveElements(subjectService, newSchedule, oldScheduleId).then(() => {
         this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId)}).then(() => {
-        this.fetchAndSaveElements(cabinetService, newSchedule, oldScheduleId)}).then(() => {
-        this.fetchAndSaveElements(cabinetCategoryService, newSchedule, oldScheduleId)}).then(() => {
+            cabinetService.copy(oldScheduleId, newSchedule)
+            .catch(error => console.error(error));
+        }).then(() => {
             groupService.copy(oldScheduleId, newSchedule)
             .catch(error => console.error(error));
         }).then(() => {
