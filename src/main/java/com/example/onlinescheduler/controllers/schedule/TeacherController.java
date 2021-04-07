@@ -1,6 +1,9 @@
 package com.example.onlinescheduler.controllers.schedule;
 
+import com.example.onlinescheduler.models.schedule.Schedule;
+import com.example.onlinescheduler.models.schedule.Subject;
 import com.example.onlinescheduler.models.schedule.Teacher;
+import com.example.onlinescheduler.models.schedule.TeachingHour;
 import com.example.onlinescheduler.payload.schedule.TeacherRequest;
 import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,22 @@ public class TeacherController {
         return new ResponseEntity<>(teacher, HttpStatus.CREATED);
     }
 
+    @PostMapping("copy/{oldScheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> copyTeachersFromSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+        Optional<List<Teacher>> teachers = teacherRepository.findAllTeachersByScheduleId(oldScheduleId);
+
+        if(teachers.isPresent()) {
+            for(Teacher t : teachers.get()) {
+                Teacher newTeacher = new Teacher(t.getName(), t.getInitials(), newSchedule);
+                teacherRepository.save(newTeacher);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
     @GetMapping("/schedule/{scheduleId}/teachers")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Teacher>> getTeachersByScheduleId(@PathVariable Long scheduleId) {

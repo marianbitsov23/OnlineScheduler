@@ -58,10 +58,7 @@ public class CabinetController {
                 Set<CabinetCategory> finalCabinetCategories = new HashSet<>();
                 for(CabinetCategory ccc : cabinet.getCabinetCategories()) {
                     for(CabinetCategory ncc : newCabinetCategories) {
-                        if(ncc.getName().equals(ccc.getName())) {
-                            finalCabinetCategories.add(ncc);
-                            System.out.println(ncc.getName());
-                        }
+                        if(ncc.getName().equals(ccc.getName())) finalCabinetCategories.add(ncc);
                     }
                 }
 

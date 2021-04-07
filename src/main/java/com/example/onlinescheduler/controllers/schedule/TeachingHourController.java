@@ -2,6 +2,7 @@ package com.example.onlinescheduler.controllers.schedule;
 
 import com.example.onlinescheduler.models.schedule.*;
 import com.example.onlinescheduler.models.schedule.cabinet.Cabinet;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeSlot;
 import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
 import com.example.onlinescheduler.payload.schedule.TeachingHourRequest;
 import com.example.onlinescheduler.repositories.schedule.GroupRepository;
@@ -9,13 +10,18 @@ import com.example.onlinescheduler.repositories.schedule.SubjectRepository;
 import com.example.onlinescheduler.repositories.schedule.TeacherRepository;
 import com.example.onlinescheduler.repositories.schedule.TeachingHourRepository;
 import com.example.onlinescheduler.repositories.schedule.cabinet.CabinetRepository;
+import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeSlotRepository;
+import com.example.onlinescheduler.repositories.schedule.timeManegment.TimeTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge =  3600)
 @RestController
@@ -36,6 +42,12 @@ public class TeachingHourController {
 
     @Autowired
     CabinetRepository cabinetRepository;
+
+    @Autowired
+    TimeSlotRepository timeSlotRepository;
+
+    @Autowired
+    TimeTableRepository timeTableRepository;
 
     @GetMapping
     public ResponseEntity<List<TeachingHour>> getAllHours() {
@@ -107,45 +119,61 @@ public class TeachingHourController {
                         th.getTeacher().getName(),
                         th.getTeacher().getInitials()
                 );
-                Optional<Group> foundGroup = groupRepository.findByScheduleAndNameAndParent(
+                Optional<Group> foundGroup = groupRepository.findByScheduleAndName(
                         newSchedule,
-                        th.getGroup().getName(),
-                        th.getGroup().getParent()
+                        th.getGroup().getName()
                 );
                 Optional<Cabinet> foundCabinet = cabinetRepository.findByScheduleAndName(
                         newSchedule,
                         th.getCabinet().getName()
                 );
 
-
-                TeachingHour newTeachingHour = new TeachingHour(
-                        foundSubject.orElseGet(() -> subjectRepository.save(
-                                new Subject(th.getSubject().getName(), newSchedule)
-                        )),
-                        foundGroup.orElseGet(() -> groupRepository.save(
-                                new Group(th.getGroup().getParent(), th.getGroup().getName(), newSchedule)
-                        )),
-                        foundTeacher.orElseGet(() -> teacherRepository.save(
-                                new Teacher(th.getTeacher().getName(), th.getTeacher().getInitials(), newSchedule)
-                        )),
-                        th.getHoursPerWeek(),
-                        th.getOverAWeek(),
-                        foundCabinet.orElseGet(() -> cabinetRepository.save(
-                                new Cabinet(th.getCabinet().getName(),
-                                        newSchedule,
-                                        th.getCabinet().getCabinetCategories())
-                        )),
-                        th.getTimeSlots(),
+                Optional<TimeTable> foundTimeTable = timeTableRepository.findByNameAndSchedule(
+                        th.getTimeSlots().stream().findFirst().get().getTimeTable().getName(),
                         newSchedule
                 );
 
-                teachingHourRepository.save(newTeachingHour);
+                if(foundTimeTable.isPresent() && foundSubject.isPresent()
+                && foundCabinet.isPresent() && foundGroup.isPresent() && foundTeacher.isPresent()) {
 
+                    TeachingHour newTeachingHour = new TeachingHour(
+                            foundSubject.get(),
+                            foundGroup.get(),
+                            foundTeacher.get(),
+                            th.getHoursPerWeek(),
+                            th.getOverAWeek(),
+                            foundCabinet.get(),
+                            getNewTimeSlotsForTeachingHour(th, foundTimeTable.get()),
+                            newSchedule
+                    );
+
+                    teachingHourRepository.save(newTeachingHour);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
             }
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    public Set<TimeSlot> getNewTimeSlotsForTeachingHour(TeachingHour th, TimeTable foundTimeTable) {
+        Optional<List<TimeSlot>> foundTimeSlots = timeSlotRepository.findAllByTimeTable_Id(foundTimeTable.getId());
+        Set<TimeSlot> newTimeSlots = new HashSet<>();
+        if(foundTimeSlots.isPresent()){
+            for(TimeSlot teachingHourTimeSlot : th.getTimeSlots()) {
+                for(TimeSlot foundTimeSlot : foundTimeSlots.get()) {
+                    if(teachingHourTimeSlot.getTimeEnd().equals(foundTimeSlot.getTimeEnd())
+                            && teachingHourTimeSlot.getTimeStart().equals(foundTimeSlot.getTimeStart())
+                            && teachingHourTimeSlot.getWeekDay().equals(foundTimeSlot.getWeekDay())) {
+                        newTimeSlots.add(foundTimeSlot);
+                    }
+                }
+            }
+        }
+
+        return newTimeSlots;
     }
 
     @PutMapping("/{id}")

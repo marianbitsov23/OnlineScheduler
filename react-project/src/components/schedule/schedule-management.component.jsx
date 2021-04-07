@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import { Container, Jumbotron, FormGroup, Modal, Alert } from 'react-bootstrap';
-import Form from "react-validation/build/form";
+import { Container, Jumbotron, FormGroup, Alert } from 'react-bootstrap';
 import scheduleService from "../../services/schedule/schedule.service";
 import authService from '../../services/user-auth/auth.service';
-import { Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import subjectService from '../../services/schedule/subject.service';
 import teacherService from '../../services/schedule/teacher.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
-import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
 import groupService from '../../services/schedule/group.service';
-import lessonService from '../../services/schedule/lesson.service';
 import { ConfirmButton } from '../shared/confirm-button.component';
 import { CustomSelect } from '../shared/custom-select.component';
 import { TextInput } from '../shared/text-input.component';
@@ -92,37 +89,17 @@ export default class ManageSchedules extends Component {
     }
 
     copyExistingSchedule = (newSchedule, oldScheduleId) => {
-        this.fetchAndSaveElements(subjectService, newSchedule, oldScheduleId).then(() => {
-        this.fetchAndSaveElements(teacherService, newSchedule, oldScheduleId)}).then(() => {
-            cabinetService.copy(oldScheduleId, newSchedule)
-            .catch(error => console.error(error));
-        }).then(() => {
-            groupService.copy(oldScheduleId, newSchedule)
-            .catch(error => console.error(error));
-        }).then(() => {
-            timeTableService.copy(oldScheduleId, newSchedule)
-            .catch(error => console.error(error));
-        }).then(() => {
-            this.redirectToNextPage();
-        });
+        subjectService.copy(oldScheduleId, newSchedule)
+        .then(teacherService.copy(oldScheduleId, newSchedule))
+        .then(cabinetService.copy(oldScheduleId, newSchedule))
+        .then(groupService.copy(oldScheduleId, newSchedule))
+        .then(timeTableService.copy(oldScheduleId, newSchedule))
+        .then(teachingHourService.copy(oldScheduleId, newSchedule))
+        .then(this.redirectToNextPage())
+        .catch(error => console.error(error));
     }
 
     redirectToNextPage = () => this.props.history.push('/schedule-dashboard');
-
-    copyElements = async (service, elements, schedule) => {
-        elements.forEach(element => {
-            element.schedule = schedule;
-            service.create(element);
-        });
-    }
-
-    fetchAndSaveElements = (service, schedule, oldScheduleId) => {
-        return service.getAllByScheduleId(oldScheduleId)
-        .then(result => {
-            this.copyElements(service, result.data, schedule);
-        })
-        .catch(error => console.error(error));
-    }
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 

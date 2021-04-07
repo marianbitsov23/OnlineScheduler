@@ -28,6 +28,22 @@ public class SubjectController {
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
 
+    @PostMapping("copy/{oldScheduleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<?> copySubjectsFromSchedule(@PathVariable Long oldScheduleId, @RequestBody Schedule newSchedule) {
+        Optional<List<Subject>> subjects = subjectRepository.findAllSubjectsByScheduleId(oldScheduleId);
+
+        if(subjects.isPresent()) {
+            for(Subject s : subjects.get()) {
+                Subject newSubject = new Subject(s.getName(), newSchedule);
+                subjectRepository.save(newSubject);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/schedule/{scheduleId}/subjects")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Subject>> getSubjectsByScheduleId(@PathVariable Long scheduleId) {

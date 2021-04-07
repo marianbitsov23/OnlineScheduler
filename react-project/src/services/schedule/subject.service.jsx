@@ -17,6 +17,14 @@ class SubjectService {
         return axios.get(API_URL + '/' + id, { headers: authHeader() });
     }
 
+    copy(oldScheduleId, newSchedule) {
+        return axios.post(
+            API_URL + '/copy/' + oldScheduleId, 
+            newSchedule,
+            { headers: authHeader() } 
+        )
+    }
+
     create(subject) {
         return axios.post(API_URL, { name: subject.name, schedule: subject.schedule }, { headers: authHeader() });
     }

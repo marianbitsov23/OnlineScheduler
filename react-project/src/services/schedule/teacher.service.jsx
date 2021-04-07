@@ -23,6 +23,14 @@ class TeacherService {
             {headers: authHeader()});
     }
 
+    copy(oldScheduleId, newSchedule) {
+        return axios.post(
+            API_URL + '/copy/' + oldScheduleId, 
+            newSchedule,
+            { headers: authHeader() } 
+        )
+    }
+
     update(teacher) {
         return axios.put(API_URL + '/' + teacher.id, 
         {id: teacher.id, schedule: null, name: teacher.name, initials: teacher.initials},

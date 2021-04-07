@@ -14,9 +14,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
 
     Optional<List<Group>> findAllByParentId(Long parentId);
 
-    Optional<Group> findByScheduleAndNameAndParent(
+    Optional<Group> findByScheduleAndName(
             Schedule schedule,
-            String name,
-            Group parent
+            String name
     );
 }
