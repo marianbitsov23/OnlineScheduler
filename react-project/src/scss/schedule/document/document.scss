@@ -18,28 +18,37 @@
         border: 1px solid black;
     }
 
-    .space {
+    td {
         border: 1px solid black;
-        padding: .5rem;
+    }
+
+    tr {
+        border: 1px solid black;
+    }
+
+    .slotNumber {
+        display: flex;
+        align-items: center;
+        margin: 1rem;
     }
 
     .subject {
-        max-width: 150px!important;
-        min-width: 150px!important;
+        margin: 0 .5rem;
     }
 
     .timeDuration {
-        max-width: 50px!important;
-        min-width: 50px!important;
+        margin: 0 .5rem;
     }
 
     .cabinet {
-        max-width: 50px!important;
-        min-width: 50px!important;
+        margin: 0 .5rem;
     }
 
     .initials {
-        max-width: 50px!important;
-        min-width: 50px!important;
+        margin: 0 .5rem;
+    }
+
+    .overAWeek {
+        margin: 0.5rem;
     }
 }

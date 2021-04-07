@@ -26,16 +26,28 @@ public class Lesson {
     @JoinColumn(name = "teachingHour_id", referencedColumnName = "id")
     private TeachingHour teachingHour;
 
+    @ManyToOne
+    @JoinColumn(name = "subLessonOneTeachingHour_id", referencedColumnName = "id")
+    private TeachingHour subLessonOneTeachingHour;
+
+    @ManyToOne
+    @JoinColumn(name = "subLessonTwoTeachingHour_id", referencedColumnName = "id")
+    private TeachingHour subLessonTwoTeachingHour;
+
     public Lesson() {}
 
     public Lesson(@NotBlank Schedule schedule,
                   @NotBlank Integer weekDay,
                   @NotBlank Integer slotIndex,
-                  @NotBlank TeachingHour teachingHour) {
+                  @NotBlank TeachingHour teachingHour,
+                  TeachingHour subLessonOneTeachingHour,
+                  TeachingHour subLessonTwoTeachingHour) {
         this.schedule = schedule;
         this.weekDay = weekDay;
         this.slotIndex = slotIndex;
         this.teachingHour = teachingHour;
+        this.subLessonOneTeachingHour = subLessonOneTeachingHour;
+        this.subLessonTwoTeachingHour = subLessonTwoTeachingHour;
     }
 
 
@@ -58,4 +70,12 @@ public class Lesson {
     public Integer getWeekDay() { return weekDay; }
 
     public void setWeekDay(Integer weekDay) { this.weekDay = weekDay; }
+
+    public TeachingHour getSubLessonOneTeachingHour() { return subLessonOneTeachingHour; }
+
+    public void setSubLessonOneTeachingHour(TeachingHour subLessonOneTeachingHour) { this.subLessonOneTeachingHour = subLessonOneTeachingHour; }
+
+    public TeachingHour getSubLessonTwoTeachingHour() { return subLessonTwoTeachingHour; }
+
+    public void setSubLessonTwoTeachingHour(TeachingHour subLessonTwoTeachingHour) { this.subLessonTwoTeachingHour = subLessonTwoTeachingHour; }
 }

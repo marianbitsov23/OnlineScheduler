@@ -167,7 +167,7 @@ export const SubItem = ({item, helperText, subIndex, index, droppableId}) => (
 );
 
 export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
-    if(lesson.teachingHour && lesson.teachingHour.overAWeek) {
+    if(lesson.subItems[0]) {
     return(
         <Draggable
             key={lesson.id}

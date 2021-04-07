@@ -50,7 +50,7 @@ public class TeacherController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
+
     @GetMapping("/schedule/{scheduleId}/teachers")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Teacher>> getTeachersByScheduleId(@PathVariable Long scheduleId) {

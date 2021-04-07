@@ -28,7 +28,9 @@ class LessonService {
                 schedule: lesson.schedule,
                 weekDay: lesson.weekDay,
                 slotIndex: lesson.slotIndex,
-                teachingHour: lesson.teachingHour
+                teachingHour: lesson.teachingHour,
+                subLessonOneTeachingHour: lesson.subLessonOneTeachingHour,
+                subLessonTwoTeachingHour: lesson.subLessonTwoTeachingHour
             },
             { headers: authHeader() });
     }

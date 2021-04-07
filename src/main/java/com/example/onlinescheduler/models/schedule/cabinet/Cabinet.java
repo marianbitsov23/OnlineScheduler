@@ -23,7 +23,7 @@ public class Cabinet {
     @JoinColumn(name = "schedule_id", referencedColumnName = "id")
     private Schedule schedule;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "cabinet_categories",
             joinColumns = @JoinColumn(name = "cabinet_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))

@@ -101,7 +101,7 @@ export default class WeekDays extends Component {
     }
 
     validateLesson = (sourceLesson, destLesson) => {
-        if(sourceLesson === undefined || destLesson === undefined) return false;
+        if(destLesson === undefined) return false;
         if((sourceLesson.teachingHour === undefined ||
         this.validateTimeSpan(
             sourceLesson.teachingHour.timeSlots,

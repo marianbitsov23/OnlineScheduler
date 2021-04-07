@@ -17,17 +17,25 @@ public class LessonRequest {
     @NotBlank
     private TeachingHour teachingHour;
 
+    private TeachingHour subLessonOneTeachingHour;
+
+    private TeachingHour subLessonTwoTeachingHour;
+
     public LessonRequest() {}
 
     public LessonRequest(
             @NotBlank Schedule schedule,
             @NotBlank Integer weekDay,
             @NotBlank Integer slotIndex,
-            @NotBlank TeachingHour teachingHour) {
+            @NotBlank TeachingHour teachingHour,
+            TeachingHour subLessonOneTeachingHour,
+            TeachingHour subLessonTwoTeachingHour) {
         this.schedule = schedule;
         this.weekDay = weekDay;
         this.slotIndex = slotIndex;
         this.teachingHour = teachingHour;
+        this.subLessonOneTeachingHour = subLessonOneTeachingHour;
+        this.subLessonTwoTeachingHour = subLessonTwoTeachingHour;
     }
 
 
@@ -46,4 +54,12 @@ public class LessonRequest {
     public Integer getSlotIndex() { return slotIndex; }
 
     public void setSlotIndex(Integer slotIndex) { this.slotIndex = slotIndex; }
+
+    public TeachingHour getSubLessonOneTeachingHour() { return subLessonOneTeachingHour; }
+
+    public void setSubLessonOneTeachingHour(TeachingHour subLessonOneTeachingHour) { this.subLessonOneTeachingHour = subLessonOneTeachingHour; }
+
+    public TeachingHour getSubLessonTwoTeachingHour() { return subLessonTwoTeachingHour; }
+
+    public void setSubLessonTwoTeachingHour(TeachingHour subLessonTwoTeachingHour) { this.subLessonTwoTeachingHour = subLessonTwoTeachingHour; }
 }

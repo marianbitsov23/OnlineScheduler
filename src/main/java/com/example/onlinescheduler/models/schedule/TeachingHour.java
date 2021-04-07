@@ -57,6 +57,12 @@ public class TeachingHour {
     @OneToMany(mappedBy = "teachingHour")
     private Set<Lesson> lessons;
 
+    @OneToMany(mappedBy = "subLessonOneTeachingHour")
+    private Set<Lesson> subOneLessons;
+
+    @OneToMany(mappedBy = "subLessonTwoTeachingHour")
+    private Set<Lesson> subTwoLessons;
+
     public TeachingHour() {}
 
     public TeachingHour(@NotBlank Subject subject,

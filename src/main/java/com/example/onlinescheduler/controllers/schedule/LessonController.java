@@ -27,7 +27,9 @@ public class LessonController {
                 lessonRequest.getSchedule(),
                 lessonRequest.getWeekDay(),
                 lessonRequest.getSlotIndex(),
-                lessonRequest.getTeachingHour()
+                lessonRequest.getTeachingHour(),
+                lessonRequest.getSubLessonOneTeachingHour(),
+                lessonRequest.getSubLessonTwoTeachingHour()
         );
 
         if(!lessonRepository.existsBySlotIndexAndWeekDayAndTeachingHour(
@@ -92,6 +94,8 @@ public class LessonController {
             newLesson.setWeekDay(lesson.getWeekDay());
             newLesson.setSlotIndex(lesson.getSlotIndex());
             newLesson.setTeachingHour(lesson.getTeachingHour());
+            newLesson.setSubLessonOneTeachingHour(lesson.getSubLessonOneTeachingHour());
+            newLesson.setSubLessonTwoTeachingHour(lesson.getSubLessonTwoTeachingHour());
             return new ResponseEntity<>(lessonRepository.save(newLesson), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
