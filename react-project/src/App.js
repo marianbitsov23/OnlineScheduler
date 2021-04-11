@@ -13,6 +13,7 @@ import '../src/scss/schedule/time-table/time-table.scss';
 import '../src/scss/user-profile/user-profile.scss';
 import '../src/scss/shared/delete-button/delete-button.scss';
 import '../src/scss/shared/save-button/save-button.scss';
+import '../src/scss/shared/edit-button/edit-button.scss';
 import "./App.css";
 import AuthService from "./services/user-auth/auth.service";
 import Login from "./components/sign/login.component";

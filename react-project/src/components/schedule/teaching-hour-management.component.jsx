@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Container, Button, Jumbotron } from 'react-bootstrap';
+import { Container, Jumbotron } from 'react-bootstrap';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
 import subjectService from '../../services/schedule/subject.service';
 import teacherService from '../../services/schedule/teacher.service';
-import { NextButton } from '../shared/next-button.component';
 import scheduleService from '../../services/schedule/schedule.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
@@ -16,6 +15,9 @@ import groupService from '../../services/schedule/group.service';
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { CustomSelect } from '../shared/custom-select.component';
 import { TextInput } from '../shared/text-input.component';
+import { ButtonPagination } from '../shared/custom-buttons/button-pagination.component';
+import { SaveButton } from '../shared/custom-buttons/save-button.component';
+import { EditButton } from '../shared/custom-buttons/edit-button.component';
 
 export default class ManageTeachingHours extends Component {
     constructor(props) {
@@ -195,14 +197,12 @@ export default class ManageTeachingHours extends Component {
                         onChange={this.onChange}
                         elements={subjects}
                     />
-
-                    <Button
-                        className="btn-block myDefaultMarginTopBottom"
-                        variant="success"
-                        onClick={() => this.setState({ show: true })}
-                    >
-                        Създай нов хорараиум за предмет ({subjects[0] && subjects[this.state.selectedSubject].name})
-                    </Button>
+                    {subjects[0] &&
+                        <SaveButton
+                            fullWidth={true}
+                            text={"Създай нов хорараиум за предмет" + subjects[this.state.selectedSubject].name}
+                            onClick={() => this.setState({ show: true })}
+                        />}
                 </Container>
                 <Container>
                     {subjects[0] &&
@@ -210,12 +210,17 @@ export default class ManageTeachingHours extends Component {
                         type="teaching-hour" 
                         teachers={teachers} 
                         cabinets={cabinets}
+                        groups={groups}
                         timeTables={timeTables}
                         elements={teachingHours.filter(
                             hour => hour.subject.id === subjects[this.state.selectedSubject].id
                         )}
                         service={teachingHourService}
                     />}
+                    <ButtonPagination
+                        backwardLink={"/time-table-management"}
+                        forwardLink={"/schedule-dashboard"}
+                    />
                 </Container>
                 <CustomDialog
                     show={show}
@@ -269,12 +274,11 @@ export default class ManageTeachingHours extends Component {
                                 elements={cabinets}
                             />
 
-                            <Button
-                                variant="outline-info"
+                            <EditButton
+                                fullWidth={true}
                                 onClick={() => this.setState({ hours: true, show: false })}
-                            >
-                                Изберете часове
-                            </Button>
+                                text="Изберете часове"
+                            />
                         </>
                     }
                 />
@@ -317,12 +321,6 @@ export default class ManageTeachingHours extends Component {
                         </>
                     }
                 />
-                <Container>
-                    <div className="myDisplayFlex justifyContentSpaceBetween">
-                        <NextButton type="backwards" link={"/cabinet-management"}/>
-                        <NextButton type="forward" link={"/teacher-management"}/>
-                    </div>
-                </Container>
             </>
         );
     }

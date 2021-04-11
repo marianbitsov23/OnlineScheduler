@@ -9,11 +9,10 @@ import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import timeTableService from '../../services/schedule/time-management/time-table.service';
 import teachingHourService from '../../services/schedule/teaching-hour.service';
 import groupService from '../../services/schedule/group.service';
-import { ConfirmButton } from '../shared/confirm-button.component';
 import { CustomSelect } from '../shared/custom-select.component';
 import { TextInput } from '../shared/text-input.component';
 import { CustomDialog } from '../shared/custom-dialog.component';
-import timeSlotService from '../../services/schedule/time-management/time-slot.service';
+import { SaveButton } from '../shared/custom-buttons/save-button.component';
 
 export default class ManageSchedules extends Component {
     constructor(props) {
@@ -99,7 +98,7 @@ export default class ManageSchedules extends Component {
         .catch(error => console.error(error));
     }
 
-    redirectToNextPage = () => this.props.history.push('/schedule-dashboard');
+    redirectToNextPage = () => this.props.history.push('/group-management');
 
     onChange = event => this.setState({ [event.target.name] : event.target.value });
 
@@ -160,18 +159,13 @@ export default class ManageSchedules extends Component {
                             elements={this.state.schoolTypes}
                         />
 
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            disabled={isInvalid}
-                            className="myDefaultMarginTopBottom"
+                        <SaveButton
+                            fullWidth={true}
+                            text="Създаване"
                             onClick={this.saveSchedule.bind(this, false)}
-                        >
-                            Създаване
-                        </Button>
+                        />
 
-                        <div className="myDisplayFlex">
+                        <div className="myDisplayFlex myDefaultMarginTopBottom">
                             <hr/>
                             <div>
                                 ИЛИ
@@ -183,7 +177,6 @@ export default class ManageSchedules extends Component {
                             fullWidth
                             variant="contained"
                             color="secondary"
-                            className="myDefaultMarginTopBottom"
                             onClick={() => this.setState({ show: true })}
                         >
                             {this.state.loading &&

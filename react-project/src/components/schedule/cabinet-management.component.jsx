@@ -3,8 +3,8 @@ import { Container } from 'react-bootstrap';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
 import cabinetService from '../../services/schedule/cabinet/cabinet.service';
 import ModelInput from '../shared/model-input.component';
-import { NextButton } from '../shared/next-button.component';
 import scheduleService from '../../services/schedule/schedule.service';
+import { ButtonPagination } from '../shared/custom-buttons/button-pagination.component';
 
 export default class ManageCabinets extends Component {
     constructor(props) {
@@ -49,7 +49,10 @@ export default class ManageCabinets extends Component {
                     elements={cabinets} 
                     service={cabinetService}
                 />
-                <NextButton link={"/teaching-hour-management"}/>
+                <ButtonPagination
+                    backwardLink={"/teacher-management"}
+                    forwardLink={"/time-table-management"}
+                />
             </Container>
         );
     }

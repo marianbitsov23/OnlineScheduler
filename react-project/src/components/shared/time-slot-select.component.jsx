@@ -13,7 +13,6 @@ export default class TimeSlotSelect extends Component {
             timeSlotTemplateMorning: [],
             timeSlotTemplateEvening: [],
             ammount: 0,
-
         }
     }
 
@@ -23,7 +22,7 @@ export default class TimeSlotSelect extends Component {
         const day = dayName[0];
         let timeSlotTemplate = [];
 
-        this.props.time === "1" ? timeSlotTemplate = timeSlotTemplateMorning 
+        this.props.time === 0 ? timeSlotTemplate = timeSlotTemplateMorning 
             : timeSlotTemplate = timeSlotTemplateEvening;
         
         let newTimeSlots = weekDays.filter(weekDay => weekDay.weekDay === day.toUpperCase());
@@ -123,10 +122,10 @@ export default class TimeSlotSelect extends Component {
                                 {weekDaysTemplate.map((weekDayTemplate, index) => (
                                     <TableCell className="defaultSlot" key={index}>
                                         {timeSlots.map((timeSlot, index) => (
-                                            <>
+                                            <div key={index}>
                                             {timeSlot.weekDay === weekDayTemplate.toUpperCase() &&
                                             timeSlot.index === row &&
-                                                <div className="timeSlot" key={index}>
+                                                <div className="timeSlot">
                                                     <div className="timeRange">
                                                         {timeSlot.timeStart} - {timeSlot.timeEnd}
                                                     </div>
@@ -160,15 +159,15 @@ export default class TimeSlotSelect extends Component {
                                                     </div>
                                                 </div>
                                             }
-                                            </>
+                                            </div>
                                         ))}
                                     </TableCell>
                                 ))}
                             </TableRow>
                         ))}
                         <TableRow>
-                            {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map(weekDayTemplate => (
-                                <TableCell className="myTextAlignCenter">
+                            {this.props.type !=='select' && weekDaysTemplate && weekDaysTemplate.map((weekDayTemplate, index) => (
+                                <TableCell className="myTextAlignCenter" key={index}>
                                     <Button
                                         variant="primary"
                                         name={weekDayTemplate}

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { FormGroup, Button, Modal } from 'react-bootstrap';
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import FormBootstrap from 'react-bootstrap/Form';
 import Checkbox from '@material-ui/core/Checkbox';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -12,6 +9,11 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { DeleteButton } from "../shared/custom-buttons/delete-button.component";
+import { EditButton } from './custom-buttons/edit-button.component';
+import { CustomDialog } from './custom-dialog.component';
+import { TextInput } from './text-input.component';
+import { CustomSelect } from './custom-select.component';
 
 export default class TableList extends Component {
     constructor(props) {
@@ -22,7 +24,8 @@ export default class TableList extends Component {
             editableElement: {},
             selectedTeacher: 0,
             selectedCabinet: 0,
-            selectedTimeTable: 0
+            selectedTimeTable: 0,
+            selectedGroup: 0
         };
     }
 
@@ -89,7 +92,7 @@ export default class TableList extends Component {
     render() {
 
         const { show, editableElement } = this.state;
-        const { teachers, cabinets } = this.props;
+        const { teachers, cabinets, groups } = this.props;
         const elements = this.props.elements;
 
         return(
@@ -112,6 +115,13 @@ export default class TableList extends Component {
                         </TableRow>
                     </TableHead>
                     <TableBody>
+                        {elements.length === 0 && 
+                            <TableRow>
+                                <TableCell>
+                                    Все още няма нищо тук :(
+                                </TableCell>
+                            </TableRow>
+                        }
                         {elements && elements.map(element => (
                             <TableRow key={element.id}>
                                 {this.props.type !== "teaching-hour" && <TableCell>{element.name}</TableCell>}
@@ -142,128 +152,102 @@ export default class TableList extends Component {
                                     Брой: {element.timeSlots.length}
                                 </TableCell>}
                                 <TableCell>
-                                    <Button
-                                        variant="warning"
-                                        name={element.name}
+                                    <EditButton
+                                        text="Промяна"
                                         onClick={this.onShow.bind(this, element)}
-                                    >
-                                        Промяна
-                                    </Button>
+                                    />
                                 </TableCell>
                                 <TableCell>
-                                    <Button
-                                        variant="danger"
-                                        name={element.id}
+                                    <DeleteButton
+                                        text="Изтриване"
                                         onClick={this.deleteElement.bind(this, element)}
-                                    >
-                                        Изтриване
-                                    </Button>
+                                    />                          
                                 </TableCell>
                             </TableRow>                 
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Modal
-                size="lg"
-                show={show}
-                onHide={() => this.setState({ show: !show })}
-                centered
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Направете промяна</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={this.saveElement}>
-                        {this.props.type !== "teaching-hour" &&
-                        <FormGroup>
-                            <Input
-                                type="text"
-                                className="form-control"
+            <CustomDialog
+                    show={show}
+                    onClose={() => this.setState({ show: !show })}
+                    title="Изберете часове"
+                    confirmFunction={this.saveElement}
+                    confirmButtonText="Запази"
+                    content={
+                        <>
+                            {this.props.type !== "teaching-hour" &&
+                            <TextInput
                                 name="editableElement"
+                                type="text"
+                                max="35"
                                 value={editableElement.name}
                                 onChange={this.editElement}
                             />
-                        </FormGroup>
-                        }
+                            }
 
-                        {this.props.type === "teacher" && 
-                            <FormGroup>
-                                <Input
-                                    type="text"
-                                    className="form-control"
-                                    name="initials"
-                                    value={editableElement.initials}
-                                    onChange={this.editTeacherInitials}
+                            {this.props.type === "teacher" && 
+                            <TextInput
+                                name="initials"
+                                type="text"
+                                max="35"
+                                value={editableElement.initials}
+                                onChange={this.editTeacherInitials}
+                            />
+                            }
+
+                            {this.props.type === "teaching-hour" &&
+                            <>
+                                <CustomSelect
+                                    label="Промяна на групата"
+                                    name="selectedGroup"
+                                    value={this.state.selectedGroup}
+                                    onChange={this.onChange}
+                                    elements={groups}
                                 />
-                            </FormGroup>
-                        }
 
-                        {this.props.type === "teaching-hour" &&
-                        <>
-                            <FormGroup>
-                                <FormBootstrap.Label>Променете учителя</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select" 
-                                name="selectedTeacher"
-                                value={this.state.selectedTeacher} 
-                                onChange={this.onChange}>
-                                    {teachers && teachers.map((teacher, index) => (
-                                        <option key={teacher.id} value={index}>{teacher.name}</option>
-                                    ))}
-                                </FormBootstrap.Control>
-                            </FormGroup>
-                            <FormGroup>
-                                <FormBootstrap.Label>Час / Седмица</FormBootstrap.Label>
-                                <Input
-                                    type="text"
-                                    className="form-control"
-                                    name="initials"
+                                <CustomSelect
+                                    label="Промяна на учител"
+                                    name="selectedTeacher"
+                                    value={this.state.selectedTeacher}
+                                    onChange={this.onChange}
+                                    elements={teachers}
+                                />
+
+                                <TextInput
+                                    label="Час/седмица"
+                                    name="hoursPerWeek"
+                                    type="number"
+                                    max="35"
                                     value={editableElement.hoursPerWeek}
                                     onChange={this.editHoursPerWeek}
                                 />
-                            </FormGroup>
 
-                            <FormGroup>
-                            <FormControlLabel
-                                control={
-                                <Checkbox 
-                                    checked={editableElement.overAWeek} 
-                                    onChange={this.handleCheck} 
-                                    name="overAWeek" 
-                                    color="primary"
-                                />}
-                                label="През седмица"
-                            />
-                            </FormGroup>
-                            
-                            <FormGroup>
-                                <FormBootstrap.Label>Променете кабинета</FormBootstrap.Label>
-                                <FormBootstrap.Control as="select" 
-                                name="selectedCabinet" 
-                                value={this.state.selectedCabinet} 
-                                onChange={this.onChange}>
-                                    {cabinets && cabinets.map((cabinet, index) => (
-                                        <option key={cabinet.id} value={index}>{cabinet.name}</option>
-                                    ))}
-                                </FormBootstrap.Control>
-                            </FormGroup>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                        <Checkbox 
+                                            checked={editableElement.overAWeek} 
+                                            onChange={this.handleCheck} 
+                                            name="overAWeek" 
+                                            color="primary"
+                                        />}
+                                        label="През седмица"
+                                    />
+                                </FormGroup>
+
+                                <CustomSelect
+                                    label="Промяна на кабинет"
+                                    name="selectedCabinet"
+                                    value={this.state.selectedCabinet}
+                                    onChange={this.onChange}
+                                    elements={cabinets}
+                                />
+                            </>
+                            }
                         </>
-                        }
-
-                        <FormGroup>
-                            <Button
-                                type="submit"
-                                variant="success"
-                                className="btn-block">
-                                {this.state.loading &&
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                }
-                                <span>Запази</span>
-                            </Button>
-                        </FormGroup>
-                    </Form>
-                </Modal.Body>
-            </Modal>
+                    }
+                />
             </>
         )
     }

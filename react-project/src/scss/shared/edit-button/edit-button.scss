@@ -1,0 +1,7 @@
+@import '../../main/color-palette.scss';
+.edit {
+    background-color: $primary-color!important;
+    color: white!important;
+    display: flex!important;
+    justify-content: space-between!important;
+}

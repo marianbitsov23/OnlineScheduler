@@ -3,6 +3,7 @@ import { Button, IconButton,
         Dialog, DialogActions, DialogContent, 
         DialogTitle, DialogContentText } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { SaveButton } from './custom-buttons/save-button.component';
 
 export const CustomDialog = ({ show, onClose, title, 
                             confirmFunction, text, disabled,
@@ -33,14 +34,12 @@ export const CustomDialog = ({ show, onClose, title,
             {content}
         </DialogContent>
         <DialogActions className="dialogAction">
-            <Button 
-                onClick={confirmFunction} 
-                color="secondary" 
-                variant="contained"
+            <SaveButton
+                text={confirmButtonText}
                 disabled={disabled}
-            >
-                {confirmButtonText}
-            </Button>
+                onClick={confirmFunction}
+                fullWidth={true}
+            />
         </DialogActions>
     </Dialog>
 )

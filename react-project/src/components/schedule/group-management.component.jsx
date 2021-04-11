@@ -12,7 +12,9 @@ import { TextField, Button, List, Collapse,
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { TextInput } from '../shared/text-input.component';
 import CloseIcon from '@material-ui/icons/Close';
-import { NextButton } from '../shared/next-button.component';
+import { ButtonPagination } from '../shared/custom-buttons/button-pagination.component';
+import { SaveButton } from '../shared/custom-buttons/save-button.component';
+import { EditButton } from '../shared/custom-buttons/edit-button.component';
 
 export default class ManageGroups extends Component {
     constructor(props) {
@@ -238,19 +240,11 @@ export default class ManageGroups extends Component {
                                     />
                                 </FormGroup>
                             ))}
-                            <FormGroup>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    className="btn-block"
-                                    onClick={this.saveGroups}
-                                >
-                                    {this.state.loading &&
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    }
-                                    <span>Запазване</span>
-                                </Button>
-                            </FormGroup>
+                            <SaveButton
+                                fullWidth={true}
+                                text="Запазване"
+                                onClick={this.saveGroups}
+                            />
                         </>
                         }{!edit && 
                             <>
@@ -335,24 +329,18 @@ export default class ManageGroups extends Component {
                                         </div>
                                     ))}
                                 </List>
-                                <FormGroup>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        className="btn-block"
-                                        onClick={() => this.setState({ edit: true })}
-                                    >
-                                        {this.state.loading &&
-                                            <span className="spinner-border spinner-border-sm"></span>
-                                        }
-                                        <span>Редактиране</span>
-                                    </Button>
-                                </FormGroup>
+                                <EditButton
+                                    fullWidth={true}
+                                    text="Редактиране"
+                                    onClick={() => this.setState({ edit: true })}
+                                />
                             </>
                         }
-                    </Jumbotron>
-                    
-                    <NextButton link={"/teaching-hour-management"}/>
+                    </Jumbotron>    
+                    <ButtonPagination
+                        backwardLink={"/schedule-management"}
+                        forwardLink={"/subject-management"}
+                    />
                 </Container>
                 <CustomDialog
                     show={show}

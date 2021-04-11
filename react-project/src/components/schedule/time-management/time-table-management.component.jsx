@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import TableList from '../../shared/table.component';
-import { Container, Button, Jumbotron, FormGroup } from 'react-bootstrap';
-import Form from "react-validation/build/form";
+import { Container, Button, Jumbotron } from 'react-bootstrap';
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
 import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
 import scheduleService from '../../../services/schedule/schedule.service';
 import TimeSlotSelect from '../../shared/time-slot-select.component';
+import { ButtonPagination } from '../../shared/custom-buttons/button-pagination.component';
+import { SaveButton } from '../../shared/custom-buttons/save-button.component';
+import { CustomSelect } from '../../shared/custom-select.component';
 import { TextInput } from '../../shared/text-input.component';
-import { Select, MenuItem, FormHelperText } from '@material-ui/core';
-import { NextButton } from '../../shared/next-button.component';
-import { ConfirmButton } from '../../shared/confirm-button.component';
+import { EditButton } from '../../shared/custom-buttons/edit-button.component';
+import { Typography } from '@material-ui/core';
 
 export default class ManageTimeTables extends Component {
     constructor(props) {
@@ -23,7 +24,8 @@ export default class ManageTimeTables extends Component {
             timeSlotTemplateEvening: [],
             loading: false,
             edit: true,
-            time: "1",
+            time: 0,
+            shifts: [{name: 'Първа смяна'}, {name: 'Втора смяна'}],
             timeTables: [],
             schedule: scheduleService.getCurrentSchedule()
         };
@@ -134,22 +136,21 @@ export default class ManageTimeTables extends Component {
                     <Jumbotron>
                         {!edit &&
                             <>
-                                <h1>{name}</h1>
+                                <Typography>{name}</Typography>
 
-                                <Button
-                                variant="outline-secondary"
-                                onClick={() => {
-                                    this.setState({ edit: true }); 
-                                    this.initWeekDays();
-                                }}>
-                                    Редактирай
-                                </Button>
+                                <EditButton
+                                    fullWidth={true}
+                                    text="Редактирай"
+                                    onClick={() => {
+                                        this.setState({ edit: true, weekDays: [] }); 
+                                        this.initWeekDays();
+                                    }}
+                                />
                             </>
                         }
 
                         {edit &&
-                        <Form onSubmit={() => this.setState({ edit : false,  })}>
-                            <FormGroup>
+                            <>
                                 <TextInput
                                     name="name"
                                     value={this.state.name}
@@ -157,32 +158,23 @@ export default class ManageTimeTables extends Component {
                                     onChange={this.onChange}
                                     type="text"
                                 />
-                            </FormGroup>
 
-                            <FormGroup>
-                                <Select
+                                <CustomSelect
+                                    label="Изберете за коя смяна се отнася следият график"
                                     name="time"
-                                    fullWidth
                                     value={this.state.time}
                                     onChange={this.onChange}
-                                    defaultValue="1"
-                                >
-                                    <MenuItem value="1">Първа смяна</MenuItem>
-                                    <MenuItem value="2">Втора смяна</MenuItem>
-                                </Select>
-                                <FormHelperText>
-                                    Изберете за коя смяна се отнася следният график
-                                </FormHelperText>
-                            </FormGroup>
-
-                            <FormGroup>
-                                <ConfirmButton 
-                                    disabled={isInvalid}
-                                    loading={this.state.loading}
-                                    text="Запази"
+                                    elements={this.state.shifts}
                                 />
-                            </FormGroup>
-                        </Form>}
+
+                                <SaveButton
+                                    fullWidth={true}
+                                    disabled={isInvalid}
+                                    text="Запази"
+                                    onClick={() => this.setState({ edit: false })}
+                                />
+                            </>
+                        }
                     </Jumbotron>
                     <TimeSlotSelect 
                         time={this.state.time}
@@ -193,21 +185,20 @@ export default class ManageTimeTables extends Component {
                         timeSlotTemplateMorning={this.state.timeSlotTemplateMorning}
                         setSlots={this.setSlots}
                     />
-                    <Button
-                        variant="success"
-                        className="btn-block"
+                    <SaveButton
+                        fullWidth={true}
+                        text="Създай времева таблица"
                         onClick={this.saveTimeTable}
-                        disabled={edit}>
-                            {this.state.loading &&
-                                <span className="spinner-border spinner-border-sm"></span>
-                            }
-                            <span>Създай Времева Таблица</span>
-                    </Button>
+                        disabled={edit}
+                    />
                 </Container>
                 <Container>
                     <TableList type="time-table" elements={timeTables} service={timeTableService} />
+                    <ButtonPagination
+                        backwardLink={"/cabinet-management"}
+                        forwardLink={"/teaching-hour-management"}
+                    />
                 </Container>
-                <NextButton link={"/subject-management"}/>
             </>
         )
     }

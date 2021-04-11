@@ -1,15 +1,15 @@
 import React from 'react';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import EditIcon from '@material-ui/icons/Edit';
 import { Button } from '@material-ui/core';
 
-export const SaveButton = ({ fullWidth, text, onClick, disabled }) => (
+export const EditButton = ({ fullWidth, text, onClick, disabled }) => (
     <Button
         fullWidth={fullWidth}
-        className="save"
+        className="edit"
         variant="contained"
         onClick={onClick}
         disabled={disabled}
     >
-        {text} <CheckCircleIcon />
+        {text} <EditIcon />
     </Button>
 );
