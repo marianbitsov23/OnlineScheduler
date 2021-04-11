@@ -2,9 +2,9 @@ import React from 'react';
 import { TextField } from '@material-ui/core';
 
 export const TextInput = ({ error, name, value, placeholder,
-                            helperText, label, max,
-                            autoComplete, onChange, 
-                            type, variant, className, shrink }) => (
+                            helperText, label, max, readOnly,
+                            autoComplete, onChange, type,
+                            variant, className, shrink }) => (
     <div >
         <TextField
             error={error}
@@ -23,6 +23,7 @@ export const TextInput = ({ error, name, value, placeholder,
             helperText={helperText}
             type={type}
             InputLabelProps={{ shrink: shrink }}
+            InputProps={{ readOnly: readOnly }}
         />
     </div>
 );

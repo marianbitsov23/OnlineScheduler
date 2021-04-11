@@ -4,7 +4,6 @@ const API_URL = "http://localhost:8080/api/auth/";
 
 class AuthService {
     login(username, password) {
-        console.log(username, password)
         return axios
         .post(API_URL + "signin", {
             username,
@@ -16,6 +15,10 @@ class AuthService {
             }
             return response.data;
         });
+    }
+
+    changePassword(username, oldPassword, newPassword) {
+        return axios.put(API_URL, { username, oldPassword, newPassword });
     }
 
     logout() {

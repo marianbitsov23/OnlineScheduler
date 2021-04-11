@@ -1,0 +1,36 @@
+.profile-card {
+    flex-grow: 1;
+
+    .button-group {
+        margin: .5em;
+        display: flex;
+        flex-direction: column;
+
+
+        button {
+            margin: .5rem;
+        }
+    }
+
+    .bottom {
+        display: flex;
+    }
+}
+
+.profile-image {
+    display: flex;
+    justify-content: center;
+
+    img {
+        height: 250px;
+        width: 300px;
+    }
+}
+
+.save-password {
+    margin: 16px 0;
+
+    button {
+        width: 100%;
+    }
+}

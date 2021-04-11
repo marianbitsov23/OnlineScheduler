@@ -199,4 +199,24 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
+    @PutMapping
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        changePasswordRequest.getUsername(),
+                        changePasswordRequest.getOldPassword()));
+
+        Optional<User> user = userRepository.findByUsername(changePasswordRequest.getUsername());
+
+        if(user.isPresent()) {
+            user.get().setPassword(encoder.encode(changePasswordRequest.getNewPassword()));
+            userRepository.save(user.get());
+            return ResponseEntity
+                    .ok()
+                    .body(new MessageResponse("Password updated!"));
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }

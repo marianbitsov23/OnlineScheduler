@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import AuthService from "../services/user-auth/auth.service";
-import { Container, InputGroup, FormControl, Button, Card, Row, Col } from "react-bootstrap";
 import scheduleService from "../services/schedule/schedule.service";
+import { Button, Grid, Snackbar } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
+import { TextInput } from "./shared/text-input.component";
+import { DeleteButton } from "./shared/custom-buttons/delete-button.component";
+import { SaveButton } from "./shared/custom-buttons/save-button.component";
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default class Profile extends Component {
     constructor(props) {
@@ -14,7 +22,13 @@ export default class Profile extends Component {
             currentUser: AuthService.getCurrentUser(),
             username: AuthService.getCurrentUser().username,
             email: AuthService.getCurrentUser().email,
-            edit: false,
+            edit: true,
+            open: false,
+            fail: false,
+            oldPassword: "",
+            newPassword: "",
+            confirmPassword: "",
+            editPassword: true,
             schedules: []
         };
     }
@@ -57,87 +71,173 @@ export default class Profile extends Component {
             localStorage.setItem("user", JSON.stringify(newUser));
         })
         .then(() => {
-          this.setState({ edit: false });
+            this.setState({ edit: true });
         })
         .catch(error => console.error(error));
     }
 
+    savePassword = () => {
+        const { username, oldPassword, newPassword } = this.state;
+
+        AuthService.changePassword(username, oldPassword, newPassword)
+        .then(result => {
+            console.log(result.data);
+            this.setState({ 
+                editPassword: true, 
+                open: true,
+                oldPassword: "",
+                newPassword: "",
+                confirmPassword: "" });
+        })
+        .catch(error => this.setState({ fail: true, oldPassword: "" }));
+    }
+
+    handleClose = () => this.setState({ open: false });
+    handleFail = () => this.setState({ fail: false });
+
     render() {
+        const { 
+            username, 
+            email,
+            open,
+            fail,
+            edit,
+            editPassword,
+            oldPassword, 
+            newPassword, 
+            confirmPassword } = this.state;
 
-     return (
-            <>
-                <Container>
-                    <Row className="justify-content-md-center">
-                        <Card bg="secondary" text="white" style={{ width: '24rem' }}>
-                            <Card.Img
-                                variant="top" 
-                                src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png" 
-                                height="300"
-                            />
-                            {!this.state.edit &&
-                                <Card.Header>{this.state.currentUser.username}</Card.Header>
-                            }
-                            <Card.Body>
-                                <Card.Title>{this.state.currentUser.email}</Card.Title>
-                                <Card.Text>
-                                <Col>
-                                    {!this.state.edit &&
-                                    <Row>
-                                        <Button variant="success" className="btn-margin" 
-                                            onClick={() => {
-                                                this.setState({ edit: true });
-                                            }}
-                                        >
-                                            Edit profile
-                                        </Button>
-                                    </Row>
-                                    }
-                                    {this.state.edit &&
-                                    <Row>
-                                        <Button variant="success" onClick={this.saveInformation}>
-                                            Save
-                                        </Button>
-                                    </Row>
-                                    }
-                                    <Row>
-                                        <Button variant="danger" onClick={this.deleteProfile}>
-                                            Delete Profile
-                                        </Button>
-                                    </Row>
-                                </Col>
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
-                    </Row>
-                    {this.state.edit &&
-                    <InputGroup className="mb-3">
-                        <FormControl
-                            onChange={this.onChange}
-                            name="username"
-                            value={this.state.username}
-                            placeholder="Username"
-                            aria-label="Username"
-                        />
-                    </InputGroup>
-                    }
+        const isInvalid = newPassword !== confirmPassword
+            || newPassword === "" 
+            || confirmPassword === ""
+            || oldPassword === "";
 
-                    {this.state.edit &&
-                    <InputGroup className="mb-3">
-                        <FormControl
-                            onChange={this.onChange}
-                            name="email"
-                            value={this.state.email}
-                            placeholder="Email"
-                            aria-label="Email"
-                            aria-describedby="basic-addon2"
-                        />
-                        <InputGroup.Append>
-                            <InputGroup.Text id="basic-addon2">@example.com</InputGroup.Text>
-                        </InputGroup.Append>
-                    </InputGroup>
-                    }
-                </Container>
-            </>
-        );
+        return (
+                <>
+                    <Snackbar open={open} autoHideDuration={6000} onClose={this.handleClose}>
+                        <Alert onClose={this.handleClose} severity="success">
+                            Паролата е променена!
+                        </Alert>
+                    </Snackbar>
+                    <Snackbar open={fail} autoHideDuration={6000} onClose={this.handleFail}>
+                        <Alert onClose={this.handleFail} severity="error">
+                            Грешна текуща парола!
+                        </Alert>
+                    </Snackbar>
+                    <main className="profile-card">
+                        <Grid 
+                            container 
+                            alignItems="center"
+                            direction="column" 
+                            spacing={3}
+                        >
+                            <Grid item xs={12}>
+                                <div className="profile-image">
+                                    <img src="https://www.kindpng.com/picc/m/24-248253_user-profile-default-image-png-clipart-png-download.png">
+                                    </img>
+                                </div>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <div className="button-group">
+                                    <DeleteButton
+                                        text="Изтриване на профила "
+                                        onClick={this.deleteProfile}
+                                    />
+                                    {edit && <Button
+                                        variant="contained"
+                                        className="edit"
+                                        onClick={() => this.setState({ edit: false })}
+                                    >
+                                        Редактиране на профила
+                                    </Button>}
+                                    {!edit && 
+                                    <SaveButton
+                                        onClick={this.saveInformation}
+                                        text="Запазване на промените"
+                                    />}
+                                    <Button
+                                        variant="contained"
+                                        className="edit"
+                                        onClick={() => this.setState({ editPassword: !editPassword })}
+                                    >
+                                        Промяна на паролата
+                                    </Button>
+                                </div>
+                            </Grid>
+                            <Grid 
+                                container 
+                                alignItems="stretch"
+                                direction="column" 
+                                item xs={6}
+                            >
+                                <Grid item xs={12}>
+                                    <TextInput
+                                        name="username"
+                                        label="Потребителско име"
+                                        value={username}
+                                        onChange={this.onChange}
+                                        readOnly={edit}
+                                        variant={edit ? "outlined" : "filled"}
+                                        helperText={edit ? "" : "Промяна на потребителското име"}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextInput
+                                        name="email"
+                                        label="Електронна поща"
+                                        value={email}
+                                        onChange={this.onChange}
+                                        readOnly={edit}
+                                        variant={edit ? "outlined" : "filled"}
+                                        helperText={edit ? "" : "Промяна на електронната поща"}
+                                    />
+                                </Grid>
+                            </Grid>
+                            {!editPassword && <Grid 
+                                container 
+                                alignItems="stretch"
+                                direction="column" 
+                                justify="center"
+                                item xs={6}
+                            >
+                                <Grid item xs={12}>
+                                    <TextInput
+                                        name="oldPassword"
+                                        type="password"
+                                        label="Въведете текущата парола"
+                                        value={oldPassword}
+                                        onChange={this.onChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextInput
+                                        name="newPassword"
+                                        type="password"
+                                        label="Въведете новата парола"
+                                        value={newPassword}
+                                        onChange={this.onChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextInput
+                                        name="confirmPassword"
+                                        type="password"
+                                        label="Потвърдете новата парола"
+                                        value={confirmPassword}
+                                        onChange={this.onChange}
+                                    />
+                                </Grid>
+                                <div className="save-password">
+                                    <SaveButton
+                                        text="Запазване на паролата "
+                                        disabled={isInvalid}
+                                        onClick={this.savePassword}
+                                    />
+                                </div>
+                            </Grid>}
+                        </Grid>
+                    </main>
+                </>
+            );
     }
 }

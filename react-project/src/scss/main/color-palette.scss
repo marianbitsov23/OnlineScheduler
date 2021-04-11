@@ -4,6 +4,8 @@ $primary-color: #2196F3;
 $secondary-color: rgb(25,118,210);
 $tertiary-color: #aeb8fe;
 $lightgray-color: #d3d3d3;
+$delete-color: rgb(243,69,66);
+$save-color: rgb(59,205,148);
 
 .baseColor {
     background-color: $base-color;
@@ -46,11 +48,12 @@ $lightgray-color: #d3d3d3;
 }
 
 //override the deafult MUI color with mine
+/*
 .MuiPaper-root {
-    background-color: $background-color!important;
     border: none;
     box-shadow: 0px 0px 5px 1px rgba(218,218,218,1)!important;
 }
+*/
 
 .card {
     background-color: $primary-color!important;
