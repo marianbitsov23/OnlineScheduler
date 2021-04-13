@@ -144,7 +144,7 @@ export default class WeekDays extends Component {
         const { lessons, hoursTemplate } = this.props;
 
         return(
-            <>
+            <div>
                 <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
                     <Droppable droppableId="0" type="droppableItem">
                         {((provided, snapshot) => (
@@ -204,7 +204,7 @@ export default class WeekDays extends Component {
                         </Paper>
                     </div>
                 </DragDropContext>
-            </>
+            </div>
         )
     }
 }

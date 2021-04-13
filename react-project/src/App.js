@@ -4,6 +4,7 @@ import "../src/scss/main/common.scss";
 import 'semantic-ui-css/semantic.min.css'
 import '../src/scss/main/color-palette.scss';
 import '../src/scss/main/footer.scss';
+import '../src/scss/main/inset-offset.scss';
 import '../src/scss/main/navbar.scss';
 import '../src/scss/schedule/dashboard/dashboard.scss';
 import '../src/scss/schedule/document/document.scss';

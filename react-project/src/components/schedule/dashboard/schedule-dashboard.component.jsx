@@ -379,7 +379,7 @@ class ScheduleDashboard extends Component {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <main className="myDisplayFlex ">
+                <main className="myDisplayFlex">
                     <Drawer
                     variant="permanent"
                     classes={{
