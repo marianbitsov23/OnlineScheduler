@@ -7,7 +7,7 @@ import scheduleService from '../../services/schedule/schedule.service';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import GroupIcon from '@material-ui/icons/Group';
-import { TextField, Button, List, Collapse, Paper,
+import { List, Collapse, Paper,
     ListItem, ListItemIcon, ListItemText, Container } from '@material-ui/core';
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { TextInput } from '../shared/text-input.component';
@@ -24,6 +24,7 @@ export default class ManageGroups extends Component {
             groupName: "",
             parent: {},
             groups: [],
+            isInvalidGroupName: false,
             selectedClass: 0,
             selectedSubClass: undefined,
             schedule: scheduleService.getCurrentSchedule(),
@@ -173,7 +174,14 @@ export default class ManageGroups extends Component {
         this.setState({ groups });
     }
 
-    onChange = event => this.setState({ [event.target.name]: event.target.value }); 
+    onChange = event => {
+        this.setState({ 
+            isInvalidGroupName: 
+                event.target.value.length < 0 ||
+                event.target.value.length > 8
+        });
+        this.setState({ [event.target.name]: event.target.value }); 
+    }
 
     handleOpen = (indexes, type) => {
         const { groups } = this.state;
@@ -213,9 +221,8 @@ export default class ManageGroups extends Component {
             show, 
             edit,
             groups,
+            isInvalidGroupName
         } = this.state;
-
-        const isInvalid = groupName === "";
 
         return(
             <>
@@ -228,15 +235,12 @@ export default class ManageGroups extends Component {
                             </h1>
                             {yearGroupsAmmount && yearGroupsAmmount.map(yearClass => (
                                 <FormGroup key={yearClass}>
-                                    <TextField
+                                    <TextInput
                                         label="Име на випуска"
                                         placeholder="Въведете името на випуска"
-                                        fullWidth
                                         name={yearClass.toString()}
-                                        margin="normal"
                                         value={groups[yearClass].name}
                                         onChange={this.groupChange}
-                                        InputLabelProps={{ shrink: true }}
                                     />
                                 </FormGroup>
                             ))}
@@ -282,38 +286,37 @@ export default class ManageGroups extends Component {
                                                 <List>
                                                     {group.children && group.children.map((classGroup, classIndex) => (
                                                         <div key={classIndex}>
-                                                        <ListItem 
-                                                            button 
-                                                            onClick={this.handleOpen.bind(this, 
-                                                            {groupIndex, classIndex}, 'classGroup')}
-                                                        >
-                                                            <ListItemIcon>
-                                                                <GroupWorkIcon />
-                                                            </ListItemIcon>
-                                                            <ListItemText
-                                                                className="myDisplayFlex justifyContentSpaceBetween alignItemsCenter" 
-                                                                primary={"Клас: " + classGroup.name} 
-                                                                secondary={
-                                                                    <EditButton
-                                                                        text="Добави нова подгрупа"
-                                                                        onClick={() => 
-                                                                            this.setState({ 
-                                                                                show: !show, 
-                                                                                selectedClass: groupIndex,
-                                                                                selectedSubClass: classIndex
-                                                                            })}
-                                                                    />}
-                                                            />
-                                                            <div className="margin-left-32px">
-                                                                <DeleteIcon
-                                                                    onClick={this.deleteGroup.bind(
-                                                                        this, group, 'classGroup', classIndex, undefined
-                                                                    )} 
+                                                            <ListItem 
+                                                                button 
+                                                                onClick={this.handleOpen.bind(this, 
+                                                                {groupIndex, classIndex}, 'classGroup')}
+                                                            >
+                                                                <ListItemIcon>
+                                                                    <GroupWorkIcon />
+                                                                </ListItemIcon>
+                                                                <ListItemText
+                                                                    className="myDisplayFlex justifyContentSpaceBetween alignItemsCenter" 
+                                                                    primary={"Клас: " + classGroup.name} 
+                                                                    secondary={
+                                                                        <EditButton
+                                                                            text="Добави нова подгрупа"
+                                                                            onClick={() => 
+                                                                                this.setState({ 
+                                                                                    show: !show, 
+                                                                                    selectedClass: groupIndex,
+                                                                                    selectedSubClass: classIndex
+                                                                                })}
+                                                                        />}
                                                                 />
-                                                            </div>
-                                                        </ListItem>
-                                                        <Collapse in={classGroup.open} timeout="auto" unmountOnExit>
-                                                            <List>
+                                                                <div className="margin-left-32px">
+                                                                    <DeleteIcon
+                                                                        onClick={this.deleteGroup.bind(
+                                                                            this, group, 'classGroup', classIndex, undefined
+                                                                        )} 
+                                                                    />
+                                                                </div>
+                                                            </ListItem>
+                                                            <List className="margin-16px">
                                                                 {classGroup.children && classGroup.children.map((subGroup, subIndex) => (
                                                                     <ListItem 
                                                                         button 
@@ -333,7 +336,6 @@ export default class ManageGroups extends Component {
                                                                     </ListItem>
                                                                 ))}
                                                             </List>
-                                                        </Collapse>
                                                         </div>
                                                     ))}
                                                 </List>
@@ -358,10 +360,13 @@ export default class ManageGroups extends Component {
                     show={show}
                     onClose={() => this.setState({ show: false })}
                     title="Въвъедете името на класа"
+                    disabled={isInvalidGroupName}
                     confirmFunction={this.addGroup}
                     confirmButtonText="Добави група"
                     content={
                         <TextInput 
+                            error={isInvalidGroupName}
+                            helperText="Групата трябва да е до 8 символа"
                             name="groupName"
                             value={groupName}
                             label="Въведете името на групата"

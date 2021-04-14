@@ -128,7 +128,6 @@ export default class ModelInput extends Component {
                         </Form>
                     </Paper>
                 </Container>
-                <hr />
                 <Container>
                     <TableList type={this.props.type} elements={this.props.elements} service={service} />
                 </Container>

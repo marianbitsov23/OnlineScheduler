@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { FormGroup, Button, Modal } from 'react-bootstrap';
-import Checkbox from '@material-ui/core/Checkbox';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,12 +6,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { DeleteButton } from "../shared/custom-buttons/delete-button.component";
 import { EditButton } from './custom-buttons/edit-button.component';
 import { CustomDialog } from './custom-dialog.component';
-import { TextInput } from './text-input.component';
-import { CustomSelect } from './custom-select.component';
+import { EditInformationComponent } from './edit-information.component';
 
 export default class TableList extends Component {
     constructor(props) {
@@ -25,7 +21,9 @@ export default class TableList extends Component {
             selectedTeacher: 0,
             selectedCabinet: 0,
             selectedTimeTable: 0,
-            selectedGroup: 0
+            selectedElement: 0,
+            selectedGroup: 0,
+            remove: false
         };
     }
 
@@ -52,13 +50,14 @@ export default class TableList extends Component {
 
     onShow = element => this.setState({ show: !this.state.show, editableElement: {...element} });
 
-    deleteElement = (element) => {
+    deleteElement = () => {
         let elements = this.props.elements;
+        const { editableElement } = this.state;
         
-        this.props.service.delete(element.id)
+        this.props.service.delete(editableElement.id)
         .then(() => {
-            elements.splice(elements.indexOf(element), 1);
-            this.setState({ elements });
+            elements.splice(elements.indexOf(editableElement), 1);
+            this.setState({ elements, show: false });
         })
         .catch(error => console.error(error));
     }
@@ -118,11 +117,11 @@ export default class TableList extends Component {
                         {elements.length === 0 && 
                             <TableRow>
                                 <TableCell>
-                                    Все още няма нищо тук :(
+                                    Все още няма въведена информация
                                 </TableCell>
                             </TableRow>
                         }
-                        {elements && elements.map(element => (
+                        {elements && elements.map((element, index) => (
                             <TableRow key={element.id}>
                                 {this.props.type !== "teaching-hour" && <TableCell>{element.name}</TableCell>}
                                 {this.props.type === "teacher" && <TableCell>{element.initials}</TableCell>}
@@ -154,13 +153,19 @@ export default class TableList extends Component {
                                 <TableCell>
                                     <EditButton
                                         text="Промяна"
-                                        onClick={this.onShow.bind(this, element)}
+                                        onClick={() => {
+                                            this.onShow(element);
+                                            this.setState({ remove: false })
+                                        }}
                                     />
                                 </TableCell>
                                 <TableCell>
                                     <DeleteButton
                                         text="Изтриване"
-                                        onClick={this.deleteElement.bind(this, element)}
+                                        onClick={() => {
+                                            this.onShow(element);
+                                            this.setState({ remove: true })
+                                        }}
                                     />                          
                                 </TableCell>
                             </TableRow>                 
@@ -170,82 +175,39 @@ export default class TableList extends Component {
             </TableContainer>
             <CustomDialog
                     show={show}
+                    danger={this.state.remove}
                     onClose={() => this.setState({ show: !show })}
-                    title="Изберете часове"
-                    confirmFunction={this.saveElement}
-                    confirmButtonText="Запази"
+                    title={this.state.remove ? "Изтриване на елемент" : "Изберете часове"}
+                    confirmFunction={this.state.remove ? this.deleteElement : this.saveElement}
+                    confirmButtonText={this.state.remove ? "Изтриване" : "Запази"}
+                    text=
+                    {this.state.remove ? <>
+                        Напълно сигурни ли сте, че искате да изтриете елемента <span className="scheduleName">
+                            {editableElement.name}</span> ?
+                        При изтриването му, ще се изтрият всички други данни, свързани с него! 
+                        Ако сте съгласни натиснете бутона <span className="deleteButtonText">Изтриване</span>, за да потвърдите.
+                    </>
+                    : <>
+                        Променяте елемент <span className="scheduleName">{editableElement.name}</span>.
+                    </>
+                    }
                     content={
-                        <>
-                            {this.props.type !== "teaching-hour" &&
-                            <TextInput
-                                name="editableElement"
-                                type="text"
-                                max="35"
-                                value={editableElement.name}
-                                onChange={this.editElement}
-                            />
-                            }
-
-                            {this.props.type === "teacher" && 
-                            <TextInput
-                                name="initials"
-                                type="text"
-                                max="35"
-                                value={editableElement.initials}
-                                onChange={this.editTeacherInitials}
-                            />
-                            }
-
-                            {this.props.type === "teaching-hour" &&
-                            <>
-                                <CustomSelect
-                                    label="Промяна на групата"
-                                    name="selectedGroup"
-                                    value={this.state.selectedGroup}
-                                    onChange={this.onChange}
-                                    elements={groups}
-                                />
-
-                                <CustomSelect
-                                    label="Промяна на учител"
-                                    name="selectedTeacher"
-                                    value={this.state.selectedTeacher}
-                                    onChange={this.onChange}
-                                    elements={teachers}
-                                />
-
-                                <TextInput
-                                    label="Час/седмица"
-                                    name="hoursPerWeek"
-                                    type="number"
-                                    max="35"
-                                    value={editableElement.hoursPerWeek}
-                                    onChange={this.editHoursPerWeek}
-                                />
-
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={
-                                        <Checkbox 
-                                            checked={editableElement.overAWeek} 
-                                            onChange={this.handleCheck} 
-                                            name="overAWeek" 
-                                            color="primary"
-                                        />}
-                                        label="През седмица"
-                                    />
-                                </FormGroup>
-
-                                <CustomSelect
-                                    label="Промяна на кабинет"
-                                    name="selectedCabinet"
-                                    value={this.state.selectedCabinet}
-                                    onChange={this.onChange}
-                                    elements={cabinets}
-                                />
-                            </>
-                            }
-                        </>
+                        <EditInformationComponent
+                            editableElement={editableElement}
+                            selectedGroup={this.state.selectedGroup}
+                            groups={groups}
+                            editElement={this.editElement}
+                            editTeacherInitials={this.editTeacherInitials}
+                            onChange={this.onChange}
+                            selectedTeacher={this.state.selectedTeacher}
+                            teachers={teachers}
+                            editHoursPerWeek={this.editHoursPerWeek}
+                            handleCheck={this.handleCheck}
+                            selectedCabinet={this.state.selectedCabinet}
+                            cabinets={cabinets}
+                            type={this.props.type}
+                            remove={this.state.remove}
+                        />
                     }
                 />
             </>
