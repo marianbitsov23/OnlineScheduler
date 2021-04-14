@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, IconButton,
-        Dialog, DialogActions, DialogContent, 
+import { IconButton,Dialog, 
+        DialogActions, DialogContent, 
         DialogTitle, DialogContentText } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { SaveButton } from './custom-buttons/save-button.component';

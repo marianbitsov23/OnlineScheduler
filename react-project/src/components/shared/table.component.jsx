@@ -125,12 +125,13 @@ export default class TableList extends Component {
                             <TableRow key={element.id}>
                                 {this.props.type !== "teaching-hour" && <TableCell>{element.name}</TableCell>}
                                 {this.props.type === "teacher" && <TableCell>{element.initials}</TableCell>}
-                                {this.props.type === "cabinet" && <TableCell>{element.cabinetCategories
-                                && element.cabinetCategories.map(category => (
-                                    <ul>
+                                {this.props.type === "cabinet" && <TableCell>
+                                <ul>
+                                    {element.cabinetCategories
+                                    && element.cabinetCategories.map(category => (  
                                         <li key={category.id}>{category.name}</li>
-                                    </ul>
-                                ))}</TableCell>}
+                                    ))}
+                                </ul></TableCell>}
                                 {this.props.type === "teaching-hour" && <TableCell>{element.group.name}</TableCell>}
                                 {this.props.type === "teaching-hour" && <TableCell>
                                     {element.teacher.name} ({element.teacher.initials})
@@ -188,7 +189,9 @@ export default class TableList extends Component {
                         Ако сте съгласни натиснете бутона <span className="deleteButtonText">Изтриване</span>, за да потвърдите.
                     </>
                     : <>
-                        Променяте елемент <span className="scheduleName">{editableElement.name}</span>.
+                        {this.props.type !== "teaching-hour" && 
+                            <>Променяте елемент <span className="scheduleName">{editableElement.name}</span>.</>
+                        }
                     </>
                     }
                     content={

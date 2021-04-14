@@ -45,8 +45,7 @@ export default class ModelInput extends Component {
             case "cabinet":
                 element = { name: elementName, 
                     categories: categories,
-                    schedule: schedule
-                };
+                    schedule: schedule };
                 break;
             default:
                 break;
@@ -63,9 +62,10 @@ export default class ModelInput extends Component {
     selectCategories = categories => this.setState({ categories: categories });
 
     render() {
-        const { elementName } = this.state;
+        const { elementName, categories } = this.state;
         const service = this.props.service;
-        const disabled = elementName === "";
+        const disabled = elementName === "" ||
+            categories.length === 0;
 
         return(
             <>
@@ -88,8 +88,8 @@ export default class ModelInput extends Component {
                                 </Typography>
                             }
 
-                            <div className="myDefaultMargin">
-                                <TextInput
+                            <Container className="margin-bottom-16px">
+                                  <TextInput
                                     name="elementName"
                                     value={this.state.elementName}
                                     label=
@@ -98,7 +98,7 @@ export default class ModelInput extends Component {
                                         || (this.props.type === "cabinet" && "Име на учебната зала")}
                                     onChange={this.onChange}
                                 />
-                            </div>
+                            </Container>
 
                             {this.props.type === "teacher" &&
                                 <div className="myDefaultMargin">

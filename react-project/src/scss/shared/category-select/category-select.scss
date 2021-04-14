@@ -10,7 +10,12 @@
 
         .categoryButtons {
             display: flex;
-            flex-direction: column;
         }
     }
 }
+
+@media only screen and (max-width: 400px) {
+    .category {
+        flex-direction: column;
+    }
+  }

@@ -54,66 +54,43 @@ export default class ManageTeachingHours extends Component {
         })
         .catch(error => console.error(error));
 
-        await this.fetchAllGroups();
-        await this.fetchAllSubjects();
-        await this.fetchAllTeachers();
-        await this.fetchAllCabinets();
-        await this.fetchAllTimeTables();
-    }
-
-    async fetchAllGroups() {
         groupService.getAllTeachingGroups(this.state.schedule.id)
-        .then(result => {
-            this.setState({ groups: result.data });
-        })
-        .catch(error => console.error(error));
+        .then(result => this.setState({ groups: result.data }))
+        .then(this.fetchAllElemetnsByService(subjectService))
+        .then(this.fetchAllElemetnsByService(teacherService))
+        .then(this.fetchAllElemetnsByService(cabinetService))
+        .then(this.fetchAllElemetnsByService(timeTableService))
     }
 
-    async fetchAllSubjects() {
-        subjectService.getAllByScheduleId(this.state.schedule.id)
+    fetchAllElemetnsByService = (service) => {
+        return service.getAllByScheduleId(this.state.schedule.id)
         .then(result => {
-            this.setState({ subjects: result.data });
-        })
-        .catch(error => console.error(error));
-    }
-
-    async fetchAllTeachers() {
-        teacherService.getAllByScheduleId(this.state.schedule.id)
-        .then(result => {
-            this.setState({ teachers: result.data });
-        })
-        .catch(error => console.error(error));
-    }    
-
-    async fetchAllCabinets() {
-        cabinetService.getAllByScheduleId(this.state.schedule.id)
-        .then(result => {
-            this.setState({ cabinets: result.data });
-        })
-        .catch(error => console.error(error));
-    }
-
-    async fetchAllTimeTables() {
-        timeTableService.getAllByScheduleId(this.state.schedule.id)
-        .then(result => {
-            result.data.forEach(timeTable => {
-                timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
-                .then(slots => {
-                    timeTable.slots = slots.data;
-                });
-            });
-            this.setState({ timeTables: result.data });
-        })
-        .then(() => {
-            this.resetSelected(this.state.timeTables, false);
+            switch(service) {
+                default: break;
+                case subjectService:
+                    this.setState({ subjects: result.data }); break;
+                case teacherService:
+                    this.setState({ teachers: result.data }); break;
+                case cabinetService:
+                    this.setState({ cabinets: result.data}); break;
+                case timeTableService:
+                    result.data.forEach(async timeTable => {
+                        await timeSlotService.getTimeSlotsByTimeTableId(timeTable.id)
+                        .then(slots => {
+                            timeTable.slots = slots.data;
+                            const timeTables = [...this.state.timeTables, timeTable];
+                            this.setState({ timeTables: timeTables });
+                            this.resetSelected(this.state.timeTables, true);
+                        });
+                    })
+                    break;
+            }
         })
         .catch(error => console.error(error));
     }
 
     resetSelected = (timeTables, type) => {
-        timeTables.forEach(timeTable => {
-            timeTable.slots.forEach(res => { res.selected = type; })
-        });
+        timeTables.forEach(timeTable => timeTable.slots.forEach(res => res.selected = type));
         let ammount;
         type === true 
             ? ammount = timeTables[this.state.selectedTimeTable].length 
@@ -228,6 +205,16 @@ export default class ManageTeachingHours extends Component {
                     title="Добавете нов час"
                     confirmFunction={this.saveTeachingHour}
                     confirmButtonText="Добавяне"
+                    text={
+                        <>
+                            Създаване на хорариум за предмет <span className="scheduleName">
+                            {subjects[this.state.selectedSubject] && subjects[this.state.selectedSubject].name}</span>.<br />
+                            Въведете долупосочената информация 
+                            (група, преподавател, колко часа в седмицата, опция за през седмица и учебна зала). <br />
+                            Ако преподавателя има предпочитания за провеждането на часвоете, посочете ги в последната опция <br />
+                            <span className="scheduleName"> ИЗБИРАНЕ НА ПРЕДПОЧИТАНИ ЧАСОВЕ</span>.
+                        </>
+                    }
                     content={
                         <>
                             <CustomSelect
@@ -239,7 +226,7 @@ export default class ManageTeachingHours extends Component {
                             />
 
                             <CustomSelect
-                                label="Изберете учител"
+                                label="Изберете преподавател"
                                 name="selectedTeacher"
                                 value={this.state.selectedTeacher}
                                 onChange={this.onChange}
@@ -267,7 +254,7 @@ export default class ManageTeachingHours extends Component {
                             />
 
                             <CustomSelect
-                                label="Изберете кабинет"
+                                label="Изберете учебна зала"
                                 name="selectedCabinet"
                                 value={this.state.selectedCabinet}
                                 onChange={this.onChange}
@@ -277,14 +264,14 @@ export default class ManageTeachingHours extends Component {
                             <EditButton
                                 fullWidth={true}
                                 onClick={() => this.setState({ hours: true, show: false })}
-                                text="Изберете часове"
+                                text="Избиране на предпочитани часове"
                             />
                         </>
                     }
                 />
                 <CustomDialog
                     show={hours}
-                    onClose={() => this.setState({ hours: !hours })}
+                    onClose={() => this.setState({ hours: false, show: true })}
                     title="Изберете часове"
                     confirmFunction={() => this.setState({ hours: false, show: true })}
                     confirmButtonText="Запази"

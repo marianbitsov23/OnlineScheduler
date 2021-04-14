@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import cabinetCategoryService from '../../services/schedule/cabinet/cabinet-category.service';
-import { Button, Container, Typography } from '@material-ui/core';
+import { Button, Container, Typography, Paper } from '@material-ui/core';
 import { CustomDialog } from './custom-dialog.component';
 import { TextInput } from './text-input.component';
+import { EditButton } from './custom-buttons/edit-button.component';
+import { DeleteButton } from './custom-buttons/delete-button.component';
 
 export default class CategorySelect extends Component {
     constructor(props) {
@@ -61,61 +63,57 @@ export default class CategorySelect extends Component {
         const { cabinetCategories, show } = this.state;
 
         return(
-            <>
-            <Container className="myDefaultPadding">
+            <Container className="margin-bottom-16px">
+            <div className="
+                display-flex 
+                align-items-center 
+                justify-content-space-between
+                margin-bottom-16px"
+            >
                 <Typography>
                     Изберете категория на кабинета
                 </Typography>
-                <div className="categories">
-                {(this.props.categories && this.props.categories.map(category => {
-                    if(cabinetCategories.includes(category)) {
-                        return (
-                            <CategoryItem
-                                name={category.name}
-                                type="Премахни"
-                                selectCategory={this.handleSelect.bind(this, "remove", category)}
-                                deleteCategory={this.deleteCategory.bind(this, category)}
-                                schedule={category.schedule}
-                                color="secondary"
-                            />
-                        )
-                    } else {
-                        return(
-                            <CategoryItem
-                                name={category.name}
-                                type="Избери"
-                                selectCategory={this.handleSelect.bind(this, "add", category)}
-                                deleteCategory={this.deleteCategory.bind(this, category)}
-                                schedule={category.schedule}
-                                color="primary"
-                            />
-                        )
-                    }
-                }))}
-                </div>
-                <Container>
-                    <Button onClick={() => this.setState({ show: !this.state.show})}>
-                        Добави нова категория
-                    </Button>
-                </Container>
-                <CustomDialog 
-                    show={show}
-                    onClose={() => this.setState({ show: !show })}
-                    title="Добави нова категория"
-                    confirmFunction={this.createCategory}
-                    confirmButtonText="Добави"
-                    content={
-                        <TextInput 
-                            name="categoryName"
-                            value={this.state.categoryName}
-                            label="Въведете името на категорията"
-                            type="text"
-                            onChange={this.onChange}
-                        />
-                    }
+                <EditButton
+                    text="Добави нова категория"
+                    onClick={() => this.setState({ show: !this.state.show})}
                 />
+            </div>
+            <Paper style={{maxHeight: 300, overflow: 'auto'}}>
+                <Container>
+                    <div className="categories">
+                    {(this.props.categories && this.props.categories.map(category => (
+                        <CategoryItem
+                            key={category.id}
+                            name={category.name}
+                            type={cabinetCategories.includes(category) ? "Премахни" : "Избери"}
+                            selectCategory={cabinetCategories.includes(category) ?
+                                this.handleSelect.bind(this, "remove", category) :
+                                this.handleSelect.bind(this, "add", category)}
+                            deleteCategory={this.deleteCategory.bind(this, category)}
+                            schedule={category.schedule}
+                            color={cabinetCategories.includes(category) ? "secondary" : "primary"}
+                        />
+                    )))}
+                    </div>
+                    <CustomDialog 
+                        show={show}
+                        onClose={() => this.setState({ show: !show })}
+                        title="Добави нова категория"
+                        confirmFunction={this.createCategory}
+                        confirmButtonText="Добави"
+                        content={
+                            <TextInput 
+                                name="categoryName"
+                                value={this.state.categoryName}
+                                label="Въведете името на категорията"
+                                type="text"
+                                onChange={this.onChange}
+                            />
+                        }
+                    />
+                </Container>
+            </Paper>
             </Container>
-            </>
         );
     }
 }
@@ -132,16 +130,20 @@ const CategoryItem = ({ name, type, selectCategory,
         </div>
         <div className="categoryButtons">
             <Button 
-                variant="outlined" 
+                variant="contained"
+                className="margin-right-16px"
                 color={color}
                 onClick={selectCategory}
             >
                 {type}
             </Button>
             {schedule &&
-                <Button onClick={deleteCategory}>
-                    Изтрий
-                </Button>
+            <div className="margin-right-16px">
+                <DeleteButton 
+                    onClick={deleteCategory}
+                    text="Изтриване"
+                />
+            </div>
             }
         </div>
     </div>

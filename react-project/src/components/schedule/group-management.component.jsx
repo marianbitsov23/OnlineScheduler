@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Jumbotron, FormGroup } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
 import GroupWorkIcon from '@material-ui/icons/GroupWork';
 import SchoolIcon from '@material-ui/icons/School';
 import groupService from '../../services/schedule/group.service';
