@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import "../src/scss/main/common.scss";
 import 'semantic-ui-css/semantic.min.css'
 import '../src/scss/main/color-palette.scss';
@@ -65,39 +65,52 @@ class App extends Component {
     }
 
     render() {
-        return (
-            <div className="
+      const { currentUser } = this.state;
+      let authenticated = currentUser
+        ? true : false;
+
+      return (
+          <div className="
             myDisplayFlexColumn 
             footerMinHeight 
             backgroundColor
             clickBorder
             myFontFamily"
-            >
-              <MuiThemeProvider theme={OnlineSchedulerTheme}>
-                <Navigation />
-                    <Switch>
-                        <Route exact path={["/", "/home"]} component={Home} />
-                        <Route exact path="/forgot-password" component={ForgotPassword} />
-                        <Route exact path="/reset-password" component={ResetPassword} />
-                        <Route exact path="/login" component={Login} />
-                        <Route exact path = "/schedule-management" component={ManageSchedules} />
-                        <Route exact path = "/cabinet-management" component={ManageCabinets} />
-                        <Route exact path = "/subject-management" component={ManageSubjects} />
-                        <Route exact path = "/teacher-management" component={ManageTeachers} />
-                        <Route exact path = "/time-table-management" component={ManageTimeTables} />
-                        <Route exact path = "/teaching-hour-management" component={ManageTeachingHours} />
-                        <Route exact path = "/schedule-dashboard" component={ScheduleDashboard} />
-                        <Route exact path = "/group-management" component={ManageGroups} />
-                        <Route exact path="/register" component={Register} />
-                        <Route exact path="/profile" component={Profile} />
-                        <Route path="/schedules" component={ScheduleBoard} />
-                        <Route path="/admin" component={BoardAdmin} />
-                    </Switch>
-                <Footer />
-              </MuiThemeProvider>
-          </div>
-        );
+          >
+            <MuiThemeProvider theme={OnlineSchedulerTheme}>
+              <Navigation />
+                  <Switch>
+                      <Route exact path={["/", "/home"]} component={Home} />
+                      <Route exact path="/forgot-password" component={ForgotPassword} />
+                      <Route exact path="/reset-password" component={ResetPassword} />
+                      <Route exact path="/login" component={Login} />
+                      <PrivateRoute authenticated={authenticated} path="/schedule-management" component={ManageSchedules} />
+                      <PrivateRoute authenticated={authenticated} path="/cabinet-management" component={ManageCabinets} />
+                      <PrivateRoute authenticated={authenticated} path="/subject-management" component={ManageSubjects} />
+                      <PrivateRoute authenticated={authenticated} path="/teacher-management" component={ManageTeachers} />
+                      <PrivateRoute authenticated={authenticated} path="/time-table-management" component={ManageTimeTables} />
+                      <PrivateRoute authenticated={authenticated} path="/teaching-hour-management" component={ManageTeachingHours} />
+                      <PrivateRoute authenticated={authenticated} path="/schedule-dashboard" component={ScheduleDashboard} />
+                      <PrivateRoute authenticated={authenticated} path="/group-management" component={ManageGroups} />
+                      <Route exact path="/register" component={Register} />
+                      <PrivateRoute authenticated={authenticated} path="/profile" component={Profile} />
+                      <PrivateRoute authenticated={authenticated} path="/schedules" component={ScheduleBoard} />
+                      <Route path="/admin" component={BoardAdmin} />
+                  </Switch>
+              <Footer />
+            </MuiThemeProvider>
+        </div>
+      );
     }
 }
+
+const PrivateRoute = ({ component: Component, authenticated, ...rest }) => (
+  <Route
+    {...rest}
+    render= {(props) => authenticated 
+      ? <Component {...props} />
+      : <Redirect to={{pathname: '/login', state: { from: props.location }}} />}
+  />
+)
 
 export default App;
