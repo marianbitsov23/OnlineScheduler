@@ -65,7 +65,7 @@ class App extends Component {
     }
 
     render() {
-      const { currentUser } = this.state;
+      const currentUser = AuthService.getCurrentUser();
       let authenticated = currentUser
         ? true : false;
 
