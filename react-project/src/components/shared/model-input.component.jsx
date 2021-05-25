@@ -70,7 +70,7 @@ export default class ModelInput extends Component {
                         <Form onSubmit={this.createElement}>
                             {this.props.type === "teacher" &&
                                 <Typography variant="h4" className="myTextAlignCenter">
-                                    Добави нов учител
+                                    Добави нов преподавател
                                 </Typography>
                             }
                             {this.props.type === "subject" &&
@@ -89,7 +89,7 @@ export default class ModelInput extends Component {
                                     name="elementName"
                                     value={this.state.elementName}
                                     label=
-                                        {(this.props.type === "teacher" && "Име на учителя")
+                                        {(this.props.type === "teacher" && "Име на преподавателя")
                                         || (this.props.type === "subject" && "Име на предмета")
                                         || (this.props.type === "cabinet" && "Име на учебната зала")}
                                     onChange={this.onChange}

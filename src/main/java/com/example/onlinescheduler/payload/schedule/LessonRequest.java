@@ -1,7 +1,10 @@
 package com.example.onlinescheduler.payload.schedule;
 
+import com.example.onlinescheduler.models.schedule.Group;
 import com.example.onlinescheduler.models.schedule.Schedule;
 import com.example.onlinescheduler.models.schedule.TeachingHour;
+import com.example.onlinescheduler.models.schedule.timeMangement.TimeTable;
+
 import javax.validation.constraints.NotBlank;
 
 public class LessonRequest {
@@ -14,7 +17,10 @@ public class LessonRequest {
     @NotBlank
     private Integer slotIndex;
 
-    @NotBlank
+    private TimeTable timeTable;
+
+    private Group group;
+
     private TeachingHour teachingHour;
 
     private TeachingHour subLessonOneTeachingHour;
@@ -27,12 +33,16 @@ public class LessonRequest {
             @NotBlank Schedule schedule,
             @NotBlank Integer weekDay,
             @NotBlank Integer slotIndex,
-            @NotBlank TeachingHour teachingHour,
+            TimeTable timeTable,
+            Group group,
+            TeachingHour teachingHour,
             TeachingHour subLessonOneTeachingHour,
             TeachingHour subLessonTwoTeachingHour) {
         this.schedule = schedule;
         this.weekDay = weekDay;
         this.slotIndex = slotIndex;
+        this.group = group;
+        this.timeTable = timeTable;
         this.teachingHour = teachingHour;
         this.subLessonOneTeachingHour = subLessonOneTeachingHour;
         this.subLessonTwoTeachingHour = subLessonTwoTeachingHour;
@@ -62,4 +72,13 @@ public class LessonRequest {
     public TeachingHour getSubLessonTwoTeachingHour() { return subLessonTwoTeachingHour; }
 
     public void setSubLessonTwoTeachingHour(TeachingHour subLessonTwoTeachingHour) { this.subLessonTwoTeachingHour = subLessonTwoTeachingHour; }
+
+    public TimeTable getTimeTable() { return timeTable; }
+
+    public void setTimeTable(TimeTable timeTable) { this.timeTable = timeTable; }
+
+    public Group getGroup() { return group; }
+
+    public void setGroup(Group group) { this.group = group; }
+
 }

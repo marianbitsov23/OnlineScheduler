@@ -28,6 +28,8 @@ class LessonService {
                 schedule: lesson.schedule,
                 weekDay: lesson.weekDay,
                 slotIndex: lesson.slotIndex,
+                timeTable: lesson.timeTable,
+                group: lesson.group,
                 teachingHour: lesson.teachingHour,
                 subLessonOneTeachingHour: lesson.subLessonOneTeachingHour,
                 subLessonTwoTeachingHour: lesson.subLessonTwoTeachingHour
@@ -42,7 +44,11 @@ class LessonService {
                 schedule: lesson.schedule,
                 weekDay: lesson.weekDay,
                 slotIndex: lesson.slotIndex,
-                teachingHour: lesson.teachingHour
+                timeTable: lesson.timeTable,
+                group: lesson.group,
+                teachingHour: lesson.teachingHour,
+                subLessonOneTeachingHour: lesson.subLessonOneTeachingHour,
+                subLessonTwoTeachingHour: lesson.subLessonTwoTeachingHour
             },
             {headers: authHeader()});
     }

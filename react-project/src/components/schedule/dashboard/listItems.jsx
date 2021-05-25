@@ -150,7 +150,7 @@ export const SubItem = ({item, helperText, subIndex, index, droppableId}) => (
                                     }
                                     {!item.teachingHour &&
                                         <div className="emptySubCard myDisplayFlex justifyContentCenter alignItemsCenter">
-                                            <p>Empty</p>
+                                            <p>Празно</p>
                                         </div>
                                     }
                                 </div>
@@ -182,6 +182,9 @@ export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                     >
+                        <div>
+                            {lesson.timeStart} - {lesson.timeEnd}
+                        </div>
                         <SubItem 
                             item={subItems[0]} 
                             type={type} 
@@ -210,17 +213,20 @@ export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
                     <Draggable key={lesson.id} draggableId={lesson.id.toString()} index={index}>
                         {provided => (
                             <div
-                                className="myDefaultMarginTopAndBottom myDisplayFlex"
+                                className="myDisplayFlexColumn margin-bottom-16px"
                                 ref={provided.innerRef} 
                                 {...provided.draggableProps} 
                                 {...provided.dragHandleProps}
                             >
+                                <div>
+                                    {lesson.timeStart} - {lesson.timeEnd}
+                                </div>
                                 <LessonCard lesson={lesson} />
                             </div>
                         )}
                     </Draggable>
                 }
-                {lesson.teachingHour === undefined && weekDay !== 0 &&
+                {!lesson.teachingHour && weekDay !== 0 &&
                     <Draggable 
                         key={lesson.id} 
                         draggableId={lesson.id.toString()}
@@ -234,8 +240,8 @@ export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
                             {...provided.dragHandleProps}
                             
                         >
-                            <div className="emptyCard myDisplayFlex justifyContentCenter alignItemsCenter">
-                                <p className="myTextAlignCenter">Empty</p>
+                            <div className="myDisplayFlex justifyContentCenter alignItemsCenter">
+                                {lesson.timeStart} - {lesson.timeEnd}
                             </div>
                         </div>
                     )}
@@ -248,7 +254,7 @@ export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
 };
 
 const LessonCard = ({lesson}) => (
-    <Card className="lessonCard myDefaultMarginTopAndBottom">
+    <Card className="myDefaultMarginTopAndBottom">
         <Card.Content>
             <Card.Header className="myWhiteColor">
                 {lesson.teachingHour.subject.name}

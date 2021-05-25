@@ -27,6 +27,8 @@ public class LessonController {
                 lessonRequest.getSchedule(),
                 lessonRequest.getWeekDay(),
                 lessonRequest.getSlotIndex(),
+                lessonRequest.getTimeTable(),
+                lessonRequest.getGroup(),
                 lessonRequest.getTeachingHour(),
                 lessonRequest.getSubLessonOneTeachingHour(),
                 lessonRequest.getSubLessonTwoTeachingHour()
@@ -93,6 +95,8 @@ public class LessonController {
             newLesson.setSchedule(lesson.getSchedule());
             newLesson.setWeekDay(lesson.getWeekDay());
             newLesson.setSlotIndex(lesson.getSlotIndex());
+            newLesson.setTimeTable(lesson.getTimeTable());
+            newLesson.setGroup(lesson.getGroup());
             newLesson.setTeachingHour(lesson.getTeachingHour());
             newLesson.setSubLessonOneTeachingHour(lesson.getSubLessonOneTeachingHour());
             newLesson.setSubLessonTwoTeachingHour(lesson.getSubLessonTwoTeachingHour());

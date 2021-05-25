@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
     Optional<List<Lesson>> findAllByScheduleId(Long scheduleId);
 
+    Optional<Lesson> findByTeachingHour_Id(Long teachingHourId);
+
     Boolean existsBySlotIndexAndWeekDayAndTeachingHour(
             @NotBlank Integer slotIndex,
             @NotBlank Integer weekDay,

@@ -122,15 +122,10 @@ class ScheduleDashboard extends Component {
         this.fetchGroups(scheduleId)
         .then(() => {
         this.fetchTimeTables()
-        .then(() => {
-            const selectedTimeTable = this.state.timeTables[this.state.selectedTimeTable]
-        
+        .then(() => {        
             lessonService.getAllByScheduleId(scheduleId)
-            .then(lessons => {
-                const filteredLessons = lessons.data.filter(
-                    lesson => lesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
-                );
-                this.setState({ fetchedLessons: filteredLessons });
+            .then(result => {
+                this.setState({ fetchedLessons: result.data });
             }).
             then(() => this.mapLessons())
             .catch(error => {
@@ -157,8 +152,8 @@ class ScheduleDashboard extends Component {
 
         if(fetchedLessons) {
             filteredLessons = fetchedLessons.filter(
-                fetchedLesson => fetchedLesson.teachingHour.group.id === selectedGroup.id
-                && fetchedLesson.teachingHour.timeSlots[0].timeTable.id === selectedTimeTable.id
+                fetchedLesson => fetchedLesson.group.id === selectedGroup.id 
+                && fetchedLesson.timeTable.id === selectedTimeTable.id
             );
         }
 
@@ -175,27 +170,24 @@ class ScheduleDashboard extends Component {
                 name: weekDaysTemplate[i],
                 items: this.initializeEmptyItems(selectedTimeTable.timeSlots.filter(
                     timeSlot => timeSlot.weekDay === timeSlotDayTemplates[i - 1]
-                )),
+                ), i),
                 weekDay: i
             }
         }
 
         filteredLessons.forEach(lesson => {
             filteredTeachingHours.forEach((teachingHour, index) => {
-                if(teachingHour.id === lesson.teachingHour.id) filteredTeachingHours.splice(index, 1);
+                if(lesson.teachingHour && teachingHour.id === lesson.teachingHour.id) filteredTeachingHours.splice(index, 1);
             })
             for(let i = 0; i < 6; i++) {
                 if(lesson.weekDay === i) {
-                    lessons[i].items[lesson.slotIndex] = {
-                        id: lesson.id,
-                        weekDay: lesson.weekDay,
-                        slotIndex: lesson.slotIndex,
-                        teachingHour: lesson.teachingHour,
-                        subItems: lesson.teachingHour.overAWeek ? [
-                            {id: uuidv4(), teachingHour: lesson.subLessonOneTeachingHour},
-                            {id: uuidv4(), teachingHour: lesson.subLessonTwoTeachingHour}
-                        ] : [undefined, undefined]
-                    };
+                    lessons[i].items[lesson.slotIndex].id = lesson.id
+                    lessons[i].items[lesson.slotIndex].teachingHour = lesson.teachingHour;
+                    lessons[i].items[lesson.slotIndex].subItems = 
+                    lesson.subLessonOneTeachingHour || lesson.subLessonTwoTeachingHour ? [
+                        {id: uuidv4(), teachingHour: lesson.subLessonOneTeachingHour},
+                        {id: uuidv4(), teachingHour: lesson.subLessonTwoTeachingHour}
+                    ] : [null, null];
                 }
             }
         })
@@ -219,18 +211,24 @@ class ScheduleDashboard extends Component {
                         id: uuidv4(),
                         teachingHour: teachingHour
                     }, {id: uuidv4(),
-                        teachingHour: undefined}] : [undefined, undefined]
+                        teachingHour: undefined}] : [null, null]
                 });
             }
         });
         return lessons;
     }
 
-    initializeEmptyItems = (timeSlots) => {
+    initializeEmptyItems = (timeSlots, weekDay) => {
         let items = [];
         for(let i = 0; i < timeSlots.length; i++) {
             items.push({
                 id: uuidv4(),
+                slotIndex: i,
+                timeTable: this.state.timeTables[this.state.selectedTimeTable],
+                group: this.state.groups[this.state.selectedGroup],
+                weekDay: weekDay,
+                timeStart: timeSlots[i].timeStart,
+                timeEnd: timeSlots[i].timeEnd,
                 teachingHour: undefined,
                 subItems: new Array(2)
             });
@@ -286,23 +284,23 @@ class ScheduleDashboard extends Component {
     saveLessonsInDb = lessons => {
         lessons.slice(1).forEach(lesson => {
             lesson.items.forEach(item => {
-                if(item && item.teachingHour) {
-                    let newLesson = {
-                        schedule: this.state.schedule,
-                        weekDay: lesson.weekDay,
-                        slotIndex: item.slotIndex,
-                        teachingHour: item.teachingHour,
-                        subLessonOneTeachingHour: item.teachingHour.overAWeek ? item.subItems[0].teachingHour : null,
-                        subLessonTwoTeachingHour: item.teachingHour.overAWeek ? item.subItems[1].teachingHour : null
-                    }
-                    if(typeof item.id === 'string') {
-                        lessonService.create(newLesson)
-                        .catch(error => console.error(error));
-                    } else {
-                        newLesson.id = item.id;
-                        lessonService.update(newLesson)
-                        .catch(error => console.error(error));
-                    }
+                let newLesson = {
+                    schedule: this.state.schedule,
+                    weekDay: item.weekDay,
+                    timeTable: item.timeTable,
+                    group: item.group,
+                    slotIndex: item.slotIndex,
+                    teachingHour: item.teachingHour,
+                    subLessonOneTeachingHour: item.subItems[0] ? item.subItems[0].teachingHour : null,
+                    subLessonTwoTeachingHour: item.subItems[1] ? item.subItems[1].teachingHour : null
+                }
+                if(typeof item.id === 'string') {
+                    lessonService.create(newLesson)
+                    .catch(error => console.error(error));
+                } else {
+                    newLesson.id = item.id;
+                    lessonService.update(newLesson)
+                    .catch(error => console.error(error));
                 }
             })
         });
@@ -316,7 +314,6 @@ class ScheduleDashboard extends Component {
         const { 
             open, 
             lessons, 
-            show, 
             previousSchedules, 
             hoursTemplate, 
             groups,

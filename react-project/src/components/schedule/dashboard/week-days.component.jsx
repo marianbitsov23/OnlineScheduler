@@ -43,12 +43,10 @@ export default class WeekDays extends Component {
                 setLessons(lessons);
             } else if (result.type === "droppableItem") {
                 const items = lessons[destDay].items;
-                const removedItem = items[destination.index];
+                const removedItemTeachingHour = items[destination.index].teachingHour;
 
-                items[destination.index] = items[source.index];
-                items[destination.index].slotIndex = destination.index;
-                items[source.index] = removedItem;
-                items[source.index].slotIndex = source.index;
+                items[destination.index].teachingHour = items[source.index].teachingHour;
+                items[source.index].teachingHour = removedItemTeachingHour;
 
                 lessons[destination.droppableId].items = items;
 
@@ -59,7 +57,7 @@ export default class WeekDays extends Component {
             const sourceItems = [...lessons[sourceDay].items];
             
             if (result.type === "droppableSubItem") {
-                if(destination.index > 1) return;
+                if (destination.index > 1) return;
                 const destSubItems = [...destItems[destIndex].subItems];
                 const sourceSubItems = [...sourceItems[subIndex].subItems];
                 const removedItem = destSubItems[destination.index];
@@ -75,27 +73,41 @@ export default class WeekDays extends Component {
 
                 setLessons(lessons);
             } else if (result.type === "droppableItem") {
-                const removedItem = destItems[destination.index];
+                const removedItemTeachingHour = destItems[destination.index].teachingHour;
 
-                destItems[destination.index] = sourceItems[source.index];
-                destItems[destination.index].slotIndex = destination.index;
-                sourceItems[source.index] = removedItem;
-                if(sourceItems[source.index]) {
-                    sourceItems[source.index].slotIndex = source.index;
-                    sourceItems[source.index].weekDay = parseInt(source.droppableId);
+                if(sourceItems[source.index].subItems[0] || sourceItems[source.index].subItems[1]) {
+                    //swapping the first subitems
+                    destItems[destination.index].subItems[0] = 
+                        [sourceItems[source.index].subItems[0], 
+                        sourceItems[source.index].subItems[0] = destItems[destination.index].subItems[0]][0];
+                    
+                    //swapping the second subitems
+                    destItems[destination.index].subItems[1] = 
+                        [sourceItems[source.index].subItems[1], 
+                        sourceItems[source.index].subItems[1] = destItems[destination.index].subItems[1]][0];
+                    
+                    //swapping the teaching hour
+                    sourceItems[source.index].teachingHour = removedItemTeachingHour;
+                } else {
+                    //swapping theaching hours
+                    destItems[destination.index].teachingHour = sourceItems[source.index].teachingHour;
+                    sourceItems[source.index].teachingHour = removedItemTeachingHour;
                 }
-                destItems[destination.index].weekDay = parseInt(destination.droppableId);
 
+                //saving the changes
+                lessons[destination.droppableId].items = destItems;
+                lessons[source.droppableId].items = sourceItems;
+    
+                setLessons(lessons);
+                /*
                 if(this.validateLesson(
                     sourceItems[source.index], destItems[destination.index]
                 )) {
-                    lessons[destination.droppableId].items = destItems;
-                    lessons[source.droppableId].items = sourceItems;
-        
-                    setLessons(lessons);
+                    
                 } else {
                     console.log('error')
                 }
+                */
             }
         }
     }
