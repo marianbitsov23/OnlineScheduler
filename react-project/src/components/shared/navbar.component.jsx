@@ -39,14 +39,14 @@ export default class Navigation extends Component {
                         <Nav className="ml-auto navRoutes">
                             <Nav.Item>
                                 <Link to={"/home"} className="nav-link navRoute myWhiteColor">
-                                    Home
+                                    Начало
                                 </Link>
                             </Nav.Item>
 
                             {currentUser && (
                             <Nav.Item>
                                 <Link to={"/schedules"} className="nav-link navRoute myWhiteColor">
-                                    Schedules
+                                    Графици
                                 </Link>
                             </Nav.Item>
                             )}
@@ -67,7 +67,7 @@ export default class Navigation extends Component {
                                     <Nav.Item className="logOutRoute">
                                         <button>
                                             <a href="/login" className="nav-link navRoute myWhiteColor" onClick={this.logOut}>
-                                                Log Out
+                                                Изход
                                             </a>
                                         </button>
                                     </Nav.Item>
@@ -76,14 +76,14 @@ export default class Navigation extends Component {
                                 <>
                                 <Nav.Item>
                                     <Link to={"/login"} className="nav-link myWhiteColor navRoute profileRoute">
-                                        Login
+                                        Влизане
                                     </Link>
                                 </Nav.Item>
                     
                                 <Nav.Item className="logOutRoute">
                                     <button>
                                         <Link to={"/register"} className="nav-link navRoute">
-                                            Sign Up
+                                            Регистрация
                                         </Link>
                                     </button>
                                 </Nav.Item>

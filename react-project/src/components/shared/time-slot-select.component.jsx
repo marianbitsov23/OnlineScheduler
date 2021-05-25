@@ -28,7 +28,7 @@ export default class TimeSlotSelect extends Component {
 
     addTimeSlot = () => {
         const { weekDays, setSlots, weekDaysTemplate } = this.props;
-        const { selectedDay, selectedStartDate, selectedEndDate } = this.state;
+        const { selectedStartDate, selectedEndDate } = this.state;
 
         weekDaysTemplate.forEach(day => {
             let newTimeSlots = weekDays.filter(weekDay => weekDay.weekDay === day.toUpperCase());

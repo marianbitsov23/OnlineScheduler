@@ -2,7 +2,7 @@ import React from 'react';
 import { Select, InputLabel, MenuItem } from '@material-ui/core';
 
 export const CustomSelect = ({ label, name, value, onChange, elements }) => (
-    <div className="myDefaultMarginTopBottom">
+    <div>
         <InputLabel shrink>
             {label}
         </InputLabel>

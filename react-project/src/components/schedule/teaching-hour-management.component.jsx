@@ -243,6 +243,7 @@ export default class ManageTeachingHours extends Component {
                             />
 
                             <FormControlLabel
+                                className=""
                                 control={
                                 <Checkbox 
                                     checked={this.state.overAWeek} 

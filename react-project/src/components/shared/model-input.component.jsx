@@ -31,8 +31,6 @@ export default class ModelInput extends Component {
 
         const service = this.props.service;
 
-        //TODO: fix saving duplicate elements
-
         let element = undefined;
 
         switch(this.props.type) {
@@ -64,8 +62,6 @@ export default class ModelInput extends Component {
     render() {
         const { elementName, categories } = this.state;
         const service = this.props.service;
-        const disabled = elementName === "" ||
-            categories.length === 0;
 
         return(
             <>
@@ -101,14 +97,14 @@ export default class ModelInput extends Component {
                             </Container>
 
                             {this.props.type === "teacher" &&
-                                <div className="myDefaultMargin">
-                                    <TextInput
-                                        name="initials"
-                                        value={this.state.initials}
-                                        label="Инициали"
-                                        onChange={this.onChange}
-                                    />
-                                </div>
+                            <Container className="margin-bottom-16px">
+                                <TextInput
+                                    name="initials"
+                                    value={this.state.initials}
+                                    label="Инициали"
+                                    onChange={this.onChange}
+                                />
+                            </Container>
                             }
 
                             {this.props.type === "cabinet" && 
@@ -120,11 +116,12 @@ export default class ModelInput extends Component {
                                 />
                             }
 
-                            <ConfirmButton 
-                                disabled={disabled}
-                                loading={this.state.loading}
-                                text="Добави"
-                            />
+                            <Container className="margin-bottom-16px">
+                                <ConfirmButton 
+                                    loading={this.state.loading}
+                                    text="Добави"
+                                />
+                            </Container>
                         </Form>
                     </Paper>
                 </Container>

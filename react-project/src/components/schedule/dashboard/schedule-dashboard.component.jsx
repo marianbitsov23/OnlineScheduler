@@ -9,7 +9,6 @@ import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import MenuIcon from '@material-ui/icons/Menu';
 import { MainListItems, SecondaryListItems } from './listItems';
-import DeleteIcon from '@material-ui/icons/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
@@ -82,7 +81,6 @@ class ScheduleDashboard extends Component {
         };
 
         this.handleDrawer = this.handleDrawer.bind(this);
-        this.deleteSchedule = this.deleteSchedule.bind(this);
     }
 
     fetchTimeTables = () => {
@@ -285,20 +283,6 @@ class ScheduleDashboard extends Component {
         else this.setState({ [event.target.name] : event.target.value });
     }
 
-    deleteSchedule = event => {
-        event.preventDefault();
-        const { schedule } = this.state;
-        if(this.state.scheduleName === schedule.name) {
-            scheduleService.deleteSchedule(schedule.id)
-            .then(() => {
-                this.state.previousSchedules.shift();
-                scheduleService.setPreviousSchedules(this.state.previousSchedules);
-                this.props.history.push('/schedules');
-            })
-            .catch(error => console.error(error));
-        }
-    }
-
     saveLessonsInDb = lessons => {
         lessons.slice(1).forEach(lesson => {
             lesson.items.forEach(item => {
@@ -327,8 +311,6 @@ class ScheduleDashboard extends Component {
     componentWillUnmount() {
         this.saveLessonsInDb(this.state.lessons);
     }
-
-    onClose = () => this.setState({ show: !this.state.show });
 
     render() {
         const { 
@@ -361,22 +343,9 @@ class ScheduleDashboard extends Component {
                         noWrap className="title">
                             {this.state.schedule.name}
                         </Typography>
-                        <CustomSelect
-                            name="selectedTimeTable"
-                            value={this.state.selectedTimeTable}
-                            onChange={this.onChange}
-                            elements={timeTables}
-                        />
-                        <CustomSelect
-                            name="selectedGroup"
-                            value={this.state.selectedGroup}
-                            onChange={this.onChange}
-                            elements={groups}
-                        />
-                        <SchedulePrint lessons={lessons} timeTable={timeTables[this.state.selectedTimeTable]}/>
-                        <IconButton onClick={() => this.setState({ show: true })} color="inherit">
-                            <DeleteIcon />
-                        </IconButton>
+                        <div>
+                            Принтиране <SchedulePrint lessons={lessons} timeTable={timeTables[this.state.selectedTimeTable]}/>
+                        </div>
                     </Toolbar>
                 </AppBar>
                 <main className="myDisplayFlex">
@@ -398,6 +367,38 @@ class ScheduleDashboard extends Component {
                     </Drawer>
                     <div className="content">
                         <Container maxWidth="xl" className="myDefaultPadding">
+                            <div className="
+                                myDisplayFlex
+                                margin-bottom-16px
+                                justify-content-space-around"
+                            >
+                                <div className="
+                                    myDisplayFlex 
+                                    justify-content-space-between
+                                    align-items-center"
+                                >
+                                    <CustomSelect
+                                        name="selectedTimeTable"
+                                        value={this.state.selectedTimeTable}
+                                        onChange={this.onChange}
+                                        elements={timeTables}
+                                        label="Изберете веремева таблица"
+                                    />
+                                </div>
+                                <div className="
+                                    myDisplayFlex 
+                                    justify-content-space-between
+                                    align-items-center"
+                                >
+                                    <CustomSelect
+                                        name="selectedGroup"
+                                        value={this.state.selectedGroup}
+                                        onChange={this.onChange}
+                                        elements={groups}
+                                        label="Изберете група"
+                                    />
+                                </div>
+                            </div>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
@@ -412,30 +413,6 @@ class ScheduleDashboard extends Component {
                         </Container>
                     </div>
                 </main>
-                <CustomDialog 
-                    show={show}
-                    onClose={this.onClose}
-                    title="Are you sure you want to delete this schedule?"
-                    confirmFunction={this.deleteSchedule}
-                    confirmButtonText="Изтриване"
-                    text=
-                    {<>
-                        Напълно сигурни ли сте че искате да изтриете този график?
-                        Изтриването е перманентно и графикът не може да бъде възстановен!
-                        Въведете името на графика <div className="scheduleName">{this.state.schedule.name}</div> 
-                        и натиснете <span className="deleteButtonText">Изтриване</span> бутона, за да потвърдите.
-                    </>}
-                    content=
-                    {<>
-                        <TextInput 
-                            name="scheduleName"
-                            value={this.state.scheduleName}
-                            label="Въведете името на графика"
-                            type="scheduleName"
-                            onChange={this.onChange}
-                        />
-                    </>}
-                />
             </div>
         )
     }

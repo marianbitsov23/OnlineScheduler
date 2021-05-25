@@ -19,9 +19,7 @@ export default class CategorySelect extends Component {
         this.createCategory.bind(this);
     }
 
-    createCategory = event => {
-        event.preventDefault();
-
+    createCategory = () => {
         const { categoryName } = this.state;
 
         cabinetCategoryService.create({name: categoryName, schedule: this.props.schedule})
@@ -99,6 +97,7 @@ export default class CategorySelect extends Component {
                         show={show}
                         onClose={() => this.setState({ show: !show })}
                         title="Добави нова категория"
+                        text="Категорията, която ще добавите съществува само и единствено в контекста на текущия график!"
                         confirmFunction={this.createCategory}
                         confirmButtonText="Добави"
                         content={

@@ -260,8 +260,6 @@ export default class ManageGroups extends Component {
                                         <div key={groupIndex}>
                                             <ListItem 
                                                 className="backgroundColor myDefaultMarginTopBottom" 
-                                                button 
-                                                onClick={this.handleOpen.bind(this, groupIndex, 'yearGroup')}
                                             >
                                                 <ListItemIcon>
                                                     <SchoolIcon />
@@ -278,9 +276,12 @@ export default class ManageGroups extends Component {
                                                             text="Добави нов клас"
                                                         />}
                                                 />
-                                                <div className="margin-left-32px">
+                                                <button 
+                                                    onClick={this.handleOpen.bind(this, groupIndex, 'yearGroup')} 
+                                                    className="margin-left-32px"
+                                                >
                                                     {group.open ? <ExpandLess /> : <ExpandMore />}
-                                                </div>
+                                                </button>
                                             </ListItem>
                                             <Collapse className="margin-16px backgroundColor" in={group.open} timeout="auto" unmountOnExit>
                                                 <List>
