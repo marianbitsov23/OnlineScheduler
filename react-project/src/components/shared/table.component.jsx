@@ -10,6 +10,8 @@ import { DeleteButton } from "../shared/custom-buttons/delete-button.component";
 import { EditButton } from './custom-buttons/edit-button.component';
 import { CustomDialog } from './custom-dialog.component';
 import { EditInformationComponent } from './edit-information.component';
+import { CustomAlert } from "./custom-alert.component";
+
 
 export default class TableList extends Component {
     constructor(props) {
@@ -17,6 +19,8 @@ export default class TableList extends Component {
 
         this.state = {
             show: false,
+            fail: false,
+            success: false,
             editableElement: {},
             selectedTeacher: 0,
             selectedCabinet: 0,
@@ -43,7 +47,7 @@ export default class TableList extends Component {
             this.setState({ loading: false, show: false });
             let index = elements.findIndex((element => element.id === editableElement.id));
             elements[index] = editableElement;
-            this.setState({ elements });
+            this.setState({ elements: elements, success: true });
         })
         .catch(error => console.error(error));
     }
@@ -57,7 +61,7 @@ export default class TableList extends Component {
         this.props.service.delete(editableElement.id)
         .then(() => {
             elements.splice(elements.indexOf(editableElement), 1);
-            this.setState({ elements, show: false });
+            this.setState({ elements, show: false, fail: true });
         })
         .catch(error => console.error(error));
     }
@@ -174,6 +178,18 @@ export default class TableList extends Component {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <CustomAlert
+                open={this.state.fail}
+                onClose={() => this.setState({ fail: false })}
+                alertText="Ресурсът беше изтрит!"
+                variant="error"
+            />
+            <CustomAlert
+                open={this.state.success}
+                onClose={() => this.setState({ success: false })}
+                alertText="Промените бяха запазени!"
+                variant="success"
+            />
             <CustomDialog
                     show={show}
                     danger={this.state.remove}

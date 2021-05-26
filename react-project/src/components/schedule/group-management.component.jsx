@@ -12,9 +12,9 @@ import { List, Collapse, Paper,
 import { CustomDialog } from '../shared/custom-dialog.component';
 import { TextInput } from '../shared/text-input.component';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ButtonPagination } from '../shared/custom-buttons/button-pagination.component';
 import { SaveButton } from '../shared/custom-buttons/save-button.component';
 import { EditButton } from '../shared/custom-buttons/edit-button.component';
+import { NextButton } from '../shared/custom-buttons/next-button.component';
 
 export default class ManageGroups extends Component {
     constructor(props) {
@@ -352,10 +352,9 @@ export default class ManageGroups extends Component {
                             </>
                         }
                     </Paper>    
-                    <ButtonPagination
-                        backwardLink={"/schedule-management"}
-                        forwardLink={"/subject-management"}
-                    />
+                    <div className="myDisplayFlex justifyContentSpaceBetween">
+                        <NextButton type="forward" link={"subject-management"}/>
+                    </div>
                 </Container>
                 <CustomDialog
                     show={show}

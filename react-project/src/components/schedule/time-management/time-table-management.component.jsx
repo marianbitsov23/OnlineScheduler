@@ -104,13 +104,18 @@ export default class ManageTimeTables extends Component {
 
         const isInvalid = name === "";
 
+        const empty = weekDays.length === 0;
+
+        console.log(weekDays);
+
         return(
             <>
                 <Container>
                     <Jumbotron>
+                        <h1 className="margin-bottom-16px text-align-center">Времеви таблици</h1>
                         {!edit &&
                             <>
-                                <Typography>{name}</Typography>
+                                <h2 className="margin-bottom-16px">Име на времевата таблица: {name}</h2>
 
                                 <EditButton
                                     fullWidth={true}
@@ -125,6 +130,12 @@ export default class ManageTimeTables extends Component {
 
                         {edit &&
                             <>
+                                <Typography variant="p">
+                                    Времевата таблица представлява празното разписание, разграфено по часови диапазони. <br/>
+                                    Въведете име на времевата таблица! <br/>
+                                    Въвдете времевите диапазони за часовете, отнасящи за всеки ден от седмицата!
+                                </Typography>
+
                                 <TextInput
                                     name="name"
                                     value={this.state.name}
@@ -153,7 +164,7 @@ export default class ManageTimeTables extends Component {
                         fullWidth={true}
                         text="Създай времева таблица"
                         onClick={this.saveTimeTable}
-                        disabled={edit}
+                        disabled={empty}
                     />
                 </Container>
                 <Container>

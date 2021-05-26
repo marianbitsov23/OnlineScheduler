@@ -98,8 +98,8 @@ export default class TimeSlotSelect extends Component {
         }
 
         const isInvalid = selectedEndDate === selectedStartDate ||
-            selectedEndDate === null ||
-            selectedStartDate === null;
+            selectedEndDate === "" ||
+            selectedStartDate === "";
 
         return (
             <>
@@ -199,6 +199,7 @@ export default class TimeSlotSelect extends Component {
                     show={this.state.show}
                     onClose={() => this.setState({ show: false })}
                     title="Задайте начало и край на часа"
+                    text="Началото и края на часа трябва да са различни! Края на часа трябва да е след началото!"
                     confirmFunction={this.state.edit ? this.editSlot : this.addTimeSlot}
                     disabled={isInvalid}
                     confirmButtonText="Добави час"

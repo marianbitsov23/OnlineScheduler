@@ -31,7 +31,7 @@ export default class ManageSubjects extends Component {
             <Container>
                 <ModelInput type="subject" elements={subjects} service={subjectService} />
                 <ButtonPagination
-                    backwardLink={"/group-managament"}
+                    backwardLink={"/group-management"}
                     forwardLink={"/teacher-management"}
                 />
             </Container>
