@@ -176,9 +176,20 @@ class ScheduleDashboard extends Component {
         }
 
         filteredLessons.forEach(lesson => {
-            filteredTeachingHours.forEach((teachingHour, index) => {
-                if(lesson.teachingHour && teachingHour.id === lesson.teachingHour.id) filteredTeachingHours.splice(index, 1);
-            })
+            for(let i = 0; i < filteredTeachingHours.length; i++) {
+                const teachingHour = filteredTeachingHours[i];
+
+                if(lesson.teachingHour && teachingHour.id === lesson.teachingHour.id) {
+                    teachingHour.hoursPerWeek--;
+                    break;
+                } else if(lesson.subLessonOneTeachingHour && lesson.subLessonOneTeachingHour.id === teachingHour.id) {
+                    teachingHour.hoursPerWeek--;
+                    break;
+                } else if (lesson.subLessonTwoTeachingHour && lesson.subLessonTwoTeachingHour.id === teachingHour.id) {
+                    teachingHour.hoursPerWeek--;
+                    break;
+                }
+            }
             for(let i = 0; i < 6; i++) {
                 if(lesson.weekDay === i) {
                     lessons[i].items[lesson.slotIndex].id = lesson.id

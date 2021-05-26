@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Paper, List } from '@material-ui/core';
 import { LessonSlot } from './listItems';
+import { v4 as uuidv4 } from 'uuid';
 
 const primaryColor = "#2196F3";
 const whiteColor = "#fafafa";
@@ -44,9 +45,15 @@ export default class WeekDays extends Component {
             } else if (result.type === "droppableItem") {
                 const items = lessons[destDay].items;
                 const removedItemTeachingHour = items[destination.index].teachingHour;
+                const subItemOne = items[destination.index].subItems[0];
+                const subItemTwo = items[destination.index].subItems[1];
 
                 items[destination.index].teachingHour = items[source.index].teachingHour;
+                items[destination.index].subItems[0] = items[source.index].subItems[0];
+                items[destination.index].subItems[1] = items[source.index].subItems[1];
                 items[source.index].teachingHour = removedItemTeachingHour;
+                items[source.index].subItems[0] = subItemOne;
+                items[source.index].subItems[1] = subItemTwo;
 
                 lessons[destination.droppableId].items = items;
 
@@ -55,7 +62,29 @@ export default class WeekDays extends Component {
         } else {
             const destItems = [...lessons[destDay].items];
             const sourceItems = [...lessons[sourceDay].items];
-            
+
+
+            if(destItems[destination.index] === undefined
+                && destDay !== 0) return;
+            else if (destDay === 0) {
+                const newItem = {
+                    id: uuidv4(),
+                    teachingHour: sourceItems[source.index].teachingHour,
+                    subItems: [sourceItems[source.index].subItems[0],
+                    sourceItems[source.index].subItems[1]]
+                }
+                destItems.push(newItem);
+                sourceItems[source.index].teachingHour = null;
+                sourceItems[source.index].subItems[0] = null;
+                sourceItems[source.index].subItems[1] = null;
+
+                lessons[destDay].items = destItems;
+                lessons[sourceDay].items = sourceItems;
+    
+                setLessons(lessons);
+                return;
+            }
+
             if (result.type === "droppableSubItem") {
                 if (destination.index > 1) return;
                 const destSubItems = [...destItems[destIndex].subItems];
@@ -169,7 +198,7 @@ export default class WeekDays extends Component {
                                 style={getListStyle(snapshot.isDraggingOver)}
                             >
                                 {lessons[0] && lessons[0].items.length === 0 && 
-                                    <h3 className="myFontFamily">Nothing left here</h3>
+                                    <h3 className="myFontFamily">Няма останали хорариуми</h3>
                                 }
                                 {lessons[0] && 
                                 <LessonSlot 

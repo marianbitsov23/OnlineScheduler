@@ -218,9 +218,10 @@ export const LessonItem = ({type, subItems, lesson, weekDay, index}) => {
                                 {...provided.draggableProps} 
                                 {...provided.dragHandleProps}
                             >
+                                {weekDay !== 0 &&
                                 <div>
                                     {lesson.timeStart} - {lesson.timeEnd}
-                                </div>
+                                </div>}
                                 <LessonCard lesson={lesson} />
                             </div>
                         )}
