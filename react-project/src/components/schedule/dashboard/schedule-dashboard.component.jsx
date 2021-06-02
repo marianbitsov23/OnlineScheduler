@@ -19,6 +19,8 @@ import { CustomSelect } from '../../shared/custom-select.component';
 import groupService from '../../../services/schedule/group.service';
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
 import timeSlotService from '../../../services/schedule/time-management/time-slot.service';
+import { SaveButton } from '../../shared/custom-buttons/save-button.component';
+import { CustomAlert } from '../../shared/custom-alert.component';
 
 const useStyles = theme => ({
     appBar: {
@@ -293,6 +295,8 @@ class ScheduleDashboard extends Component {
     }
 
     saveLessonsInDb = lessons => {
+        const { fetchedLessons } = this.state;
+
         lessons.slice(1).forEach(lesson => {
             lesson.items.forEach(item => {
                 let newLesson = {
@@ -313,12 +317,12 @@ class ScheduleDashboard extends Component {
                     lessonService.update(newLesson)
                     .catch(error => console.error(error));
                 }
+                const foundLesson = fetchedLessons.filter(l => l.id === newLesson.id)[0];
+                fetchedLessons[fetchedLessons.indexOf(foundLesson)] = newLesson;
             })
         });
-    }
 
-    componentWillUnmount() {
-        this.saveLessonsInDb(this.state.lessons);
+        this.setState({ show: true, fetchedLessons });
     }
 
     render() {
@@ -328,6 +332,7 @@ class ScheduleDashboard extends Component {
             previousSchedules, 
             hoursTemplate, 
             groups,
+            show,
             timeTables
         } = this.state;
         const { classes } = this.props;
@@ -336,6 +341,12 @@ class ScheduleDashboard extends Component {
         
         return(
             <div className="myDisplayFlexColumn">
+                <CustomAlert
+                    open={show}
+                    onClose={() => this.setState({ show: false })}
+                    alertText="Графикът беше запазен!"
+                    variant="success"
+                />
                 <AppBar position="static" className={clsx(classes.appBar, open && classes.appBarShift)}>
                     <Toolbar className="baseColor blackColor">
                         <IconButton
@@ -378,7 +389,7 @@ class ScheduleDashboard extends Component {
                             <div className="
                                 myDisplayFlex
                                 margin-bottom-16px
-                                justify-content-space-around"
+                                justify-content-space-between"
                             >
                                 <div className="
                                     myDisplayFlex 
@@ -404,6 +415,16 @@ class ScheduleDashboard extends Component {
                                         onChange={this.onChange}
                                         elements={groups}
                                         label="Изберете група"
+                                    />
+                                </div>
+                                <div className="
+                                    myDisplayFlex 
+                                    justify-content-space-between
+                                    align-items-center"
+                                >
+                                    <SaveButton
+                                        text="Запазване на графика"
+                                        onClick={() => this.saveLessonsInDb(lessons)}
                                     />
                                 </div>
                             </div>

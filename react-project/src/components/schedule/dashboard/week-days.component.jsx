@@ -3,6 +3,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Paper, List } from '@material-ui/core';
 import { LessonSlot } from './listItems';
 import { v4 as uuidv4 } from 'uuid';
+import { CustomAlert } from '../../shared/custom-alert.component';
 
 const primaryColor = "#2196F3";
 const whiteColor = "#fafafa";
@@ -14,6 +15,15 @@ const getListStyle = isDraggingOver => ({
 });
 
 export default class WeekDays extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            message: "",
+            show: false
+        };
+    }
+
     handleOnDragEnd(result) {
         const { lessons, setLessons } = this.props;
         const { source, destination, draggableId } = result;
@@ -43,7 +53,7 @@ export default class WeekDays extends Component {
 
                 setLessons(lessons);
             } else if (result.type === "droppableItem") {
-                const items = lessons[destDay].items;
+                const items = JSON.parse(JSON.stringify(lessons[destDay].items));
                 const removedItemTeachingHour = items[destination.index].teachingHour;
                 const subItemOne = items[destination.index].subItems[0];
                 const subItemTwo = items[destination.index].subItems[1];
@@ -56,13 +66,12 @@ export default class WeekDays extends Component {
                 items[source.index].subItems[1] = subItemTwo;
 
                 lessons[destination.droppableId].items = items;
-
+        
                 setLessons(lessons);
             }
         } else {
-            const destItems = [...lessons[destDay].items];
-            const sourceItems = [...lessons[sourceDay].items];
-
+            const destItems = JSON.parse(JSON.stringify(lessons[destDay].items));
+            const sourceItems = JSON.parse(JSON.stringify(lessons[sourceDay].items));
 
             if(destItems[destination.index] === undefined
                 && destDay !== 0) return;
@@ -123,69 +132,93 @@ export default class WeekDays extends Component {
                     sourceItems[source.index].teachingHour = removedItemTeachingHour;
                 }
 
-                //saving the changes
-                lessons[destination.droppableId].items = destItems;
-                lessons[source.droppableId].items = sourceItems;
-    
-                setLessons(lessons);
-                /*
                 if(this.validateLesson(
                     sourceItems[source.index], destItems[destination.index]
                 )) {
-                    
+                    //saving the changes
+                    lessons[destination.droppableId].items = destItems;
+                    lessons[source.droppableId].items = sourceItems;
+        
+                    setLessons(lessons);
                 } else {
-                    console.log('error')
+                    this.setState({ 
+                        show: true, 
+                        message: "Неправилен времеви диапазон!"
+                    });
                 }
-                */
             }
         }
     }
 
     validateLesson = (sourceLesson, destLesson) => {
-        if(destLesson === undefined) return false;
-        if((sourceLesson.teachingHour === undefined ||
+        if(destLesson.teachingHour === undefined) return false;
+        
+        console.log(sourceLesson, destLesson);
+
+        console.log(this.validateTimeSpan(
+            destLesson.teachingHour,
+            destLesson.slotIndex,
+            destLesson.weekDay))
+
+        if(this.validateTimeSpan(
+            destLesson.teachingHour,
+            destLesson.slotIndex,
+            destLesson.weekDay) &&
         this.validateTimeSpan(
-            sourceLesson.teachingHour.timeSlots,
-            sourceLesson.slotIndex    
-        )) && this.validateTimeSpan(
-            destLesson.teachingHour.timeSlots,
-            destLesson.slotIndex
+            sourceLesson.teachingHour,
+            sourceLesson.slotIndex,
+            sourceLesson.weekDay
         )) {
             return true;
         }
-
-        return false;
+        else return false;
     }
 
-    validateTimeSpan = (timeSlots, index) => {
-        for(let i = 0; i < timeSlots.length; i++) {
-            const timeSlotIndex = this.determineTimeSpan(
-                timeSlots[i].timeStart, timeSlots[i].timeEnd
-            );
-            if(timeSlotIndex === index) return true;
+    validateTimeSpan = (teachingHour, index, weekDay) => {
+        let timeSlots = teachingHour ? teachingHour.timeSlots : [];
+        switch(weekDay) {
+            case 0:
+                return true;
+            case 1:
+                timeSlots = timeSlots.filter(timeSlot => timeSlot.weekDay === 'MONDAY');
+                return this.validateTimeSlot(index, timeSlots);
+            case 2:
+                timeSlots = timeSlots.filter(timeSlot => timeSlot.weekDay === 'TUESDAY');
+                return this.validateTimeSlot(index, timeSlots);
+            case 3:
+                timeSlots = timeSlots.filter(timeSlot => timeSlot.weekDay === 'WEDNESDAY');
+                return this.validateTimeSlot(index, timeSlots);
+            case 4:
+                timeSlots = timeSlots.filter(timeSlot => timeSlot.weekDay === 'THURSDAY');
+                return this.validateTimeSlot(index, timeSlots);
+            case 5:
+                timeSlots = timeSlots.filter(timeSlot => timeSlot.weekDay === 'FRIDAY');
+                return this.validateTimeSlot(index, timeSlots);
+            default:
+                return true;
         }
-        return false;
     }
 
-    determineTimeSpan = (timeStart, timeEnd) => {
-        switch (timeStart + ' - ' + timeEnd) {
-            case "8:00 - 8:40": return 0;
-            case "8:50 - 9:30": return 1;
-            case "9:40 - 10:20": return 2;
-            case "10:50 - 11:40": return 3;
-            case "11:50 - 12:30": return 4;
-            case "12:40 - 13:20": return 5;
-            case "13:30 - 14:10": return 6;
-            default: return -1;
-            //vtora smqna
+    validateTimeSlot = (index, timeSlots) => {
+        timeSlots.sort((a, b) => a.id - b.id);
+        for(let i = 0; timeSlots.length; i++) {
+            if(i === index) return true;
         }
+        return false;
     }
 
     render() {
         const { lessons, hoursTemplate } = this.props;
+        const { message, show } = this.state;
 
         return(
             <div>
+                <CustomAlert
+                    open={show}
+                    onClose={() => this.setState({ show: false })}
+                    alertText={message}
+                    variant="error"
+                />
                 <DragDropContext onDragEnd={this.handleOnDragEnd.bind(this)}>
                     <Droppable droppableId="0" type="droppableItem">
                         {((provided, snapshot) => (

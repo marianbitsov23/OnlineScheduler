@@ -29,9 +29,7 @@ export default class ScheduleBoard extends Component {
         const { currentUser } = this.state;
 
         scheduleService.getSchedulesByCreatorId(currentUser.id)
-        .then(result => {
-            this.setState({ schedules: result.data });
-        })
+        .then(result => this.setState({ schedules: result.data }))
         .catch(error => console.error(error))
     }
 
