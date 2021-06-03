@@ -60,7 +60,6 @@ export default class ModelInput extends Component {
     selectCategories = categories => this.setState({ categories: categories });
 
     render() {
-        const { elementName, categories } = this.state;
         const service = this.props.service;
 
         return(

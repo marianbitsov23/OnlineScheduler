@@ -13,8 +13,6 @@ import { v4 as uuidv4 } from 'uuid';
 import lessonService from '../../../services/schedule/lesson.service';
 import SchedulePrint from './schedule-document.component';
 import WeekDays from './week-days.component';
-import { CustomDialog } from '../../shared/custom-dialog.component';
-import { TextInput } from '../../shared/text-input.component';
 import { CustomSelect } from '../../shared/custom-select.component';
 import groupService from '../../../services/schedule/group.service';
 import timeTableService from '../../../services/schedule/time-management/time-table.service';
@@ -126,10 +124,8 @@ class ScheduleDashboard extends Component {
         this.fetchTimeTables()
         .then(() => {        
             lessonService.getAllByScheduleId(scheduleId)
-            .then(result => {
-                this.setState({ fetchedLessons: result.data });
-            }).
-            then(() => this.mapLessons())
+            .then(result => this.setState({ fetchedLessons: result.data }))
+            .then(() => this.mapLessons())
             .catch(error => {
                 console.error(error);
                 this.mapLessons();

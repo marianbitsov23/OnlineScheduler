@@ -3,7 +3,7 @@ import { Button, Card } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import scheduleService from "../services/schedule/schedule.service";
 import authService from "../services/user-auth/auth.service";
-import { Grid, IconButton } from '@material-ui/core';
+import { Grid, IconButton, Backdrop, CircularProgress } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { CustomDialog } from "./shared/custom-dialog.component";
 import { TextInput } from "./shared/text-input.component";
@@ -17,6 +17,7 @@ export default class ScheduleBoard extends Component {
             fail: false,
             show: false,
             content: "",
+            loading: false,
             schedules: [],
             scheduleName: "",
             selectedSchedule: 0,
@@ -43,12 +44,14 @@ export default class ScheduleBoard extends Component {
 
     deleteSchedule = () => {
         const schedule = this.state.schedules[this.state.selectedSchedule];
+        
+        this.setState({ loading: true });
 
         if(this.state.scheduleName === schedule.name) {
             scheduleService.deleteSchedule(schedule.id)
             .then(() => {
                 scheduleService.setPreviousSchedules([]);
-                this.setState({ schedules: this.state.schedules.filter(s => s.id !== schedule.id), show: false });
+                this.setState({ schedules: this.state.schedules.filter(s => s.id !== schedule.id), show: false, loading: false });
             })
             .catch(error => console.error(error));
         } else {
@@ -57,10 +60,14 @@ export default class ScheduleBoard extends Component {
     }
 
     render() {
-        const { schedules, show, scheduleName, selectedSchedule, fail } = this.state;
+        const { schedules, show, scheduleName, selectedSchedule, fail, loading } = this.state;
 
         return (
             <>
+                <Backdrop style={{ color: '#fff', zIndex: '1500' }} open={loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+
                 <CustomAlert
                     open={fail}
                     onClose={this.handleFail}

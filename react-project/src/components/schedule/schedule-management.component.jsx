@@ -159,11 +159,14 @@ export default class ManageSchedules extends Component {
                             elements={this.state.schoolTypes}
                         />
 
-                        <SaveButton
-                            fullWidth={true}
-                            text="Създаване"
-                            onClick={this.saveSchedule.bind(this, false)}
-                        />
+                        <div className="margin-top-bottom-32px">
+                            <SaveButton
+                                fullWidth={true}
+                                disabled={isInvalid}
+                                text="Създаване"
+                                onClick={this.saveSchedule.bind(this, false)}
+                            />
+                        </div>
 
                         <div className="myDisplayFlex myDefaultMarginTopBottom">
                             <hr/>
@@ -173,17 +176,19 @@ export default class ManageSchedules extends Component {
                             <hr/>
                         </div>
 
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => this.setState({ show: true })}
-                        >
-                            {this.state.loading &&
-                                <span className="spinner-border spinner-border-sm"></span>
-                            }
-                            <span>Създаване от вече съществуващ</span>
-                        </Button>
+                        <div className="margin-bottom-32px">
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => this.setState({ show: true })}
+                            >
+                                {this.state.loading &&
+                                    <span className="spinner-border spinner-border-sm"></span>
+                                }
+                                <span>Създаване от вече съществуващ</span>
+                            </Button>
+                        </div>
 
                         {this.state.message && (
                             <FormGroup>
