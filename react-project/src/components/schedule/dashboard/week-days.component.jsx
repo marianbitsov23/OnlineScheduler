@@ -142,8 +142,7 @@ export default class WeekDays extends Component {
                     setLessons(lessons);
                 } else {
                     this.setState({ 
-                        show: true, 
-                        message: "Неправилен времеви диапазон!"
+                        show: true
                     });
                 }
             }
@@ -152,13 +151,6 @@ export default class WeekDays extends Component {
 
     validateLesson = (sourceLesson, destLesson) => {
         if(destLesson.teachingHour === undefined) return false;
-        
-        console.log(sourceLesson, destLesson);
-
-        console.log(this.validateTimeSpan(
-            destLesson.teachingHour,
-            destLesson.slotIndex,
-            destLesson.weekDay))
 
         if(this.validateTimeSpan(
             destLesson.teachingHour,
@@ -167,11 +159,35 @@ export default class WeekDays extends Component {
         this.validateTimeSpan(
             sourceLesson.teachingHour,
             sourceLesson.slotIndex,
-            sourceLesson.weekDay
+            sourceLesson.weekDay) && 
+        this.validateEmptySpot(
+            destLesson.teachingHour,
+            destLesson.slotIndex,
+            destLesson.weekDay
         )) {
             return true;
         }
         else return false;
+    }
+
+    validateEmptySpot = (teachingHour, index, weekDay) => {
+        const { fetchedLessons } = this.props;
+
+        for(let i = 0; i < fetchedLessons.length; i++) {
+            const l = fetchedLessons[i];
+
+            if(l.teachingHour && l.slotIndex === index && l.weekDay === weekDay) {
+                if(teachingHour.teacher.id === l.teachingHour.teacher.id) {
+                    this.setState({ message: `Преподавател ${teachingHour.teacher.name} е зает в този времеви диапазон!` });
+                    return false;
+                } else if(teachingHour.cabinet.id === l.teachingHour.cabinet.id) {
+                    this.setState({ message: `Кабинет ${teachingHour.cabinet.name} е зает в този времеви диапазон!`});
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     validateTimeSpan = (teachingHour, index, weekDay) => {
@@ -204,6 +220,9 @@ export default class WeekDays extends Component {
         for(let i = 0; timeSlots.length; i++) {
             if(i === index) return true;
         }
+        this.setState({ 
+            message: `Веремевият диапазон не е избран за този хорариум!`
+        });
         return false;
     }
 

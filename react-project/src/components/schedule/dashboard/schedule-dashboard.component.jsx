@@ -331,10 +331,12 @@ class ScheduleDashboard extends Component {
             lessons, 
             previousSchedules, 
             hoursTemplate, 
+            fetchedLessons,
             groups,
             show,
             timeTables
         } = this.state;
+
         const { classes } = this.props;
 
         console.log(lessons);
@@ -431,7 +433,8 @@ class ScheduleDashboard extends Component {
                             <Grid container spacing={3}>
                                 <Grid item xs={12} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
-                                        <WeekDays 
+                                        <WeekDays
+                                            fetchedLessons={fetchedLessons}
                                             lessons={lessons} 
                                             setLessons={this.setLessons} 
                                             hoursTemplate={hoursTemplate}

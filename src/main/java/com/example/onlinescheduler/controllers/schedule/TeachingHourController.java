@@ -184,6 +184,7 @@ public class TeachingHourController {
         if(foundTeachingHour.isPresent()) {
             TeachingHour newTeachingHour =  foundTeachingHour.get();
             newTeachingHour.setTeacher(teachingHour.getTeacher());
+            newTeachingHour.setGroup(teachingHour.getGroup());
             newTeachingHour.setHoursPerWeek(teachingHour.getHoursPerWeek());
             newTeachingHour.setOverAWeek(teachingHour.getOverAWeek());
             newTeachingHour.setCabinet(teachingHour.getCabinet());

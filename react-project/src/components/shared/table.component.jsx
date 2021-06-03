@@ -34,12 +34,13 @@ export default class TableList extends Component {
     saveElement = event => {
         event.preventDefault();
 
-        const { editableElement, selectedTeacher, selectedCabinet } = this.state;
+        const { editableElement, selectedTeacher, selectedCabinet, selectedGroup } = this.state;
         let elements = this.props.elements;
 
         if(this.props.type === 'teaching-hour') {
             editableElement.teacher = this.props.teachers[selectedTeacher];
             editableElement.cabinet = this.props.cabinets[selectedCabinet];
+            editableElement.group = this.props.groups[selectedGroup];
         }
 
         this.props.service.update(editableElement)

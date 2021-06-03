@@ -49,6 +49,7 @@ class TeachingHourService {
         return axios.put(API_URL + '/' + teachingHour.id, 
         {
             id: teachingHour.id,
+            group: teachingHour.group,
             subject: teachingHour.subject,
             teacher: teachingHour.teacher,
             hoursPerWeek: teachingHour.hoursPerWeek,
