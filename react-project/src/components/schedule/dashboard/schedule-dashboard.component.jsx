@@ -69,6 +69,7 @@ class ScheduleDashboard extends Component {
             fetchedLessons: undefined,
             isTeachingHour: false,
             timeTables: [],
+            filteredLessons: [],
             groups: [],
             show: false,
             selectedGroup: 0,
@@ -153,6 +154,11 @@ class ScheduleDashboard extends Component {
                 fetchedLesson => fetchedLesson.group.id === selectedGroup.id 
                 && fetchedLesson.timeTable.id === selectedTimeTable.id
             );
+
+            this.setState({ filteredLessons: fetchedLessons.filter(
+                fetchedLesson => fetchedLesson.group.id !== selectedGroup.id 
+                && fetchedLesson.timeTable.id !== selectedTimeTable.id
+            )});
         }
 
         this.initLessons(filteredLessons, filteredTeachingHours);
@@ -311,10 +317,12 @@ class ScheduleDashboard extends Component {
                 } else {
                     newLesson.id = item.id;
                     lessonService.update(newLesson)
+                    .then(() => {
+                        const foundLesson = fetchedLessons.filter(l => l.id === newLesson.id)[0];
+                        fetchedLessons[fetchedLessons.indexOf(foundLesson)] = newLesson;
+                    })
                     .catch(error => console.error(error));
                 }
-                const foundLesson = fetchedLessons.filter(l => l.id === newLesson.id)[0];
-                fetchedLessons[fetchedLessons.indexOf(foundLesson)] = newLesson;
             })
         });
 
@@ -327,15 +335,13 @@ class ScheduleDashboard extends Component {
             lessons, 
             previousSchedules, 
             hoursTemplate, 
-            fetchedLessons,
+            filteredLessons,
             groups,
             show,
             timeTables
         } = this.state;
 
         const { classes } = this.props;
-
-        console.log(lessons);
         
         return(
             <div className="myDisplayFlexColumn">
@@ -361,7 +367,10 @@ class ScheduleDashboard extends Component {
                             {this.state.schedule.name}
                         </Typography>
                         <div>
-                            Принтиране <SchedulePrint lessons={lessons} timeTable={timeTables[this.state.selectedTimeTable]}/>
+                            Принтиране <SchedulePrint 
+                                lessons={lessons} 
+                                timeTable={timeTables[this.state.selectedTimeTable]}
+                            />
                         </div>
                     </Toolbar>
                 </AppBar>
@@ -430,7 +439,7 @@ class ScheduleDashboard extends Component {
                                 <Grid item xs={12} md={12} lg={12}>
                                     <div className="myDisplayFlexColumn">
                                         <WeekDays
-                                            fetchedLessons={fetchedLessons}
+                                            fetchedLessons={filteredLessons}
                                             lessons={lessons} 
                                             setLessons={this.setLessons} 
                                             hoursTemplate={hoursTemplate}

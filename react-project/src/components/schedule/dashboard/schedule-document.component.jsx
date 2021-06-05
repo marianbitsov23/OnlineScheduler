@@ -3,11 +3,21 @@ import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 import PrintIcon from '@material-ui/icons/Print';
 import { IconButton } from '@material-ui/core';
 
+const pageStyle = `
+    @page {
+        size: 400mm 290mm!important;
+    }
+
+    @media print {
+        @page { size: landscape; }
+    }
+`;
+
 class ComponentToPrint extends Component {
     render() {
         const weekDays = ['Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък'];
         const slots = [0, 1, 2, 3, 4, 5, 6, 7];
-        const { lessons } = this.props;
+        const { lessons, groupName } = this.props;
 
         return(
             <>
@@ -77,7 +87,7 @@ export default class SchedulePrint extends Component {
     render() {
         return(
             <>
-                <ReactToPrint content={() => this.componentRef}>
+                <ReactToPrint pageStyle={pageStyle} content={() => this.componentRef}>
                     <PrintContextConsumer>
                         {({ handlePrint }) => (
                             <IconButton onClick={handlePrint} color="inherit">
@@ -88,6 +98,7 @@ export default class SchedulePrint extends Component {
                 </ReactToPrint>
                 <div className="myHidden">
                     <ComponentToPrint 
+                        groupName={this.props.groupName}
                         timeTable={this.props.timeTable}
                         lessons={this.props.lessons} 
                         ref={el => (this.componentRef = el)} 

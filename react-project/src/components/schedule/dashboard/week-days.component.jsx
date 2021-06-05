@@ -152,16 +152,26 @@ export default class WeekDays extends Component {
     validateLesson = (sourceLesson, destLesson) => {
         if(destLesson.teachingHour === undefined) return false;
 
+        let teachingHour;
+
+        if(destLesson.subItems[0]) {
+            teachingHour = destLesson.subItems[0].teachingHour;
+        } else if(destLesson.subItems[1]) {
+            teachingHour = destLesson.subItems[1].teachingHour;
+        } else if(destLesson.teachingHour) {
+            teachingHour = destLesson.teachingHour;
+        }
+
         if(this.validateTimeSpan(
-            destLesson.teachingHour,
+            teachingHour,
             destLesson.slotIndex,
             destLesson.weekDay) &&
         this.validateTimeSpan(
-            sourceLesson.teachingHour,
+            teachingHour,
             sourceLesson.slotIndex,
             sourceLesson.weekDay) && 
         this.validateEmptySpot(
-            destLesson.teachingHour,
+            teachingHour,
             destLesson.slotIndex,
             destLesson.weekDay
         )) {
@@ -173,15 +183,35 @@ export default class WeekDays extends Component {
     validateEmptySpot = (teachingHour, index, weekDay) => {
         const { fetchedLessons } = this.props;
 
+        if(!fetchedLessons) return true;
+
         for(let i = 0; i < fetchedLessons.length; i++) {
             const l = fetchedLessons[i];
 
             if(l.teachingHour && l.slotIndex === index && l.weekDay === weekDay) {
                 if(teachingHour.teacher.id === l.teachingHour.teacher.id) {
-                    this.setState({ message: `Преподавател ${teachingHour.teacher.name} е зает в този времеви диапазон!` });
+                    this.setState({ message: `Преподавател ${teachingHour.teacher.name} е зает в този времеви диапазон!`});
                     return false;
                 } else if(teachingHour.cabinet.id === l.teachingHour.cabinet.id) {
                     this.setState({ message: `Кабинет ${teachingHour.cabinet.name} е зает в този времеви диапазон!`});
+                    return false;
+                }
+            } else if(l.subLessonOneTeachingHour && 
+                l.slotIndex === index && l.weekDay === weekDay) {
+                if(teachingHour.subItems[0].teacher.id  === l.subLessonOneTeachingHour.teacher.id) {
+                    this.setState({ message: `Преподавател ${l.subLessonOneTeachingHour.teacher.id} е зает в този времеви диапзаон!`});
+                    return false;
+                } else if(teachingHour.subItems[1].cabinet.id === l.subLessonOneTeachingHour.cabinet.id) {
+                    this.setState({ message: `Кабинет ${l.subLessonOneTeachingHour.cabinet.id} е зает в този времеви диапазон!`});
+                    return false;
+                }
+            } else if(l.subLessonTwoTeachingHour &&
+                l.slotIndex === index && l.weekDay === weekDay) {
+                if(teachingHour.subItems[0].teacher.id  === l.subLessonTwoTeachingHour.teacher.id) {
+                    this.setState({ message: `Преподавател ${l.subLessonTwoTeachingHour.teacher.id} е зает в този времеви диапзаон!`});
+                    return false;
+                } else if(teachingHour.subItems[1].cabinet.id === l.subLessonTwoTeachingHour.cabinet.id) {
+                    this.setState({ message: `Кабинет ${l.subLessonTwoTeachingHour.cabinet.id} е зает в този времеви диапазон!`});
                     return false;
                 }
             }

@@ -9,7 +9,7 @@ import { ButtonPagination } from '../../shared/custom-buttons/button-pagination.
 import { SaveButton } from '../../shared/custom-buttons/save-button.component';
 import { TextInput } from '../../shared/text-input.component';
 import { EditButton } from '../../shared/custom-buttons/edit-button.component';
-import { Typography } from '@material-ui/core';
+import { Backdrop, CircularProgress, Typography } from '@material-ui/core';
 
 export default class ManageTimeTables extends Component {
     constructor(props) {
@@ -17,6 +17,7 @@ export default class ManageTimeTables extends Component {
 
         this.state = {
             name: "",
+            loading: false,
             weekDays: [],
             weekDaysTemplate: [],
             loading: false,
@@ -100,16 +101,18 @@ export default class ManageTimeTables extends Component {
     setSlots = (weekDays) => this.setState({ weekDays });
 
     render() {
-        const { name, weekDays, weekDaysTemplate, edit, timeTables } = this.state;
+        const { name, weekDays, weekDaysTemplate, edit, timeTables, loading } = this.state;
 
         const isInvalid = name === "";
 
         const empty = weekDays.length === 0;
 
-        console.log(weekDays);
-
         return(
             <>
+                <Backdrop style={{ color: '#fff', zIndex: '1500' }} open={loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+
                 <Container>
                     <Jumbotron>
                         <h1 className="margin-bottom-16px text-align-center">Времеви таблици</h1>

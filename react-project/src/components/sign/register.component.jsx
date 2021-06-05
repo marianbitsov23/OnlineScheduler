@@ -185,7 +185,7 @@ export default class Register extends Component {
                                         className="myDefaultMarginTopBottom
                                         defaultFontSize secondaryColor"
                                     >
-                                        Вече имаш акаунт? Влезте в него
+                                        Вече имате акаунт? Влезте в него
                                     </Link>
                                 </Grid>
                             </Grid>

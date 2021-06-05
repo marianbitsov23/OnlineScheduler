@@ -175,11 +175,14 @@ export default class ManageTeachingHours extends Component {
                         elements={subjects}
                     />
                     {subjects[0] &&
-                        <SaveButton
-                            fullWidth={true}
-                            text={"Създай нов хорараиум за предмет" + subjects[this.state.selectedSubject].name}
-                            onClick={() => this.setState({ show: true })}
-                        />}
+                        <div className="margin-top-bottom-16px">
+                            <SaveButton
+                                fullWidth={true}
+                                text={"Създай нов хорараиум за предмет" + subjects[this.state.selectedSubject].name}
+                                onClick={() => this.setState({ show: true })}
+                            />
+                        </div>
+                    }
                 </Container>
                 <Container>
                     {subjects[0] &&
@@ -243,7 +246,7 @@ export default class ManageTeachingHours extends Component {
                             />
 
                             <FormControlLabel
-                                className=""
+                                className="margin-top-bottom-16px"
                                 control={
                                 <Checkbox 
                                     checked={this.state.overAWeek} 
@@ -262,11 +265,13 @@ export default class ManageTeachingHours extends Component {
                                 elements={cabinets}
                             />
 
+                            <div className="margin-top-bottom-16px">
                             <EditButton
                                 fullWidth={true}
                                 onClick={() => this.setState({ hours: true, show: false })}
                                 text="Избиране на предпочитани часове"
                             />
+                            </div>
                         </>
                     }
                 />
@@ -288,6 +293,7 @@ export default class ManageTeachingHours extends Component {
                             />
 
                             <FormControlLabel
+                                className="margin-top-bottom-16px"
                                 control={
                                 <Checkbox 
                                     checked={this.state.checkAll} 

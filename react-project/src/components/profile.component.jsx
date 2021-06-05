@@ -7,6 +7,7 @@ import { DeleteButton } from "./shared/custom-buttons/delete-button.component";
 import { SaveButton } from "./shared/custom-buttons/save-button.component";
 import { EditButton } from "./shared/custom-buttons/edit-button.component";
 import { CustomAlert } from "./shared/custom-alert.component";
+import { CustomDialog } from "./shared/custom-dialog.component";
 
 export default class Profile extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class Profile extends Component {
             email: AuthService.getCurrentUser().email,
             edit: true,
             open: false,
+            show: false,
             fail: false,
             oldPassword: "",
             newPassword: "",
@@ -78,6 +80,8 @@ export default class Profile extends Component {
         .catch(error => console.error(error));
     }
 
+    onClose = () => this.setState({ show: !this.state.show });
+
     savePassword = () => {
         const { username, oldPassword, newPassword } = this.state;
 
@@ -109,6 +113,7 @@ export default class Profile extends Component {
             editPassword,
             oldPassword, 
             newPassword, 
+            show,
             confirmPassword } = this.state;
 
         const isInvalid = newPassword !== confirmPassword
@@ -148,7 +153,7 @@ export default class Profile extends Component {
                                 <div className="button-group">
                                     <DeleteButton
                                         text="Изтриване на профила "
-                                        onClick={this.deleteProfile}
+                                        onClick={() => this.setState({ show: true })}
                                     />
                                     {edit && <EditButton
                                         text="Редактиране на профила"
@@ -242,6 +247,20 @@ export default class Profile extends Component {
                             </Grid>}
                         </Grid>
                     </main>
+                    <CustomDialog 
+                        danger={true}
+                        show={show}
+                        onClose={this.onClose}
+                        title="Абсолютно сигурни ли сте, че искате да изтриете вашия профил?"
+                        confirmFunction={this.deleteProfile}
+                        confirmButtonText="Изтриване"
+                        text=
+                        {<>
+                            Напълно сигурни ли сте че искате да изтриете профила си?<br/>
+                            Изтриването е перманентно и профилът и графиците в него не могат да бъдат възстановени!<br/>
+                            Натиснете <span className="deleteButtonText">Изтриване</span> бутона, за да потвърдите.
+                        </>}
+                    />
                 </>
             );
     }
