@@ -150,8 +150,6 @@ export default class WeekDays extends Component {
     }
 
     validateLesson = (sourceLesson, destLesson) => {
-        if(destLesson.teachingHour === undefined) return false;
-
         let teachingHour;
 
         if(destLesson.subItems[0]) {
@@ -222,6 +220,9 @@ export default class WeekDays extends Component {
 
     validateTimeSpan = (teachingHour, index, weekDay) => {
         let timeSlots = teachingHour ? teachingHour.timeSlots : [];
+
+        console.log(teachingHour);
+
         switch(weekDay) {
             case 0:
                 return true;

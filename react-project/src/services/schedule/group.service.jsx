@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { BACKEND_URL } from '../configuration';
 import authHeader from '../user-auth/auth-header';
 
-const API_URL = "http://localhost:8080/api/public/group";
+const API_URL = BACKEND_URL + "api/public/group";
 
 class GroupService {
     getAllGroups() {
